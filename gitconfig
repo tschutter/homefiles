@@ -1,0 +1,15 @@
+[alias]
+    unstage = reset
+    hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+    visual = !gitk
+
+[core]
+    editor = mg
+
+[github]
+    user = tschutter
+    token = $GITHUB_TOKEN
+
+[user]
+    name = Tom Schutter
+    email = t.schutter@comcast.net

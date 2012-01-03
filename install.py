@@ -93,6 +93,7 @@ def main():
     # TODO: use arg0 instead
     options.dotfilesDir = os.path.expanduser("~/.dotfiles")
 
+    make_link(options, "gitconfig")
     make_link(options, "mg")
     make_link(options, "pylintrc")
     make_link(options, "tmux.conf")
