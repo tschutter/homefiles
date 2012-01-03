@@ -91,6 +91,7 @@ def main():
         optionParser.error("invalid argument")
     options.dotfilesDir=os.path.expanduser("~/.dotfiles")  # TODO: use arg0 instead
 
+    link(options, "mg")
     link(options, "tmux.conf")
     link(options, "xzgvrc")
 
