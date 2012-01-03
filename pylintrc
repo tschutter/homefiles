@@ -1,6 +1,17 @@
 # http://docutils.sourceforge.net/sandbox/py-rest-doc/utils/pylintrc
 
+[MASTER]
+
+# Do not profiled execution.
+profile=no
+
+# Do not pickle collected data for later comparisons.
+persistent=no
+
 [REPORTS]
+
+# Include message ID in output.
+include-ids=yes
 
 # Do not report statistics, only messages.
 reports=no
