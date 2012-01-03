@@ -1,0 +1,11 @@
+# http://docutils.sourceforge.net/sandbox/py-rest-doc/utils/pylintrc
+
+[REPORTS]
+
+# Do not report statistics, only messages.
+reports=yes
+
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=80
