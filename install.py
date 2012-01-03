@@ -92,6 +92,7 @@ def main():
     options.dotfilesDir=os.path.expanduser("~/.dotfiles")  # TODO: use arg0 instead
 
     link(options, "tmux.conf")
+    link(options, "xzgvrc")
 
     return 0
 
