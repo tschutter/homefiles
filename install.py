@@ -90,8 +90,8 @@ def main():
     (options, args) = option_parser.parse_args()
     if len(args) != 0:
         option_parser.error("invalid argument")
-    # TODO: use arg0 instead
-    options.dotfilesDir = os.path.expanduser("~/.dotfiles")
+
+    options.dotfilesDir = os.path.dirname(os.path.abspath(__file__))
 
     make_link(options, "gitconfig")
     make_link(options, "mg")
