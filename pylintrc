@@ -3,7 +3,7 @@
 [REPORTS]
 
 # Do not report statistics, only messages.
-reports=yes
+reports=no
 
 [FORMAT]
 
