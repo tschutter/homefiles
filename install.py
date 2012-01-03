@@ -16,13 +16,13 @@ import shutil
 import sys
 
 
-def link(options, file):
-    """Creates a symbolic link from homeDir/.file to dotfilesDir/file
+def make_link(options, name):
+    """Creates a symbolic link from homeDir/.name to dotfilesDir/name
     """
 
     # Determine the source and destination pathnames.
-    src = os.path.join(options.dotfilesDir, file)
-    dst = os.path.join(options.homeDir, "." + file)
+    src = os.path.join(options.dotfilesDir, name)
+    dst = os.path.join(options.homeDir, "." + name)
 
     # The src file or directory should always exist.
     if not os.path.exists(src):
@@ -32,9 +32,9 @@ def link(options, file):
     if os.path.islink(dst):
         # The destination already exists as a symbolic link.  Delete it if
         # --force or if it points to the wrong place.
-	try:
+        try:
             samefile = os.path.samefile(src, dst)
-        except Exception:
+        except OSError:
             samefile = False
         if options.force or not samefile:
             print "Deleting symbolic link '%s'." % dst
@@ -51,19 +51,20 @@ def link(options, file):
 
     # Make the link target relative to homeDir.  This usually makes the link
     # shorter in ls output.
-    linkTarget = os.path.relpath(src, options.homeDir)
+    link_target = os.path.relpath(src, options.homeDir)
 
     # Make the symbolic link from dst to src.
-    print "Creating symbolic link from '%s' to '%s'." % (dst, linkTarget)
-    os.symlink(linkTarget, dst)
+    print "Creating symbolic link from '%s' to '%s'." % (dst, link_target)
+    os.symlink(link_target, dst)
 
 
 def main():
-    optionParser = OptionParser(
-        usage = "usage: %prog [options]\n" +
+    """main"""
+    option_parser = OptionParser(
+        usage="usage: %prog [options]\n" +
             "  Installs dotfiles using symbolic links."
     )
-    optionParser.add_option(
+    option_parser.add_option(
         "--home-dir",
         action="store",
         dest="homeDir",
@@ -71,14 +72,14 @@ def main():
         default=os.path.expanduser("~"),
         help="specify directory to install to (default=%default)"
     )
-    optionParser.add_option(
+    option_parser.add_option(
         "--force",
         action="store_true",
         dest="force",
         default=False,
         help="replace existing symbolic links"
     )
-    optionParser.add_option(
+    option_parser.add_option(
         "--verbose",
         action="store_true",
         dest="verbose",
@@ -86,15 +87,16 @@ def main():
         help="produce more verbose output"
     )
 
-    (options, args) = optionParser.parse_args()
+    (options, args) = option_parser.parse_args()
     if len(args) != 0:
-        optionParser.error("invalid argument")
-    options.dotfilesDir=os.path.expanduser("~/.dotfiles")  # TODO: use arg0 instead
+        option_parser.error("invalid argument")
+    # TODO: use arg0 instead
+    options.dotfilesDir = os.path.expanduser("~/.dotfiles")
 
-    link(options, "mg")
-    link(options, "pylintrc")
-    link(options, "tmux.conf")
-    link(options, "xzgvrc")
+    make_link(options, "mg")
+    make_link(options, "pylintrc")
+    make_link(options, "tmux.conf")
+    make_link(options, "xzgvrc")
 
     return 0
 
