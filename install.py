@@ -122,6 +122,9 @@ def main():
     make_link(options, "tmux.conf")
     make_link(options, "xzgvrc")
 
+    if os.uname()[0].startswith("CYGWIN"):
+        make_link(options, "minttyrc")
+
     return 0
 
 if __name__ == "__main__":
