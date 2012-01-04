@@ -133,7 +133,7 @@ def main():
 
     make_dot_link(options, "bash_profile")
     make_dot_link(options, "gitconfig")
-    if not os.path.exists("/bin/ksh"):
+    if os.path.exists("/bin/ksh"):
         make_dot_link(options, "kshrc")
     make_dot_link(options, "mailcap")
     make_dot_link(options, "mg")
