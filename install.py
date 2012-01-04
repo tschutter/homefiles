@@ -131,7 +131,8 @@ def main():
 
     options.homefilesDir = os.path.dirname(os.path.abspath(__file__))
 
-    make_dot_link(options, "bash_profile")
+    if os.path.exists("/bin/bash"):
+        make_dot_link(options, "bashrc")
     make_dot_link(options, "gitconfig")
     if os.path.exists("/bin/ksh"):
         make_dot_link(options, "kshrc")
