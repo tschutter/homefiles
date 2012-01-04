@@ -7,7 +7,9 @@ set autoindent
 set smartindent
 
 " enable syntax highlighting
-syntax on
+if has("syntax")
+    syntax on
+endif
 
 " print the line number in front of each line
 set number
@@ -19,9 +21,9 @@ set incsearch
 set showmatch
 
 if $COMPUTERNAME == "FDSVBLD01W70085" && has("gui_running")
-  " Rick, Ashish, and Adam prefer light on dark
-  colorscheme desert
+    " Rick, Ashish, and Adam prefer light on dark
+    colorscheme desert
 
-  " Rick prefers a larger font
-  set guifont=Lucida_Console:h14:cANSI
+    " Rick prefers a larger font
+    set guifont=Lucida_Console:h14:cANSI
 endif
