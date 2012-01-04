@@ -131,6 +131,7 @@ def main():
 
     options.homefilesDir = os.path.dirname(os.path.abspath(__file__))
 
+    make_dot_link(options, "bash_profile")
     make_dot_link(options, "gitconfig")
     make_dot_link(options, "mailcap")
     make_dot_link(options, "mg")
