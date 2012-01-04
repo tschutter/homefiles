@@ -29,7 +29,7 @@
 #
 
 """
-Installs dotfiles in tschutter/homefiles using symbolic links.
+Installs files in tschutter/homefiles using symbolic links.
 """
 
 from optparse import OptionParser
@@ -38,53 +38,69 @@ import shutil
 import sys
 
 
-def make_link(options, name):
-    """Creates a symbolic link from homeDir/.name to dotfilesDir/name
+def make_link(options, filename, linkname=None):
+    """Creates a symbolic link from homeDir/linkname to homefilesDir/filename.
+
+    If linkname is not specified, it is the same as filename.
     """
 
     # Determine the source and destination pathnames.
-    src = os.path.join(options.dotfilesDir, name)
-    dst = os.path.join(options.homeDir, "." + name)
+    file_pathname = os.path.join(options.homefilesDir, filename)
+    if linkname == None:
+        linkname = filename
+    link_pathname = os.path.join(options.homeDir, linkname)
 
-    # The src file or directory should always exist.
-    if not os.path.exists(src):
-        print "ERROR: File '%s' does not exist." % src
+    # The filename should always exist.
+    if not os.path.exists(file_pathname):
+        print "ERROR: File '%s' does not exist." % file_pathname
         sys.exit(1)
 
-    if os.path.islink(dst):
+    if os.path.islink(link_pathname):
         # The destination already exists as a symbolic link.  Delete it if
         # --force or if it points to the wrong place.
         try:
-            samefile = os.path.samefile(src, dst)
+            samefile = os.path.samefile(file_pathname, link_pathname)
         except OSError:
             samefile = False
         if options.force or not samefile:
-            print "Deleting symbolic link '%s'." % dst
-            os.unlink(dst)
+            print "Deleting symbolic link '%s'." % link_pathname
+            os.unlink(link_pathname)
         else:
             if options.verbose:
-                print "Link already exists from '%s' to '%s'." % (dst, src)
+                print "Link already exists from '%s' to '%s'." % (
+                    link_pathname,
+                    file_pathname
+                )
             return
 
-    elif os.path.exists(dst):
+    elif os.path.exists(link_pathname):
         # Backup the existing file or dir.
-        print "Moving '%s' to '%s'." % (dst, options.dotfilesDir)
-        shutil.move(dst, options.dotfilesDir)
+        print "Moving '%s' to '%s'." % (link_pathname, options.homefilesDir)
+        shutil.move(link_pathname, options.homefilesDir)
 
     # Make the link target relative to homeDir.  This usually makes the link
     # shorter in ls output.
-    link_target = os.path.relpath(src, options.homeDir)
+    link_target = os.path.relpath(file_pathname, options.homeDir)
 
-    # Make the symbolic link from dst to src.
-    print "Creating symbolic link from '%s' to '%s'." % (dst, link_target)
-    os.symlink(link_target, dst)
+    # Make the symbolic link from link_pathname to link_target.
+    print "Creating symbolic link from '%s' to '%s'." % (
+        link_pathname,
+        link_target
+    )
+    os.symlink(link_target, link_pathname)
+
+
+def make_dot_link(options, filename):
+    """Creates a symbolic link from homeDir/.filename to homefilesDir/filename.
+    """
+    return make_link(options, filename, "." + filename)
 
 
 def main():
     """main"""
     option_parser = OptionParser(
         usage="usage: %prog [options]\n" +
-            "  Installs dotfiles using symbolic links."
+            "  Installs files in tschutter/homefiles using symbolic links."
     )
     option_parser.add_option(
         "--home-dir",
@@ -113,17 +129,18 @@ def main():
     if len(args) != 0:
         option_parser.error("invalid argument")
 
-    options.dotfilesDir = os.path.dirname(os.path.abspath(__file__))
+    options.homefilesDir = os.path.dirname(os.path.abspath(__file__))
 
-    make_link(options, "gitconfig")
-    make_link(options, "mailcap")
-    make_link(options, "mg")
-    make_link(options, "pylintrc")
-    make_link(options, "tmux.conf")
-    make_link(options, "xzgvrc")
+    make_dot_link(options, "gitconfig")
+    make_dot_link(options, "mailcap")
+    make_dot_link(options, "mg")
+    make_dot_link(options, "pylintrc")
+    make_dot_link(options, "tmux.conf")
+    make_dot_link(options, "vimrc")
+    make_dot_link(options, "xzgvrc")
 
     if os.uname()[0].startswith("CYGWIN"):
-        make_link(options, "minttyrc")
+        make_dot_link(options, "minttyrc")
 
     return 0
 
