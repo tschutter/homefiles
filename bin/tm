@@ -1,0 +1,94 @@
+#!/usr/bin/python
+#
+# Copyright (c) 2012-2012 Tom Schutter
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#    - Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    - Redistributions in binary form must reproduce the above
+#      copyright notice, this list of conditions and the following
+#      disclaimer in the documentation and/or other materials provided
+#      with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+"""
+Sends a text message via a SMS gateway.
+"""
+
+import re
+import smtplib
+import sys
+
+__version__ = re.search("[0-9]+", "$Revision: 8836 $").group()
+
+FROM_ADDRESS = "tschutter@corelogic.com"
+
+SERVER_NAME = "localhost"
+
+ADDRESS_BOOK = {
+    "kyle":   "3033494442@vtext.com",
+    "linda":  "7203184099@vtext.com",
+    "skylar": "3033494413@vtext.com",
+    "tom":    "3033494374@vtext.com"
+}
+
+QUICK_TEXT = {
+    "@home": "On my way home",
+    "@omwh": "On my way home"
+}
+
+
+def main():
+    """main"""
+    # Check arguments.
+    if len(sys.argv) < 3:
+        print "ERROR: Invalid number of arguments."
+        print "USAGE: %s user[,user...] message" % sys.argv[0]
+        return 1
+
+    # Get and validate user list.
+    users = sys.argv[1].split(",")
+    for user in users:
+        if user not in ADDRESS_BOOK:
+            print "ERROR: user '%s' not in address book." % user
+            return 1
+
+    # Assemble message from remaining arguments.
+    message = " ".join(sys.argv[2:])
+
+    # Apply quick text replacement to message.
+    for key, value in QUICK_TEXT.iteritems():
+        message = message.replace(key, value)
+    idx = message.find("@")
+    if idx >= 0:
+        (key, _) = message[idx:].partition(" ")
+        print "ERROR: unknown quick text '%s'." % key
+        return 1
+
+    # Send message to recipients.
+    server = smtplib.SMTP(SERVER_NAME)
+    recipients = [ADDRESS_BOOK[user] for user in users]
+    server.sendmail(FROM_ADDRESS, recipients, message)
+    server.quit()
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

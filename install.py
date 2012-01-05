@@ -39,7 +39,7 @@ import sys
 
 
 def make_link(options, filename, linkname=None):
-    """Creates a symbolic link from homeDir/linkname to homefilesDir/filename.
+    """Create a symbolic link from homeDir/linkname to homefilesDir/filename.
 
     If linkname is not specified, it is the same as filename.
     """
@@ -78,9 +78,13 @@ def make_link(options, filename, linkname=None):
         print "Moving '%s' to '%s'." % (link_pathname, options.homefilesDir)
         shutil.move(link_pathname, options.homefilesDir)
 
-    # Make the link target relative to homeDir.  This usually makes the link
+    # Make the link target relative.  This usually makes the link
     # shorter in ls output.
-    link_target = os.path.relpath(file_pathname, options.homeDir)
+    filedir = os.path.dirname(filename)
+    link_target = os.path.relpath(
+        file_pathname,
+        os.path.join(options.homeDir, filedir)
+    )
 
     # Make the symbolic link from link_pathname to link_target.
     print "Creating symbolic link from '%s' to '%s'." % (
@@ -91,9 +95,33 @@ def make_link(options, filename, linkname=None):
 
 
 def make_dot_link(options, filename):
-    """Creates a symbolic link from homeDir/.filename to homefilesDir/filename.
+    """Create a symbolic link from homeDir/.filename to homefilesDir/filename.
     """
     return make_link(options, filename, "." + filename)
+
+
+def link_dotfiles(options):
+    """Create links in ${HOME} to dotfiles."""
+    if os.path.exists("/bin/bash"):
+        make_dot_link(options, "bashrc")
+    make_dot_link(options, "gitconfig")
+    if os.path.exists("/bin/ksh"):
+        make_dot_link(options, "kshrc")
+    make_dot_link(options, "mailcap")
+    make_dot_link(options, "mg")
+    make_dot_link(options, "profile")
+    make_dot_link(options, "pylintrc")
+    make_dot_link(options, "tmux.conf")
+    make_dot_link(options, "vimrc")
+    make_dot_link(options, "xzgvrc")
+
+    if os.uname()[0].startswith("CYGWIN"):
+        make_dot_link(options, "minttyrc")
+
+
+def link_binfiles(options):
+    """Create links in ${HOME}/bin."""
+    make_link(options, "bin/tm")
 
 
 def main():
@@ -131,21 +159,9 @@ def main():
 
     options.homefilesDir = os.path.dirname(os.path.abspath(__file__))
 
-    if os.path.exists("/bin/bash"):
-        make_dot_link(options, "bashrc")
-    make_dot_link(options, "gitconfig")
-    if os.path.exists("/bin/ksh"):
-        make_dot_link(options, "kshrc")
-    make_dot_link(options, "mailcap")
-    make_dot_link(options, "mg")
-    make_dot_link(options, "profile")
-    make_dot_link(options, "pylintrc")
-    make_dot_link(options, "tmux.conf")
-    make_dot_link(options, "vimrc")
-    make_dot_link(options, "xzgvrc")
+    link_dotfiles(options)
 
-    if os.uname()[0].startswith("CYGWIN"):
-        make_dot_link(options, "minttyrc")
+    link_binfiles(options)
 
     return 0
 
