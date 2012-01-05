@@ -104,6 +104,7 @@ def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
     if os.path.exists("/bin/bash"):
         make_dot_link(options, "bashrc")
+    make_dot_link(options, "exrc")
     make_dot_link(options, "gitconfig")
     if os.path.exists("/bin/ksh"):
         make_dot_link(options, "kshrc")
