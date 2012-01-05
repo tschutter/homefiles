@@ -102,6 +102,7 @@ def make_dot_link(options, filename):
 
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
+    make_dot_link(options, "aliases")
     if os.path.exists("/bin/bash"):
         make_dot_link(options, "bashrc")
     make_dot_link(options, "exrc")

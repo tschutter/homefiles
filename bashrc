@@ -55,22 +55,10 @@ uuuu() {
     _cdhelper ../../../.. $*
 }
 
-# Alias definitions.
-if [ "${_UNAME}" = "OpenBSD" ]; then
-    alias dir="/bin/ls -la"
-else
-    alias dir="/bin/ls -lab"  # -b = C-style escapes for nongraphic characters
-fi
-[ -x "/usr/bin/lynx" ] && alias lynx="/usr/bin/lynx -accept_all_cookies"
-[ -x "/usr/bin/less" ] && alias more="/usr/bin/less"
-
 # Platform specific definitions.
 if [ "${_UNAME}" = "CYGWIN_NT" ]; then
     # Ignore case while completing
     set completion-ignore-case on
-
-    # -W: show windows as well as cygwin processes
-    alias ps="ps -W"
 
     # Run a batch file.
     launch() {
@@ -81,6 +69,11 @@ fi
 # Enable programmable completion features.
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+fi
+
+# Source aliases.
+if [ -f ~/.aliases ]; then
+    . ~/.aliases
 fi
 
 # Source local bashrc.

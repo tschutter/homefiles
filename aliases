@@ -1,0 +1,17 @@
+# Alias definitions for Bourne-derived shells.
+# Sourced by .${SHELL}rc
+
+if [ "${_UNAME}" = "OpenBSD" ]; then
+    alias dir="/bin/ls -l"
+else
+    alias dir="/bin/ls -lb"  # -b = C-style escapes for nongraphic characters
+fi
+
+[ -x "/usr/bin/lynx" ] && alias lynx="/usr/bin/lynx -accept_all_cookies"
+
+[ -x "/usr/bin/less" ] && alias more="/usr/bin/less"
+
+if [ "${_UNAME}" = "CYGWIN_NT" ]; then
+    # -W: show windows as well as cygwin processes
+    alias ps="ps -W"
+fi
