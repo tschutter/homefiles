@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # Copyright (c) 2012-2012 Tom Schutter
 # All rights reserved.
@@ -39,16 +39,16 @@ import sys
 
 
 def make_link(options, filename, linkname=None):
-    """Create a symbolic link from homeDir/linkname to homefilesDir/filename.
+    """Create a symbolic link from home/linkname to homefiles/filename.
 
     If linkname is not specified, it is the same as filename.
     """
 
     # Determine the source and destination pathnames.
-    file_pathname = os.path.join(options.homefilesDir, filename)
+    file_pathname = os.path.join(options.homefiles, filename)
     if linkname == None:
         linkname = filename
-    link_pathname = os.path.join(options.homeDir, linkname)
+    link_pathname = os.path.join(options.home, linkname)
 
     # The filename should always exist.
     if not os.path.exists(file_pathname):
@@ -75,15 +75,15 @@ def make_link(options, filename, linkname=None):
 
     elif os.path.exists(link_pathname):
         # Backup the existing file or dir.
-        print "Moving '%s' to '%s'." % (link_pathname, options.homefilesDir)
-        shutil.move(link_pathname, options.homefilesDir)
+        print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
+        shutil.move(link_pathname, options.homefiles)
 
     # Make the link target relative.  This usually makes the link
     # shorter in ls output.
     filedir = os.path.dirname(filename)
     link_target = os.path.relpath(
         file_pathname,
-        os.path.join(options.homeDir, filedir)
+        os.path.join(options.home, filedir)
     )
 
     # Make the symbolic link from link_pathname to link_target.
@@ -95,7 +95,7 @@ def make_link(options, filename, linkname=None):
 
 
 def make_dot_link(options, filename):
-    """Create a symbolic link from homeDir/.filename to homefilesDir/filename.
+    """Create a symbolic link from home/.filename to homefiles/filename.
     """
     return make_link(options, filename, "." + filename)
 
@@ -121,6 +121,10 @@ def link_dotfiles(options):
 
 def link_binfiles(options):
     """Create links in ${HOME}/bin."""
+    bindir = os.path.join(options.home, "bin")
+    if not os.path.isdir(bindir):
+        print "Creating dir '%s'." % bindir
+        os.mkdir(bindir)
     make_link(options, "bin/tm")
 
 
@@ -131,9 +135,9 @@ def main():
             "  Installs files in tschutter/homefiles using symbolic links."
     )
     option_parser.add_option(
-        "--home-dir",
+        "--home",
         action="store",
-        dest="homeDir",
+        dest="home",
         metavar="DIR",
         default=os.path.expanduser("~"),
         help="specify directory to install to (default=%default)"
@@ -157,7 +161,7 @@ def main():
     if len(args) != 0:
         option_parser.error("invalid argument")
 
-    options.homefilesDir = os.path.dirname(os.path.abspath(__file__))
+    options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
     link_dotfiles(options)
 
