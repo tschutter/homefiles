@@ -5,7 +5,7 @@
 set -o emacs
 
 # Function definitions.
-function _cdhelper() {
+_cdhelper() {
     CMD="cd $1"
     shift
     for ARG in $*; do
@@ -13,22 +13,22 @@ function _cdhelper() {
     done
     eval ${CMD}
 }
-function home() {
+home() {
     _cdhelper ${HOME} $*
 }
-function src() {
+src() {
     _cdhelper ${SRC} $*
 }
-function u() {
+u() {
     _cdhelper .. $*
 }
-function uu() {
+uu() {
     _cdhelper ../.. $*
 }
-function uuu() {
+uuu() {
     _cdhelper ../../.. $*
 }
-function uuuu() {
+uuuu() {
     _cdhelper ../../../.. $*
 }
 

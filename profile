@@ -13,7 +13,7 @@ _UNAME=$(uname)
 _UNAME=${_UNAME%%-*} # Strip any version info
 export _UNAME
 
-function path_append() {
+path_append() {
     # Append a dir to PATH if dir exists and it is not in PATH.
     INPATH=`echo ${PATH} | grep -E "(^|:)$1(:|\$)"`
     if [ -d "$1" -a -z "${INPATH}" ]; then
@@ -21,7 +21,7 @@ function path_append() {
     fi
 }
 
-function path_prepend() {
+path_prepend() {
     # Prepend a dir to PATH if dir exists and it is not in PATH.
     INPATH=`echo ${PATH} | grep -E "(^|:)$1(:|\$)"`
     if [ -d "$1" -a -z "${INPATH}" ]; then
@@ -57,7 +57,7 @@ esac
 
 # Define environment variables.
 if [ "${_UNAME}" = "OpenBSD" ]; then
-    PKG_PATH=ftp://ftp3.usa.openbsd.org/pub/OpenBSD/5.0/packages/amd64/; export PKG_PATH
+    PKG_PATH=ftp://ftp3.usa.openbsd.org/pub/OpenBSD/`uname -r`/packages/`uname -m`/; export PKG_PATH
 fi
 [ -x "/usr/bin/less" ] && LESS="--quit-at-eof --long-prompt"; export LESS
 
