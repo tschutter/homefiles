@@ -27,9 +27,6 @@ esac
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# make less more friendly for non-text input files, see lesspipe(1)
-#[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
-
 # Function definitions.
 function _cdhelper() {
     CMD="cd $1"
@@ -58,14 +55,19 @@ function uuuu() {
     _cdhelper ../../../.. $*
 }
 
-# Platform dependant definitions.
+# Alias definitions.
+if [ "${_UNAME}" = "OpenBSD" ]; then
+    alias dir="/bin/ls -la"
+else
+    alias dir="/bin/ls -lab"  # -b = C-style escapes for nongraphic characters
+fi
+[ -x "/usr/bin/lynx" ] && alias lynx="/usr/bin/lynx -accept_all_cookies"
+[ -x "/usr/bin/less" ] && alias more="/usr/bin/less"
+
+# Platform specific definitions.
 if [ "${_UNAME}" = "CYGWIN_NT" ]; then
     # Ignore case while completing
     set completion-ignore-case on
-
-    # -e: auto exit the second time we reach EOF
-    # -m: prompt verbosely with percent into the file
-    alias more="/usr/bin/less -em"
 
     # -W: show windows as well as cygwin processes
     alias ps="ps -W"
@@ -76,29 +78,12 @@ if [ "${_UNAME}" = "CYGWIN_NT" ]; then
     }
 fi
 
-# Alias definitions.
-if [ "${_UNAME}" = "OpenBSD" ]; then
-    alias dir="/bin/ls -la"
-else
-    alias dir="/bin/ls -lab"  # -b = C-style escapes for nongraphic characters
-fi
-alias lynx="/usr/bin/lynx -accept_all_cookies"
-
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
-# Enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
+# Enable programmable completion features.
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
+# Source local bashrc.
 if [ -f ~/.bashrc-local ]; then
     . ~/.bashrc-local
 fi

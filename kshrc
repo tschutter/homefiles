@@ -33,4 +33,10 @@ function uuuu() {
 }
 
 # Alias definitions.
-alias dir="ls -la"
+if [ "${_UNAME}" = "OpenBSD" ]; then
+    alias dir="/bin/ls -la"
+else
+    alias dir="/bin/ls -lab"  # -b = C-style escapes for nongraphic characters
+fi
+[ -x "/usr/bin/lynx" ] && alias lynx="/usr/bin/lynx -accept_all_cookies"
+[ -x "/usr/bin/less" ] && alias more="/usr/bin/less"

@@ -57,9 +57,12 @@ esac
 
 # Define environment variables.
 if [ "${_UNAME}" = "OpenBSD" ]; then
-    PKG_PATH=ftp://ftp3.usa.openbsd.org/pub/OpenBSD/5.0/packages/amd64/
-    export PKG_PATH
+    PKG_PATH=ftp://ftp3.usa.openbsd.org/pub/OpenBSD/5.0/packages/amd64/; export PKG_PATH
 fi
+[ -x "/usr/bin/less" ] && LESS="--quit-at-eof --long-prompt"; export LESS
+
+# Make less more friendly for non-text input files, see lesspipe(1).
+[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
 # Include .profile-local if it exists.
 if [ -r "$HOME/.profile-local" ]; then
