@@ -1,6 +1,7 @@
 [alias]
-    unstage = reset
     hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+    stat = status
+    unstage = reset
     visual = !gitk
 
 [core]
