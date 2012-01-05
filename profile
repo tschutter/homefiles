@@ -59,7 +59,7 @@ esac
 if [ "${_UNAME}" = "OpenBSD" ]; then
     PKG_PATH=ftp://ftp3.usa.openbsd.org/pub/OpenBSD/`uname -r`/packages/`uname -m`/; export PKG_PATH
 fi
-[ -x "/usr/bin/less" ] && LESS="--quit-at-eof --long-prompt"; export LESS
+[ -x "/usr/bin/less" ] && LESS="--quit-at-eof --long-prompt"; export LESS; PAGER="/usr/bin/less"; export PAGER
 
 # Make less more friendly for non-text input files, see lesspipe(1).
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
