@@ -105,6 +105,7 @@ def link_dotfiles(options):
     make_dot_link(options, "aliases")
     if os.path.exists("/bin/bash"):
         make_dot_link(options, "bashrc")
+    make_dot_link(options, "emacs.d")
     make_dot_link(options, "exrc")
     make_dot_link(options, "gitconfig")
     if os.path.exists("/bin/ksh"):
