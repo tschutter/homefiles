@@ -58,6 +58,20 @@
 ;;; Remember and restore point location after PgUp,PgDn
 (setq scroll-preserve-screen-position t)
 
+;;; Default to filename at point for C-x C-f.
+(require 'ffap)
+(ffap-bindings)
+(setq ffap-machine-p-known 'accept)  ;No pinging
+(setq ffap-c-path
+      (list
+       (getenv "SRC_TREE")
+       "~/src/pxpoint"
+       "~/src/webservices"
+       "/usr/include"
+       "/usr/local/include"
+       "C:/Program Files/Microsoft Visual Studio 10.0/VC/include"
+       "C:/Program Files/Java/jdk1.6.0_20/include"))
+
 ;;; Enable switching between buffers using substrings.
 (iswitchb-mode 1)
 

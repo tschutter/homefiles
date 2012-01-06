@@ -1,32 +1,5 @@
 ;;;; Snippets from old .emacs files.
 
-;todo; ;;; Editor behavior: improved PageUp and PageDn (pager.el)
-;todo; (require 'pager)
-;todo; (global-set-key "\C-v"     'pg-dn)
-;todo; (global-set-key [next]     'pg-dn)
-;todo; (global-set-key "\ev"      'pg-up)
-;todo; (global-set-key [prior]    'pg-up)
-;todo; (global-set-key '[M-up]    'row-up)
-;todo; (global-set-key '[M-kp-8]  'row-up)
-;todo; (global-set-key '[M-down]  'row-dn)
-;todo; (global-set-key '[M-kp-2]  'row-dn)
-
-;;;   ;; tell the default compile buffer to be n lines high
-;;;   ;(setq compilation-window-height 11)
-;;;
-;;;   ;; Make sure that the Info-additional-directory-list variable is defined
-;;;   (setq Info-additional-directory-list nil)
-;;;
-;;;   ;;(win32-select-font) ;C-x C-e this to select a font
-;;;   ;; italic fonts follow
-;;;   ;(set-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
-;;;   ;(set-face-font 'italic "-*-Courier New-normal-i-*-*-15-90-*-*-c-*-*-ansi-")
-;;;   ;(set-face-font 'bold-italic "-*-Courier New-bold-i-*-*-15-90-*-*-c-*-*-ansi-")
-;;;
-;;;   ;(set-default-font "-*-Andale Mono-normal-r-*-*-13-97-*-*-c-*-*-ansi-")
-;;;
-;;;   (setq mail-yank-prefix "> ")
-;;;
 ;;;   ;; printing setup
 ;;;   (require 'ps-print)
 ;;;   (setq ps-number-of-columns 2)
@@ -44,43 +17,46 @@
 ;;;   ;(setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2"))
 ;;;   ;(setq ps-printer-name t) ; t = pass empty printer name to ps-lpr-command
 ;;;
-;;;   ;; find-function setup
-;;;   (autoload 'find-function "find-function" nil t)
+
+;;;   ; setup out-going mail
+;;;   (setq mail-host-address "pixel.schutter.home")
+;;;   (setq user-mail-address "t.schutter@comcast.net")
+;;;   (setq send-mail-function 'smtpmail-send-it)
+;;;   (setq message-send-mail-function 'smtpmail-send-it)
+;;;   (setq smtpmail-default-smtp-server "smtp.schutter.home")
+;;;   (setq smtpmail-smtp-server "smtp.schutter.home")
+;;;   ;(setq smtpmail-smtp-service "smtp")
+;;;   (setq smtpmail-local-domain "schutter.home")
+;;;   ;(load-library "smtpmail")
+;;;   ;(setq smtpmail-code-conv-from nil)
+;;;   (setq user-full-name "Tom Schutter")
+;;;   ;;(setq send-mail-function 'smtpmail-send-it) ; if you use `mail'
+;;;   ;;(setq message-send-mail-function 'smtpmail-send-it) ; if you use `message'
+;;;   ;;(setq smtpmail-default-smtp-server "YOUR SMTP HOST")
+;;;   ;;(setq smtpmail-local-domain "YOUR DOMAIN NAME")
+;;;   ;;(setq smtpmail-debug-info t) ; only to debug problems
 ;;;
-;;;   ;;; CSharp mode
-;;;   ;;; http://www.emacswiki.org/emacs/CSharpMode
-;;;   ; Currently broken as of 2010-06-28, search for "23" in wiki.
-;;;   ;(require 'cc-mode)
-;;;   ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/CsharpToolsForEmacs"))
-;;;   ;(require 'csharp-mode)
-;;;   ;(setq auto-mode-alist
-;;;   ;   (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+;;;   ; use Message to compose mail
+;;;   (setq mail-user-agent 'message-user-agent)
 
-;todo; ;;; Editor behavior: default to filename at point for C-x C-f
-;todo; (require 'ffap)
-;todo; (ffap-bindings)
-;todo; (setq ffap-machine-p-known 'accept)  ; no pinging
-;todo; (add-to-list 'ffap-alist '("\\.idl\\'" . ffap-c-mode))
-;todo; (add-to-list 'ffap-alist '("\\.xpm\\'" . ffap-c-mode))
-;todo; (setq ffap-c-path
-;todo;   (list
-;todo;    (getenv "SRC_TREE")
-;todo;    "/usr/include"
-;todo;    "C:/Program Files/Microsoft Visual Studio .NET/Vc7/include"
-;todo;    "C:/Program Files/Microsoft Visual Studio .NET/Vc7/FrameworkSDK/include"
-;todo;    "C:/j2sdk1.4.0/include"))
+;todo; ;;; Editor tools: VC diff behavior
+;todo; ;; Default is context-sensitive diff
+;todo; ;; Change to normal diff
+;todo; (setq diff-switches nil)
+;todo;
 ;todo;
 
-;todo; ;;; Editor behavior: default major mode text-mode
-;todo; (setq default-major-mode 'text-mode)
-;todo;
-;todo; ;;; Editor behavior: turn on word wrap in text-mode
-;todo; (add-hook 'text-mode-hook 'turn-on-auto-fill)
-;todo;
+;todo; ;;; Editor behavior: improved PageUp and PageDn (pager.el)
+;todo; (require 'pager)
+;todo; (global-set-key "\C-v"     'pg-dn)
+;todo; (global-set-key [next]     'pg-dn)
+;todo; (global-set-key "\ev"      'pg-up)
+;todo; (global-set-key [prior]    'pg-up)
+;todo; (global-set-key '[M-up]    'row-up)
+;todo; (global-set-key '[M-kp-8]  'row-up)
+;todo; (global-set-key '[M-down]  'row-dn)
+;todo; (global-set-key '[M-kp-2]  'row-dn)
 
-;todo; ;;; Editor behavior: Use MS-Windows cut and paste style
-;todo; (pc-selection-mode)
-;todo;
 ;todo; ;;; Editor behavior: highlighting of matching parenthesises (mic-paren.el)
 ;todo; (when (or (string-match "XEmacs\\|Lucid" emacs-version) window-system)
 ;todo;   (require 'mic-paren) ; loading
@@ -96,6 +72,45 @@
 ;todo;
 ;todo; ;;; Editor behavior: turn on font-lock for all modes
 ;todo; (global-font-lock-mode t)
+;todo;
+
+;;;   ;; tell the default compile buffer to be n lines high
+;;;   ;(setq compilation-window-height 11)
+;;;
+;;;   ;; Make sure that the Info-additional-directory-list variable is defined
+;;;   (setq Info-additional-directory-list nil)
+;;;
+;;;   ;;(win32-select-font) ;C-x C-e this to select a font
+;;;   ;; italic fonts follow
+;;;   ;(set-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
+;;;   ;(set-face-font 'italic "-*-Courier New-normal-i-*-*-15-90-*-*-c-*-*-ansi-")
+;;;   ;(set-face-font 'bold-italic "-*-Courier New-bold-i-*-*-15-90-*-*-c-*-*-ansi-")
+;;;
+;;;   ;(set-default-font "-*-Andale Mono-normal-r-*-*-13-97-*-*-c-*-*-ansi-")
+;;;
+;;;   (setq mail-yank-prefix "> ")
+;;;
+;;;   ;; find-function setup
+;;;   (autoload 'find-function "find-function" nil t)
+;;;
+;;;   ;;; CSharp mode
+;;;   ;;; http://www.emacswiki.org/emacs/CSharpMode
+;;;   ; Currently broken as of 2010-06-28, search for "23" in wiki.
+;;;   ;(require 'cc-mode)
+;;;   ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/CsharpToolsForEmacs"))
+;;;   ;(require 'csharp-mode)
+;;;   ;(setq auto-mode-alist
+;;;   ;   (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+
+;todo; ;;; Editor behavior: default major mode text-mode
+;todo; (setq default-major-mode 'text-mode)
+;todo;
+;todo; ;;; Editor behavior: turn on word wrap in text-mode
+;todo; (add-hook 'text-mode-hook 'turn-on-auto-fill)
+;todo;
+
+;todo; ;;; Editor behavior: Use MS-Windows cut and paste style
+;todo; (pc-selection-mode)
 ;todo;
 ;todo; ;;; Editor behavior: highlight QWER keyword
 ;todo; (font-lock-add-keywords
@@ -115,12 +130,6 @@
 ;todo; (when (featurep 'tooltip)
 ;todo;   (defvar tooltip-gud-tips-p)
 ;todo;   (setq tooltip-gud-tips-p t))
-;todo;
-;todo; ;;; Editor tools: VC diff behavior
-;todo; ;; Default is context-sensitive diff
-;todo; ;; Change to normal diff
-;todo; (setq diff-switches nil)
-;todo;
 ;todo;
 ;todo; ;;; Editor tools: describe PC-lint message
 ;todo; (defun describe-lint-message (num)
@@ -303,23 +312,5 @@
 ;todo;               (insert "#endif\n")))))))
 ;todo; (define-key global-map [f6] '(lambda () (interactive) (include-macro-wrap)))
 
-;;;   ; setup out-going mail
-;;;   (setq mail-host-address "pixel.schutter.home")
-;;;   (setq user-mail-address "t.schutter@comcast.net")
-;;;   (setq send-mail-function 'smtpmail-send-it)
-;;;   (setq message-send-mail-function 'smtpmail-send-it)
-;;;   (setq smtpmail-default-smtp-server "smtp.schutter.home")
-;;;   (setq smtpmail-smtp-server "smtp.schutter.home")
-;;;   ;(setq smtpmail-smtp-service "smtp")
-;;;   (setq smtpmail-local-domain "schutter.home")
-;;;   ;(load-library "smtpmail")
-;;;   ;(setq smtpmail-code-conv-from nil)
-;;;   (setq user-full-name "Tom Schutter")
-;;;   ;;(setq send-mail-function 'smtpmail-send-it) ; if you use `mail'
-;;;   ;;(setq message-send-mail-function 'smtpmail-send-it) ; if you use `message'
-;;;   ;;(setq smtpmail-default-smtp-server "YOUR SMTP HOST")
-;;;   ;;(setq smtpmail-local-domain "YOUR DOMAIN NAME")
-;;;   ;;(setq smtpmail-debug-info t) ; only to debug problems
-;;;
-;;;   ; use Message to compose mail
-;;;   (setq mail-user-agent 'message-user-agent)
+;todo; (add-to-list 'ffap-alist '("\\.idl\\'" . ffap-c-mode))
+;todo; (add-to-list 'ffap-alist '("\\.xpm\\'" . ffap-c-mode))
