@@ -1,0 +1,67 @@
+#!/bin/sh
+#
+# Directory tree file search
+#
+# Copyright (c) 2006-2012 Tom Schutter
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#    - Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    - Redistributions in binary form must reproduce the above
+#      copyright notice, this list of conditions and the following
+#      disclaimer in the documentation and/or other materials provided
+#      with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+# Function that locates an executable.
+# The first parameter is the executable filename.
+# The second parameter is a variable that will hold the absolute pathname.
+locate_exe() {
+  if [ -x /usr/bin/$1 ]; then
+    eval "$2=/usr/bin/$1"
+  elif [ -x /bin/$1 ]; then
+    eval "$2=/bin/$1"
+  elif [ -x /usr/local/bin/$1 ]; then
+    eval "$2=/usr/local/bin/$1"
+  else
+    echo "ERROR: Unable to locate the '$1' program."
+    exit 2
+  fi
+}
+
+# Locate executables.
+locate_exe "find" FIND
+
+if [ $# -lt 1 ]; then
+  echo "Searches for a file in the current directory and all subdirectories." >&2
+  echo "" >&2
+  echo "USAGE:" >&2
+  echo "  $0 FILENAME" >&2
+  echo "" >&2
+  echo "EXAMPLES:" >&2
+  echo "  $0 foo.c" >&2
+  echo "  $0 '*.a'" >&2
+  exit 1
+fi
+
+while [ "$1" != "" ]; do
+  /usr/bin/find . -name .svn -prune -o -name CVS -prune -o -name "$1" -print
+  shift
+done
