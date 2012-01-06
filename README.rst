@@ -1,4 +1,68 @@
-**Usage**::
+Homefiles
+=========
+
+Usage
+-----
+::
 
     git clone git//github.com/tschutter/homefiles.git $HOME/.homefiles
     $HOME/.homefiles/install.sh
+
+Design
+------
+
+The requirements include:
+
+1. Multiplatform support.  Ubuntu, OpenBSD, Cygwin, etc.
+
+2. Easy to deploy to new hosts.
+
+3. Easy to determine which files are part of homefiles, and which are
+   not.
+
+Considered but rejected:
+
+1. Branches for different platforms.  This makes it difficult to
+   compare how files are the same or different between platforms.
+
+.profile, .bashrc, .kshrc Design
+--------------------------------
+
+The requirements include:
+
+1. Multiplatform support.  Ubuntu, OpenBSD, Cygwin, etc.
+
+2. Multishell support.  Bourne (sh), Bourne-again (bash), and Korn
+   (ksh).
+
+Restrictions imposed by tools:
+
+1. For shells in the Bourne family (sh, bash, ksh), the .profile file
+   is only read by login shells.
+
+2. For shells in the Bourne family, the .${SHELL}rc files are only
+   read by non-login shells.
+
+3. Environment variables are inherited by subshells (if exported).
+
+4. Functions and aliases cannot be inherted by or exported to subshells.
+
+5. Function and alias definitions can be defined in a POSIX standard
+   way so that they can be shared by shells in the Bourne family.
+
+Therefore the implementation uses these guidelines:
+
+1. Most environment variables are set in .profile.  They are then
+   exported to the non-login subshells.  The exceptions are
+   environment variables that only apply to one kind of shell.  For
+   example, PROMPT_DIRTRIM is only supported by bash so we put it's
+   definition in .bashrc.
+
+2. The .profile sources the .${SHELL}rc files.  That way both login
+   and non-login shells will define functions and aliases.
+
+3. Environment variables that are intended only for .profile and
+   .${SHELL}rc use start with a single underscore.
+
+4. Alias definitions are put into .aliases, which is sourced by each
+   .${SHELL}rc.
