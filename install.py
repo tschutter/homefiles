@@ -122,6 +122,7 @@ def link_dotfiles(options):
     make_dot_link(options, "/usr/bin/mg", "mg")
     make_dot_link(options, None, "profile")
     make_dot_link(options, "/usr/bin/pylint", "pylintrc")
+    make_dot_link(options, "/usr/bin/screen", "screenrc")
     make_dot_link(options, "/usr/bin/tmux", "tmux.conf")
     make_dot_link(options, "/usr/bin/vi", "vimrc")
     make_dot_link(options, "/usr/bin/xzgv", "xzgvrc")
