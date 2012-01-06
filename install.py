@@ -38,8 +38,9 @@ import shutil
 import sys
 
 
-def make_link(options, filename, linkname=None):
-    """Create a symbolic link from home/linkname to homefiles/filename.
+def make_link(options, prereq, filename, linkname=None):
+    """If prereq exists, create a symbolic link from home/linkname to
+    homefiles/filename.
 
     If linkname is not specified, it is the same as filename.
     """
@@ -49,6 +50,12 @@ def make_link(options, filename, linkname=None):
     if linkname == None:
         linkname = filename
     link_pathname = os.path.join(options.home, linkname)
+
+    if prereq and not os.path.exists(prereq):
+        if options.clean and os.path.islink(link_pathname):
+            print "Deleting symbolic link '%s'." % link_pathname
+            os.unlink(link_pathname)
+        return
 
     # The filename should always exist.
     if not os.path.exists(file_pathname):
@@ -94,32 +101,31 @@ def make_link(options, filename, linkname=None):
     os.symlink(link_target, link_pathname)
 
 
-def make_dot_link(options, filename):
+def make_dot_link(options, prereq, filename):
     """Create a symbolic link from home/.filename to homefiles/filename.
     """
-    return make_link(options, filename, "." + filename)
+    return make_link(options, prereq, filename, "." + filename)
 
 
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
-    make_dot_link(options, "aliases")
-    if os.path.exists("/bin/bash"):
-        make_dot_link(options, "bashrc")
-    make_dot_link(options, "emacs.d")
-    make_dot_link(options, "exrc")
-    make_dot_link(options, "gitconfig")
-    if os.path.exists("/bin/ksh"):
-        make_dot_link(options, "kshrc")
-    make_dot_link(options, "mailcap")
-    make_dot_link(options, "mg")
-    make_dot_link(options, "profile")
-    make_dot_link(options, "pylintrc")
-    make_dot_link(options, "tmux.conf")
-    make_dot_link(options, "vimrc")
-    make_dot_link(options, "xzgvrc")
-
+    make_dot_link(options, None, "aliases")
+    make_dot_link(options, "/bin/bash", "bashrc")
     if os.uname()[0].startswith("CYGWIN"):
-        make_dot_link(options, "minttyrc")
+        make_dot_link(options, None, "emacs.d")  # WinEmacs
+    else:
+        make_dot_link(options, "/usr/bin/emacs", "emacs.d")
+    make_dot_link(options, "/usr/bin/vi", "exrc")
+    make_dot_link(options, "/usr/bin/git", "gitconfig")
+    make_dot_link(options, "/bin/ksh", "kshrc")
+    make_dot_link(options, "/usr/bin/mail", "mailcap")
+    make_dot_link(options, "/usr/bin/mg", "mg")
+    make_dot_link(options, None, "profile")
+    make_dot_link(options, "/usr/bin/pylint", "pylintrc")
+    make_dot_link(options, "/usr/bin/tmux", "tmux.conf")
+    make_dot_link(options, "/usr/bin/vi", "vimrc")
+    make_dot_link(options, "/usr/bin/xzgv", "xzgvrc")
+    make_dot_link(options, "/usr/bin/mintty", "minttyrc")
 
 
 def link_binfiles(options):
@@ -128,7 +134,7 @@ def link_binfiles(options):
     if not os.path.isdir(bindir):
         print "Creating dir '%s'." % bindir
         os.mkdir(bindir)
-    make_link(options, "bin/tm")
+    make_link(options, None, "bin/tm")
 
 
 def main():
@@ -151,6 +157,13 @@ def main():
         dest="force",
         default=False,
         help="replace existing symbolic links"
+    )
+    option_parser.add_option(
+        "--clean",
+        action="store_true",
+        dest="clean",
+        default=False,
+        help="delete unnecessary symbolic links"
     )
     option_parser.add_option(
         "--verbose",
