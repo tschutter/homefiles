@@ -4,6 +4,12 @@
 # Emacs history editing.
 set -o emacs
 
+# History navigation.
+bind '^XH'=beginning-of-line # home
+bind '^XF'=end-of-line # end
+bind '^[[3'=prefix-2 # del
+bind '^[[3~'=delete-char-forward # del
+
 # Function definitions.
 _cdhelper() {
     CMD="cd $1"
