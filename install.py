@@ -38,8 +38,18 @@ import shutil
 import sys
 
 
-def make_link(options, prereq, filename, linkname=None):
-    """If prereq exists, create a symbolic link from home/linkname to
+def file_in_path(filename):
+    """Returns True if filename is in PATH."""
+    path = os.getenv("PATH", os.defpath)
+    for dir in path.split(os.pathsep):
+        pathname = os.path.join(dir, filename)
+        if os.path.exists(pathname):
+            return True
+    return False
+
+
+def make_link(options, enabled, filename, linkname=None):
+    """If enabled is True, create a symbolic link from home/linkname to
     homefiles/filename.
 
     If linkname is not specified, it is the same as filename.
@@ -51,7 +61,7 @@ def make_link(options, prereq, filename, linkname=None):
         linkname = filename
     link_pathname = os.path.join(options.home, linkname)
 
-    if prereq and not os.path.exists(prereq):
+    if not enabled:
         if options.clean and os.path.islink(link_pathname):
             print "Deleting symbolic link '%s'." % link_pathname
             os.unlink(link_pathname)
@@ -101,32 +111,32 @@ def make_link(options, prereq, filename, linkname=None):
     os.symlink(link_target, link_pathname)
 
 
-def make_dot_link(options, prereq, filename):
+def make_dot_link(options, enabled, filename):
     """Create a symbolic link from home/.filename to homefiles/filename.
     """
-    return make_link(options, prereq, filename, "." + filename)
+    return make_link(options, enabled, filename, "." + filename)
 
 
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
-    make_dot_link(options, None, "aliases")
-    make_dot_link(options, "/bin/bash", "bashrc")
+    make_dot_link(options, True, "aliases")
+    make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     if os.uname()[0].startswith("CYGWIN"):
-        make_dot_link(options, None, "emacs.d")  # WinEmacs
+        make_dot_link(options, True, "emacs.d")  # WinEmacs
     else:
-        make_dot_link(options, "/usr/bin/emacs", "emacs.d")
-    make_dot_link(options, "/usr/bin/vi", "exrc")
-    make_dot_link(options, "/usr/bin/git", "gitconfig")
-    make_dot_link(options, "/bin/ksh", "kshrc")
-    make_dot_link(options, "/usr/bin/mail", "mailcap")
-    make_dot_link(options, "/usr/bin/mg", "mg")
-    make_dot_link(options, None, "profile")
-    make_dot_link(options, "/usr/bin/pylint", "pylintrc")
-    make_dot_link(options, "/usr/bin/screen", "screenrc")
-    make_dot_link(options, "/usr/bin/tmux", "tmux.conf")
-    make_dot_link(options, "/usr/bin/vi", "vimrc")
-    make_dot_link(options, "/usr/bin/xzgv", "xzgvrc")
-    make_dot_link(options, "/usr/bin/mintty", "minttyrc")
+        make_dot_link(options, file_in_path("emacs"), "emacs.d")
+    make_dot_link(options, file_in_path("vi"), "exrc")
+    make_dot_link(options, file_in_path("git"), "gitconfig")
+    make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
+    make_dot_link(options, file_in_path("mail"), "mailcap")
+    make_dot_link(options, file_in_path("mg"), "mg")
+    make_dot_link(options, True, "profile")
+    make_dot_link(options, file_in_path("pylint"), "pylintrc")
+    make_dot_link(options, file_in_path("screen"), "screenrc")
+    make_dot_link(options, file_in_path("tmux"), "tmux.conf")
+    make_dot_link(options, file_in_path("vi"), "vimrc")
+    make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
+    make_dot_link(options, file_in_path("mintty"), "minttyrc")
 
 
 def link_binfiles(options):
@@ -135,7 +145,7 @@ def link_binfiles(options):
     if not os.path.isdir(bindir):
         print "Creating dir '%s'." % bindir
         os.mkdir(bindir)
-    make_link(options, None, "bin/tm")
+    make_link(options, True, "bin/tm")
 
 
 def main():
