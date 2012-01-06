@@ -62,6 +62,6 @@ if [ $# -lt 1 ]; then
 fi
 
 while [ "$1" != "" ]; do
-  /usr/bin/find . -name .svn -prune -o -name CVS -prune -o -name "$1" -print
+  /usr/bin/find . -name .svn -prune -o -name .git -prune -o -name CVS -prune -o -name "$1" -print
   shift
 done
