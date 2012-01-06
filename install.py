@@ -145,6 +145,8 @@ def link_binfiles(options):
     if not os.path.isdir(bindir):
         print "Creating dir '%s'." % bindir
         os.mkdir(bindir)
+    make_link(options, True, "bin/findfile")
+    make_link(options, True, "bin/tgrep")
     make_link(options, True, "bin/tm")
 
 
