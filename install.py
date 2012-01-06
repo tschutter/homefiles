@@ -41,8 +41,8 @@ import sys
 def file_in_path(filename):
     """Returns True if filename is in PATH."""
     path = os.getenv("PATH", os.defpath)
-    for dir in path.split(os.pathsep):
-        pathname = os.path.join(dir, filename)
+    for pathdir in path.split(os.pathsep):
+        pathname = os.path.join(pathdir, filename)
         if os.path.exists(pathname):
             return True
     return False
@@ -61,12 +61,6 @@ def make_link(options, enabled, filename, linkname=None):
         linkname = filename
     link_pathname = os.path.join(options.home, linkname)
 
-    if not enabled:
-        if options.clean and os.path.islink(link_pathname):
-            print "Deleting symbolic link '%s'." % link_pathname
-            os.unlink(link_pathname)
-        return
-
     # The filename should always exist.
     if not os.path.exists(file_pathname):
         print "ERROR: File '%s' does not exist." % file_pathname
@@ -79,7 +73,7 @@ def make_link(options, enabled, filename, linkname=None):
             samefile = os.path.samefile(file_pathname, link_pathname)
         except OSError:
             samefile = False
-        if options.force or not samefile:
+        if options.force or options.clean or not samefile:
             print "Deleting symbolic link '%s'." % link_pathname
             os.unlink(link_pathname)
         else:
@@ -91,9 +85,12 @@ def make_link(options, enabled, filename, linkname=None):
             return
 
     elif os.path.exists(link_pathname):
-        # Backup the existing file or dir.
+        # The destination already exists as a file or dir.  Back it up.
         print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
         shutil.move(link_pathname, options.homefiles)
+
+    if not enabled:
+        return
 
     # Make the link target relative.  This usually makes the link
     # shorter in ls output.
