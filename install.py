@@ -84,7 +84,7 @@ def make_link(options, enabled, filename, linkname=None):
         print "ERROR: File '%s' does not exist." % file_pathname
         sys.exit(1)
 
-    if not options.force and os.path.islink(link_pathname):
+    if enabled and not options.force and os.path.islink(link_pathname):
         # The destination already exists as a symbolic link.  Delete it if
         # it points to the wrong place.
         try:
@@ -131,11 +131,17 @@ def make_dot_link(options, enabled, filename):
 
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
+
+    # Determine what platform we are on.
+    uname = os.uname()
+    is_ubuntu = uname[3].find("Ubuntu") >= 0
+    is_cygwin = uname[0].startswith("CYGWIN")
+
     make_dot_link(options, True, "aliases")
     clean_link(options, ".bash_profile")
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     clean_link(options, ".emacs")
-    if os.uname()[0].startswith("CYGWIN"):
+    if is_cygwin:
         make_dot_link(options, True, "emacs.d")  # WinEmacs
     else:
         make_dot_link(options, file_in_path("emacs"), "emacs.d")
@@ -151,6 +157,8 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("mintty"), "minttyrc")
+    make_link(options, is_ubuntu, "Xdefaults", ".Xresources")
+    make_link(options, not is_ubuntu, "Xdefaults", ".Xdefaults")
 
 
 def link_binfiles(options):
