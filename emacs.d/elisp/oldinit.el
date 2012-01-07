@@ -21,27 +21,11 @@
 ;;;   ; use Message to compose mail
 ;;;   (setq mail-user-agent 'message-user-agent)
 
-;todo; ;;; Editor tools: VC diff behavior
-;todo; ;; Default is context-sensitive diff
-;todo; ;; Change to normal diff
-;todo; (setq diff-switches nil)
-;todo;
-;todo;
-
 ;todo; ;;; Editor behavior: turn on font-lock for all modes
 ;todo; (global-font-lock-mode t)
 ;todo;
 
 ;;;   (load-library "mydiary")
-;;;
-;;;   ;; org-mode
-;;;   (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-;;;   (global-set-key "\C-cl" 'org-store-link)
-;;;   (global-set-key "\C-ca" 'org-agenda)
-;;;   ; see also
-;;;   ; http://orgmode.org/
-;;;   ; http://www.newartisans.com/blog_files/org.mode.day.planner.php
-;;;   ; http://members.optusnet.com.au/~charles57/GTD/orgmode.html
 ;;;
 ;;;   ;; crypt++
 ;;;   ;(setq crypt-encryption-type 'gpg)
@@ -53,9 +37,6 @@
 
 ;;;   ;; tell the default compile buffer to be n lines high
 ;;;   ;(setq compilation-window-height 11)
-;;;
-;;;   ;; Make sure that the Info-additional-directory-list variable is defined
-;;;   (setq Info-additional-directory-list nil)
 ;;;
 ;;;   ;;(win32-select-font) ;C-x C-e this to select a font
 ;;;   ;; italic fonts follow
@@ -168,21 +149,12 @@
 ;todo; ;;; PRA source code style: DOC++
 ;todo; (setq auto-mode-alist (cons '("\\.dxx\\'" . c-mode) auto-mode-alist))
 ;todo;
-;todo; ;;; PRA source code style: no trailing blanks
-;todo; (require 'strip)
-;todo;
 ;todo; ;;; PRA source code style: no blank lines at EOF
 ;todo; (setq require-final-newline 'ask)
 ;todo; (setq-default next-line-add-newlines nil)
 ;todo;
-;todo; ;;; PRA source code style: no tabs
-;todo; (setq-default indent-tabs-mode nil)
-;todo;
 ;todo; ;;; PRA source code style: code fixup
 ;todo; (require 'pra-code-fixup)
-;todo;
-;todo; ;;;; PRA build system
-;todo; (load-library "build_pra")
 ;todo;
 ;todo; ;;;; MS Windows
 ;todo;
