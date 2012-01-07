@@ -1,23 +1,5 @@
 ;;;; Snippets from old .emacs files.
 
-;;;   ;; printing setup
-;;;   (require 'ps-print)
-;;;   (setq ps-number-of-columns 2)
-;;;   (setq ps-landscape-mode t)
-;;;   (setq ps-line-number t)
-;;;   (setq ps-print-color-p nil)
-;;;   (setq ps-print-header nil)
-;;;   (setq lpr-page-header-switches '("-F" "--length=61" "--indent=4"))
-;;;   ;; windows printing from
-;;;   ;; http://www.emacswiki.org/cgi-bin/wiki/PrintingFromEmacs
-;;;   ;(setenv "GS_LIB"
-;;;   ;    "c:/Program Files/gs/gs8.61/lib;c:/Program Files/gs/gs8.61/fonts"
-;;;   ;    )
-;;;   ;(setq ps-lpr-command "c:/Program Files/gs/gs8.61/bin/gswin32c.exe")
-;;;   ;(setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2"))
-;;;   ;(setq ps-printer-name t) ; t = pass empty printer name to ps-lpr-command
-;;;
-
 ;;;   ; setup out-going mail
 ;;;   (setq mail-host-address "pixel.schutter.home")
 ;;;   (setq user-mail-address "t.schutter@comcast.net")
@@ -46,33 +28,28 @@
 ;todo;
 ;todo;
 
-;todo; ;;; Editor behavior: improved PageUp and PageDn (pager.el)
-;todo; (require 'pager)
-;todo; (global-set-key "\C-v"     'pg-dn)
-;todo; (global-set-key [next]     'pg-dn)
-;todo; (global-set-key "\ev"      'pg-up)
-;todo; (global-set-key [prior]    'pg-up)
-;todo; (global-set-key '[M-up]    'row-up)
-;todo; (global-set-key '[M-kp-8]  'row-up)
-;todo; (global-set-key '[M-down]  'row-dn)
-;todo; (global-set-key '[M-kp-2]  'row-dn)
-
-;todo; ;;; Editor behavior: highlighting of matching parenthesises (mic-paren.el)
-;todo; (when (or (string-match "XEmacs\\|Lucid" emacs-version) window-system)
-;todo;   (require 'mic-paren) ; loading
-;todo;   (paren-activate)     ; activating
-;todo;   (setq paren-sexp-mode t)
-;todo;   (add-hook 'LaTeX-mode-hook
-;todo;             (function (lambda ()
-;todo;                         (paren-toggle-matching-quoted-paren 1)
-;todo;                         (paren-toggle-matching-paired-delimiter 1))))
-;todo;   (add-hook 'c-mode-common-hook
-;todo;             (function (lambda ()
-;todo;                         (paren-toggle-open-paren-context 1)))))
-;todo;
 ;todo; ;;; Editor behavior: turn on font-lock for all modes
 ;todo; (global-font-lock-mode t)
 ;todo;
+
+;;;   (load-library "mydiary")
+;;;
+;;;   ;; org-mode
+;;;   (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+;;;   (global-set-key "\C-cl" 'org-store-link)
+;;;   (global-set-key "\C-ca" 'org-agenda)
+;;;   ; see also
+;;;   ; http://orgmode.org/
+;;;   ; http://www.newartisans.com/blog_files/org.mode.day.planner.php
+;;;   ; http://members.optusnet.com.au/~charles57/GTD/orgmode.html
+;;;
+;;;   ;; crypt++
+;;;   ;(setq crypt-encryption-type 'gpg)
+;;;   ;(crypt-rebuild-tables)
+;;;
+;;;   ;(quietly-read-abbrev-file)
+;;;   ;(add-hook 'c-mode-hook '(lambda () (abbrev-mode 1)))
+;;;
 
 ;;;   ;; tell the default compile buffer to be n lines high
 ;;;   ;(setq compilation-window-height 11)
@@ -224,6 +201,16 @@
 ;todo; (setq vbnet-mode-indent 2)
 ;todo; (setq vbnet-wild-files "*.frm *.bas *.cls *.vb")
 ;todo;
+;;;   ;; windows printing from
+;;;   ;; http://www.emacswiki.org/cgi-bin/wiki/PrintingFromEmacs
+;;;   ;(setenv "GS_LIB"
+;;;   ;    "c:/Program Files/gs/gs8.61/lib;c:/Program Files/gs/gs8.61/fonts"
+;;;   ;    )
+;;;   ;(setq ps-lpr-command "c:/Program Files/gs/gs8.61/bin/gswin32c.exe")
+;;;   ;(setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2"))
+;;;   ;(setq ps-printer-name t) ; t = pass empty printer name to ps-lpr-command
+;;;
+
 ;todo; ;;;; HTML
 ;todo;
 ;todo; ;;; HTML: editing (html-helper-mode.el)
@@ -238,6 +225,18 @@
 ;todo;              (turn-on-auto-fill)
 ;todo;              (turn-on-font-lock)))
 ;todo;
+;;;   ;; Add to expert menu (only effects html-helper-mode beta >= 02-May-1995).
+;;;   ;; `compile' bound to key in ~/.emacs_dickow.
+;;;   (global-set-key "\C-cc" 'compile)
+;;;   ;(setq html-helper-user-menu '(["Check HTML of this buffer" compile t]))
+;;;   (add-hook 'html-helper-mode-hook
+;;;             '(lambda ()
+;;;                (make-local-variable 'compile-command)
+;;;                (make-local-variable 'ispell-skip-sgml-tags)
+;;;                (setq compile-command
+;;;                      (concat "weblint -x Netscape " buffer-file-name))
+;;;                (setq ispell-skip-sgml-tags t)))
+;;;
 ;todo; ;;;; Email
 ;todo;
 ;todo; ;;; Email: setup for outgoing mail
@@ -314,3 +313,15 @@
 
 ;todo; (add-to-list 'ffap-alist '("\\.idl\\'" . ffap-c-mode))
 ;todo; (add-to-list 'ffap-alist '("\\.xpm\\'" . ffap-c-mode))
+
+;;; pager.el replaced by (setq scroll-preserve-screen-position t)
+;todo; ;;; Editor behavior: improved PageUp and PageDn (pager.el)
+;todo; (require 'pager)
+;todo; (global-set-key "\C-v"     'pg-dn)
+;todo; (global-set-key [next]     'pg-dn)
+;todo; (global-set-key "\ev"      'pg-up)
+;todo; (global-set-key [prior]    'pg-up)
+;todo; (global-set-key '[M-up]    'row-up)
+;todo; (global-set-key '[M-kp-8]  'row-up)
+;todo; (global-set-key '[M-down]  'row-dn)
+;todo; (global-set-key '[M-kp-2]  'row-dn)

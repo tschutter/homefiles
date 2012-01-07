@@ -2,15 +2,14 @@
 ;;; are placed inside their own sub-directories.
 ;;; Prepend ~/.emacs.d/lisp/ and all of it's subdirectories to load-path.
 ;;; See http://www.emacswiki.org/emacs/LoadPath#AddSubDirectories
-;Commented out until we actually have elisp files.
-;(let ((default-directory "~/.emacs.d/elisp/"))
-;    (setq load-path
-;          (append
-;              (let ((load-path (copy-sequence load-path))) ;; Shadow
-;                  (append
-;                      (copy-sequence (normal-top-level-add-to-load-path '(".")))
-;                      (normal-top-level-add-subdirs-to-load-path)))
-;              load-path)))
+(let ((default-directory "~/.emacs.d/elisp/"))
+  (setq load-path
+        (append
+         (let ((load-path (copy-sequence load-path))) ;; Shadow
+           (append
+            (copy-sequence (normal-top-level-add-to-load-path '(".")))
+            (normal-top-level-add-subdirs-to-load-path)))
+         load-path)))
 
 ;;;; Editor behavior
 
@@ -72,6 +71,18 @@
        "C:/Program Files/Microsoft Visual Studio 10.0/VC/include"
        "C:/Program Files/Java/jdk1.6.0_20/include"))
 
+;;; Advanced highlighting of matching parenthesis.
+(require 'mic-paren)
+(paren-activate)
+(setq paren-sexp-mode t)  ; Always highlight the whole s-expression.
+(add-hook 'LaTeX-mode-hook
+          (function (lambda ()
+                      (paren-toggle-matching-quoted-paren 1)
+                      (paren-toggle-matching-paired-delimiter 1))))
+(add-hook 'c-mode-common-hook
+          (function (lambda ()
+                      (paren-toggle-open-paren-context 1))))
+
 ;;; Enable switching between buffers using substrings.
 (iswitchb-mode 1)
 
@@ -96,6 +107,16 @@
   (interactive)
   (insert (format-time-string "%a %Y-%m-%d %H:%M:%S")))
 (global-set-key (kbd "C-c d") 'insert-date)
+
+
+;;;; Printing
+(require 'ps-print)
+(setq ps-number-of-columns 2)
+(setq ps-landscape-mode t)
+(setq ps-line-number t)
+(setq ps-print-color-p nil)
+(setq ps-print-header nil)
+(setq lpr-page-header-switches '("-F" "--length=61" "--indent=4"))
 
 
 ;;;; Source code manipulation
