@@ -28,6 +28,7 @@
 
 ;;; Enable menu of recently opened files.
 (require 'recentf)
+(setq recentf-save-file "~/.emacs.d/.recentf")
 (recentf-mode 1)
 
 ;;; Display line numbers.
