@@ -1,9 +1,13 @@
-# Use "xrdb ~/.homedir/.Xdefaults" to reload on the fly.
+! Use "xrdb ~/.homedir/.Xdefaults" to reload on the fly.
 
-# Changes to Emacs geometry in init.el take effect after the window is created.
-# Changes here take effect before the window is created.
-Emacs*geometry: 128x45
+! Changes to Emacs geometry in init.el take effect after the window is created.
+! Changes here take effect before the window is created.
+#if HEIGHT < 901
+    Emacs*geometry: 128x40
+#else
+    Emacs*geometry: 128x55
+#endif
 
-# Default for OpenBSD is to make new xterms process .profile.
-# It makes debugging .profile changes easier.
+! Default for OpenBSD is to make new xterms process .profile.
+! It makes debugging .profile changes easier.
 XTerm*loginShell:true
