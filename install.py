@@ -48,6 +48,23 @@ def file_in_path(filename):
     return False
 
 
+def clean_link(options, linkname):
+    """Delete link or backup files and dirs."""
+    link_pathname = os.path.join(options.home, linkname)
+
+    if os.path.islink(link_pathname):
+        # The destination exists as a symbolic link.
+        print "Deleting symbolic link '%s'." % link_pathname
+        if not options.dryrun:
+            os.unlink(link_pathname)
+
+    elif os.path.exists(link_pathname):
+        # The destination exists as a file or dir.  Back it up.
+        print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
+        if not options.dryrun:
+            shutil.move(link_pathname, options.homefiles)
+
+
 def make_link(options, enabled, filename, linkname=None):
     """If enabled is True, create a symbolic link from home/linkname to
     homefiles/filename.
@@ -55,27 +72,27 @@ def make_link(options, enabled, filename, linkname=None):
     If linkname is not specified, it is the same as filename.
     """
 
-    # Determine the source and destination pathnames.
-    file_pathname = os.path.join(options.homefiles, filename)
     if linkname == None:
         linkname = filename
+
+    # Determine the source and destination pathnames.
+    file_pathname = os.path.join(options.homefiles, filename)
     link_pathname = os.path.join(options.home, linkname)
 
-    # The filename should always exist.
+    # The target filename should always exist.
     if not os.path.exists(file_pathname):
         print "ERROR: File '%s' does not exist." % file_pathname
         sys.exit(1)
 
-    if os.path.islink(link_pathname):
+    if not options.force and os.path.islink(link_pathname):
         # The destination already exists as a symbolic link.  Delete it if
-        # --force or if it points to the wrong place.
+        # it points to the wrong place.
         try:
             samefile = os.path.samefile(file_pathname, link_pathname)
         except OSError:
             samefile = False
-        if options.force or options.clean or not samefile:
-            print "Deleting symbolic link '%s'." % link_pathname
-            os.unlink(link_pathname)
+        if not samefile:
+            clean_link(options, linkname)
         else:
             if options.verbose:
                 print "Link already exists from '%s' to '%s'." % (
@@ -83,11 +100,8 @@ def make_link(options, enabled, filename, linkname=None):
                     file_pathname
                 )
             return
-
-    elif os.path.exists(link_pathname):
-        # The destination already exists as a file or dir.  Back it up.
-        print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
-        shutil.move(link_pathname, options.homefiles)
+    else:
+        clean_link(options, linkname)
 
     if not enabled:
         return
@@ -105,7 +119,8 @@ def make_link(options, enabled, filename, linkname=None):
         link_pathname,
         link_target
     )
-    os.symlink(link_target, link_pathname)
+    if not options.dryrun:
+        os.symlink(link_target, link_pathname)
 
 
 def make_dot_link(options, enabled, filename):
@@ -117,7 +132,9 @@ def make_dot_link(options, enabled, filename):
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
     make_dot_link(options, True, "aliases")
+    clean_link(options, ".bash_profile")
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
+    clean_link(options, ".emacs")
     if os.uname()[0].startswith("CYGWIN"):
         make_dot_link(options, True, "emacs.d")  # WinEmacs
     else:
@@ -141,7 +158,8 @@ def link_binfiles(options):
     bindir = os.path.join(options.home, "bin")
     if not os.path.isdir(bindir):
         print "Creating dir '%s'." % bindir
-        os.mkdir(bindir)
+        if not options.dryrun:
+            os.mkdir(bindir)
     make_link(options, True, "bin/findfile")
     make_link(options, True, "bin/tgrep")
     make_link(options, True, "bin/tm")
@@ -169,11 +187,12 @@ def main():
         help="replace existing symbolic links"
     )
     option_parser.add_option(
-        "--clean",
+        "-n",
+        "--dry-run",
         action="store_true",
-        dest="clean",
+        dest="dryrun",
         default=False,
-        help="delete unnecessary symbolic links"
+        help="print commands that would be executed, but do not execute them"
     )
     option_parser.add_option(
         "--verbose",
