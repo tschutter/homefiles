@@ -1,5 +1,9 @@
-# Executed by ksh for interactive shells.
-# This file should contain ksh-only commands.
+# Executed by ksh(1) for non-login shells.
+
+# Source alias, function, and prompt definitions for Bourne-derived shells.
+if [ -f ~/.bournerc ]; then
+    . ~/.bournerc
+fi
 
 # Emacs history editing.
 set -o emacs
@@ -10,35 +14,7 @@ bind '^XF'=end-of-line # end
 bind '^[[3'=prefix-2 # del
 bind '^[[3~'=delete-char-forward # del
 
-# Function definitions.
-_cdhelper() {
-    CMD="cd $1"
-    shift
-    for ARG in $*; do
-        CMD=${CMD}/${ARG}
-    done
-    eval ${CMD}
-}
-home() {
-    _cdhelper ${HOME} $*
-}
-src() {
-    _cdhelper ${SRC} $*
-}
-u() {
-    _cdhelper .. $*
-}
-uu() {
-    _cdhelper ../.. $*
-}
-uuu() {
-    _cdhelper ../../.. $*
-}
-uuuu() {
-    _cdhelper ../../../.. $*
-}
-
-# Source aliases.
-if [ -f ~/.aliases ]; then
-    . ~/.aliases
-fi  
+# Source local kshrc.
+if [ -f ~/.kshrc-local ]; then
+    . ~/.kshrc-local
+fi

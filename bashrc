@@ -3,6 +3,11 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+# Source alias, function, and prompt definitions for Bourne-derived shells.
+if [ -f ~/.bournerc ]; then
+    . ~/.bournerc
+fi
+
 # Number of trailing directory components to retain when expanding \w in PS1.
 # Note that PROMPT_DIRTRIM is a bashism.
 PROMPT_DIRTRIM=4
@@ -27,34 +32,6 @@ esac
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Function definitions.
-_cdhelper() {
-    CMD="cd $1"
-    shift
-    for ARG in $*; do
-        CMD=${CMD}/${ARG}
-    done
-    eval ${CMD}
-}
-home() {
-    _cdhelper ${HOME} $*
-}
-src() {
-    _cdhelper ${SRC} $*
-}
-u() {
-    _cdhelper .. $*
-}
-uu() {
-    _cdhelper ../.. $*
-}
-uuu() {
-    _cdhelper ../../.. $*
-}
-uuuu() {
-    _cdhelper ../../../.. $*
-}
-
 # Platform specific definitions.
 if [ "${_UNAME}" = "CYGWIN_NT" ]; then
     # Ignore case while completing
@@ -69,11 +46,6 @@ fi
 # Enable programmable completion features.
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
-fi
-
-# Source aliases.
-if [ -f ~/.aliases ]; then
-    . ~/.aliases
 fi
 
 # Source local bashrc.

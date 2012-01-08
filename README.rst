@@ -50,6 +50,9 @@ Restrictions imposed by tools:
 5. Function and alias definitions can be defined in a POSIX standard
    way so that they can be shared by shells in the Bourne family.
 
+6. The PS1 environment variable is overwritten by /etc/bash.bashrc on
+   Ubuntu.  This means that we cannot define it in .profile.
+
 Therefore the implementation uses these guidelines:
 
 1. Most environment variables are set in .profile.  They are then
@@ -61,8 +64,8 @@ Therefore the implementation uses these guidelines:
 2. The .profile sources the .${SHELL}rc files.  That way both login
    and non-login shells will define functions and aliases.
 
-3. Environment variables that are intended only for .profile and
-   .${SHELL}rc use start with a single underscore.
+3. The .${SHELL}rc files source .bournerc which is where aliases,
+   functions, and PS1 are defined.
 
-4. Alias definitions are put into .aliases, which is sourced by each
-   .${SHELL}rc.
+4. Environment variables that are intended only for .profile and
+   .${SHELL}rc use start with a single underscore.

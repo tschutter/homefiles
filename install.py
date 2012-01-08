@@ -137,7 +137,7 @@ def link_dotfiles(options):
     is_ubuntu = uname[3].find("Ubuntu") >= 0
     is_cygwin = uname[0].startswith("CYGWIN")
 
-    make_dot_link(options, True, "aliases")
+    make_dot_link(options, True, "bournerc")
     clean_link(options, ".bash_profile")
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     clean_link(options, ".emacs")

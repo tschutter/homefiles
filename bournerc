@@ -1,0 +1,68 @@
+# Alias, function, and prompt definitions for Bourne-derived shells.
+# Sourced by .${SHELL}rc
+
+# Aliases.
+if [ "${_UNAME}" = "OpenBSD" ]; then
+    alias dir="/bin/ls -l"
+else
+    alias dir="/bin/ls -lb"  # -b = C-style escapes for nongraphic characters
+fi
+
+[ -x "/usr/bin/lynx" ] && alias lynx="/usr/bin/lynx -accept_all_cookies"
+
+[ -x "/usr/bin/less" ] && alias more="/usr/bin/less"
+
+if [ "${_UNAME}" = "CYGWIN_NT" ]; then
+    # -W: show windows as well as cygwin processes
+    alias ps="ps -W"
+fi
+
+# Functions.
+_cdhelper() {
+    CMD="cd $1"
+    shift
+    for ARG in $*; do
+        CMD=${CMD}/${ARG}
+    done
+    eval ${CMD}
+}
+home() {
+    _cdhelper ${HOME} $*
+}
+src() {
+    _cdhelper ${SRC} $*
+}
+u() {
+    _cdhelper .. $*
+}
+uu() {
+    _cdhelper ../.. $*
+}
+uuu() {
+    _cdhelper ../../.. $*
+}
+uuuu() {
+    _cdhelper ../../../.. $*
+}
+
+# Prompt.
+# Determine the hostname.
+_HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
+_HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
+export _HOSTNAME
+
+if [ "`id -u`" -eq 0 ]; then
+    _PROMPT_CHAR="#"
+else
+    _PROMPT_CHAR="$"
+fi
+
+case "$TERM" in
+    xterm*|rxvt*)
+        # If this is an xterm set the title to host:dir
+        PS1='\e]0;${_HOSTNAME}:${PWD#${HOME}/}\a${_HOSTNAME}:\w${_PROMPT_CHAR} '
+        ;;
+    *)
+        PS1='${_HOSTNAME}:\w${_PROMPT_CHAR} '
+        ;;
+esac

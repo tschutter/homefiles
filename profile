@@ -3,11 +3,6 @@
 # Aliases are not inherited by subshells and therefore should not be defined here.
 # Environment variables are intended only for use by .profile and .${SHELL}rc
 
-# Determine the hostname.
-_HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
-_HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
-export _HOSTNAME
-
 # Determine the OS.  [Linux, CYGWIN_NT, OpenBSD, SunOS]
 _UNAME=$(uname)
 _UNAME=${_UNAME%%-*} # Strip any version info
@@ -43,17 +38,6 @@ fi
 
 # Prepend user's bin directory to the path.
 path_prepend ${HOME}/bin
-
-# Set the prompt.
-case "$TERM" in
-    xterm*|rxvt*)
-        # If this is an xterm set the title to host:dir
-        PS1='\e]0;${_HOSTNAME}:${PWD#${HOME}/}\a${_HOSTNAME}:\w\$ '
-        ;;
-    *)
-        PS1='${_HOSTNAME}:\w\$ '
-        ;;
-esac
 
 # Define environment variables.
 if [ "${_UNAME}" = "OpenBSD" ]; then
