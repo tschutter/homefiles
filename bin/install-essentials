@@ -9,7 +9,9 @@ if [ -x "/usr/bin/apt-get" ]; then
         emacs23-el\
         git-doc\
         git-man\
+        pymacs\
         python-rope\
+        python-ropemacs\
     "
 
     sudo apt-get install ${PACKAGES}
