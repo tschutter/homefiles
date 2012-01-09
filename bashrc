@@ -25,8 +25,8 @@ case "$TERM" in
         ;;
 esac
 
-# Do not put controlling instructions into history
-# export HISTIGNORE="[   ]*:&:bg:fg:exit"
+# Append to the history file, don't overwrite it.
+shopt -s histappend
 
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -42,6 +42,11 @@ if [ "${_UNAME}" = "CYGWIN_NT" ]; then
         ${SYSTEMROOT}/system32/cmd.exe /c start `/usr/bin/cygpath.exe --windows $1`
     }
 fi
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   long-running-command; alert
+# "history" is bash-specific.
+[ -x /usr/bin/notify-send ] && alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Enable programmable completion features.
 if [ -f /etc/bash_completion ]; then
