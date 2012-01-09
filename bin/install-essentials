@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Install essential packages.
+#
+
+if [ -x "/usr/bin/apt-get" ]; then
+    PACKAGES="\
+        emacs23\
+        emacs23-el\
+        git-doc\
+        git-man\
+        python-rope\
+    "
+
+    sudo apt-get install ${PACKAGES}
+
+elif [ -x "/usr/bin/pkg-add" ]; then
+    PACKAGES="\
+        python-2.7*\
+        wget\
+    "
+
+    sudo pkg_add ${PACKAGES}
+fi
