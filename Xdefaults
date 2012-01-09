@@ -4,10 +4,13 @@
 ! created.  Changes here take effect before the window is created.
 #if HEIGHT < 901
     Emacs*geometry: 128x40
+    XTerm.vt100.geometry: 128x40
 #elif HEIGHT < 1100
     Emacs*geometry: 128x50
+    XTerm.vt100.geometry: 128x50
 #else
     Emacs*geometry: 128x60
+    XTerm.vt100.geometry: 128x60
 #endif
 
 ! Default for OpenBSD is to make new xterms process .profile.
