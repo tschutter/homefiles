@@ -25,6 +25,7 @@
 ;;; Uniquely indentify buffers
 (require 'uniquify)
 (setq-default uniquify-buffer-name-style 'forward)
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
 ;;; Enable menu of recently opened files.
 (require 'recentf)
