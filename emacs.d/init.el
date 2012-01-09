@@ -22,23 +22,48 @@
 ;;; Turn off blinking cursor.
 (blink-cursor-mode 0)
 
-;;; Uniquely indentify buffers
-(require 'uniquify)
-(setq-default uniquify-buffer-name-style 'forward)
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+;;; Default to filename at point for C-x C-f.
+(require 'ffap)
+(ffap-bindings)
+(setq ffap-machine-p-known 'accept)  ;No pinging
+(setq ffap-c-path
+      (list
+       (getenv "SRC_TREE")
+       "~/src/pxpoint"
+       "~/src/webservices"
+       "/usr/include"
+       "/usr/local/include"
+       "C:/Program Files/Microsoft Visual Studio 10.0/VC/include"
+       "C:/Program Files/Java/jdk1.6.0_20/include"))
 
 ;;; Enable menu of recently opened files.
 (require 'recentf)
 (setq recentf-save-file "~/.emacs.d/.recentf")
 (recentf-mode 1)
 
+;;; Uniquely indentify buffers
+(require 'uniquify)
+(setq-default uniquify-buffer-name-style 'forward)
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
 ;;; Display line numbers.
 (require 'linum)
-(setq linum-format "% 5d")  ;Always 5 columns
-(global-linum-mode)         ;All buffers
+(setq linum-format "% 5d")  ;always 5 columns
+(global-linum-mode)         ;all buffers
+(defun linum-on ()
+  (unless (or
+           (minibufferp)    ;except the minibuffer
+           (string-match "^\\*" (buffer-name (current-buffer))))  ;except special buffers
+    (linum-mode 1)))
 
 ;;; Put column number in mode line.
 (column-number-mode 1)
+
+;;; Spellchecking.
+
+;;; Key bindings.
+(global-set-key (kbd "C-z") 'undo)   ;overrides suspend-frame
+(global-set-key (kbd "C-S-z") 'redo)
 
 ;;; Mouse yank commands yank at point instead of at click.
 (setq mouse-yank-at-point t)
@@ -58,20 +83,6 @@
 
 ;;; Remember and restore point location after PgUp,PgDn
 (setq scroll-preserve-screen-position t)
-
-;;; Default to filename at point for C-x C-f.
-(require 'ffap)
-(ffap-bindings)
-(setq ffap-machine-p-known 'accept)  ;No pinging
-(setq ffap-c-path
-      (list
-       (getenv "SRC_TREE")
-       "~/src/pxpoint"
-       "~/src/webservices"
-       "/usr/include"
-       "/usr/local/include"
-       "C:/Program Files/Microsoft Visual Studio 10.0/VC/include"
-       "C:/Program Files/Java/jdk1.6.0_20/include"))
 
 ;;; Advanced highlighting of matching parenthesis.
 (require 'mic-paren)
