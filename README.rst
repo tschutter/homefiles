@@ -5,7 +5,7 @@ Usage
 -----
 ::
 
-    git clone git//github.com/tschutter/homefiles.git $HOME/.homefiles
+    git clone git://github.com/tschutter/homefiles.git $HOME/.homefiles
     $HOME/.homefiles/install.sh
 
 Design
@@ -45,7 +45,8 @@ Restrictions imposed by tools:
 
 3. Environment variables are inherited by subshells (if exported).
 
-4. Functions and aliases cannot be inherted by or exported to subshells.
+4. Functions and aliases cannot be inherited by or exported to
+   subshells.
 
 5. Function and alias definitions can be defined in a POSIX standard
    way so that they can be shared by shells in the Bourne family.
