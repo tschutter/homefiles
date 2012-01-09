@@ -59,7 +59,8 @@
 ;;; Put column number in mode line.
 (column-number-mode 1)
 
-;;; Spellchecking.
+;;; On-the-fly spell checking.
+(add-hook 'text-mode-hook 'turn-on-flyspell)
 
 ;;; Key bindings.
 (global-set-key (kbd "C-z") 'undo)   ;overrides suspend-frame
@@ -194,6 +195,18 @@
 (setq py-pychecker-command "pep8")
 (setq py-pychecker-command-args (quote ("--repeat")))
 (setq python-check-command "pep8")
+(add-hook 'python-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)  ;on-the-fly spell check in comments
+                                        ; ...
+            ))
+
+;;;; C++
+;(add-hook 'c++-mode-hook
+;          (lambda ()
+;            (flyspell-prog-mode)
+;                                        ; ...
+;            ))
 
 ;;;; Desktop (must be last)
 (desktop-save-mode 1)
