@@ -141,10 +141,7 @@ def link_dotfiles(options):
     clean_link(options, ".bash_profile")
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     clean_link(options, ".emacs")
-    if is_cygwin:
-        make_dot_link(options, True, "emacs.d")  # WinEmacs
-    else:
-        make_dot_link(options, file_in_path("emacs"), "emacs.d")
+    make_dot_link(options, file_in_path("emacs"), "emacs.d")
     make_dot_link(options, file_in_path("vi"), "exrc")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
