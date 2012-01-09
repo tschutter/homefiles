@@ -52,17 +52,7 @@ _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
 export _HOSTNAME
 
 if [ "`id -u`" -eq 0 ]; then
-    _PROMPT_CHAR="#"
+    PS1='${_HOSTNAME}:\w# '
 else
-    _PROMPT_CHAR="$"
+    PS1='${_HOSTNAME}:\w$ '
 fi
-
-case "$TERM" in
-    xterm*|rxvt*)
-        # If this is an xterm set the title to host:dir
-        PS1='\e]0;${_HOSTNAME}:${PWD#${HOME}/}\a${_HOSTNAME}:\w${_PROMPT_CHAR} '
-        ;;
-    *)
-        PS1='${_HOSTNAME}:\w${_PROMPT_CHAR} '
-        ;;
-esac
