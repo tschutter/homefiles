@@ -228,21 +228,17 @@
             ))
 
 ;;; Python ropemacs refactoring.
-(defun ropemacs-load ()
-  "Load pymacs and ropemacs"
-  (interactive)
-  (require 'pymacs)
-  ;; Shortcuts defined by ropemacs-enable-shortcuts conflict with ours.
-  (setq ropemacs-enable-shortcuts 'nil)
-  (pymacs-load "ropemacs" "rope-")
-  ;; These define-keys are not working.
-  (define-key ropemacs-local-keymap (kbd "M-/") 'rope-code-assist)
-  (define-key ropemacs-local-keymap (kbd "C-c C-d") 'rope-show-doc)
-  (define-key ropemacs-local-keymap (kbd "C-c C-g") 'rope-goto-definition)
-  (define-key ropemacs-local-keymap (kbd "C-c C-f") 'rope-find-occurrences)
-  ;; Automatically save project python buffers before refactorings.
-  (setq ropemacs-confirm-saving 'nil))
-(global-set-key "\C-xpl" 'ropemacs-load)
+;; The "Loading Lazily" section in README.txt does not work!
+(require 'pymacs)
+;; Shortcuts defined by ropemacs-enable-shortcuts conflict with ours.
+(setq ropemacs-enable-shortcuts 'nil)
+(pymacs-load "ropemacs" "rope-")
+(define-key ropemacs-local-keymap (kbd "M-/") 'rope-code-assist)
+(define-key ropemacs-local-keymap (kbd "C-c C-d") 'rope-show-doc)
+(define-key ropemacs-local-keymap (kbd "C-c C-g") 'rope-goto-definition)
+(define-key ropemacs-local-keymap (kbd "C-c C-f") 'rope-find-occurrences)
+;; Automatically save project python buffers before refactorings.
+(setq ropemacs-confirm-saving 'nil)
 
 
 ;;;; C++
