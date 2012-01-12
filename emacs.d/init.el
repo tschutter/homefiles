@@ -129,8 +129,8 @@
   (concat "~/.emacs.d/backups/" (file-name-nondirectory file) "~"))
 (setq auto-save-list-file-prefix "~/.emacs.d/backups/")
 
-;;; Provide an easy goto-line (^c-g).
-(global-set-key "\C-cg" 'goto-line)
+;;; Provide an easy goto-line (^C-g).
+(global-set-key (kbd "C-c g") 'goto-line)
 
 ;;; Save and restore point (F3, F4).
 (define-key global-map [\C-f3] '(lambda () (interactive) (point-to-register 33)))  ;^F3 Save
@@ -138,7 +138,7 @@
 (define-key global-map [\C-f4] '(lambda () (interactive) (point-to-register 34)))  ;^F4 Save
 (define-key global-map [f4] '(lambda () (interactive) (jump-to-register 34)))      ;F4 Restore
 
-;;; Insert datetime into current buffer (^c-d).
+;;; Insert datetime into current buffer (^C-d).
 (defun insert-date ()
   "Inserts date time string into current buffer."
   (interactive)
@@ -214,6 +214,9 @@
 
 ;;;; Python
 
+;;; Python debugging.
+;gud-tooltip-mode
+
 ;;; Use ^c-^w or ^c-^v
 (setq py-pychecker-command "pep8")
 (setq py-pychecker-command-args (quote ("--repeat")))
@@ -223,6 +226,20 @@
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
                                         ; ...
             ))
+
+;;; Python ropemacs refactoring.
+;; The "Loading Lazily" section in README.txt does not work!
+(require 'pymacs)
+;; Shortcuts defined by ropemacs-enable-shortcuts conflict with ours.
+(setq ropemacs-enable-shortcuts 'nil)
+(pymacs-load "ropemacs" "rope-")
+(define-key ropemacs-local-keymap (kbd "M-/") 'rope-code-assist)
+(define-key ropemacs-local-keymap (kbd "C-c C-d") 'rope-show-doc)
+(define-key ropemacs-local-keymap (kbd "C-c C-g") 'rope-goto-definition)
+(define-key ropemacs-local-keymap (kbd "C-c C-f") 'rope-find-occurrences)
+;; Automatically save project python buffers before refactorings.
+(setq ropemacs-confirm-saving 'nil)
+
 
 ;;;; C++
 ;(add-hook 'c++-mode-hook

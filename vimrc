@@ -30,3 +30,9 @@ if $COMPUTERNAME == "FDSVBLD01W70085" && has("gui_running")
     " Rick prefers a larger font.
     set guifont=Lucida_Console:h14:cANSI
 endif
+
+" Quickref.
+
+" To use the system clipboard to copy and paste, prepend "+ to your
+" y (yank) or p (paste) command.  Use :reg to see the contents of
+" the system clipboard.
