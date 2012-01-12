@@ -21,11 +21,14 @@ if [ -x "/usr/bin/apt-get" ]; then
 elif [ -x "/usr/bin/pkg-add" ]; then
     # OpenBSD.
     PACKAGES="\
+        git\
         python-2.7*\
+        emacs-23.3--\
+        emacs-python\
         wget\
     "
 
-    sudo pkg_add ${PACKAGES}
+    sudo pkg_add -i -z ${PACKAGES}
 fi
 
 # As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
