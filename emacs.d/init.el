@@ -231,14 +231,14 @@
 ;; The "Loading Lazily" section in README.txt does not work!
 (require 'pymacs)
 ;; Shortcuts defined by ropemacs-enable-shortcuts conflict with ours.
-(setq ropemacs-enable-shortcuts 'nil)
+(setq ropemacs-enable-shortcuts nil)
 (pymacs-load "ropemacs" "rope-")
 (define-key ropemacs-local-keymap (kbd "M-/") 'rope-code-assist)
 (define-key ropemacs-local-keymap (kbd "C-c C-d") 'rope-show-doc)
 (define-key ropemacs-local-keymap (kbd "C-c C-g") 'rope-goto-definition)
 (define-key ropemacs-local-keymap (kbd "C-c C-f") 'rope-find-occurrences)
 ;; Automatically save project python buffers before refactorings.
-(setq ropemacs-confirm-saving 'nil)
+(setq ropemacs-confirm-saving nil)
 
 
 ;;;; C++
