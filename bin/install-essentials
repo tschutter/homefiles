@@ -3,7 +3,10 @@
 # Install essential packages.
 #
 
+ROOTDIR="${HOME}/.homefiles"
+
 if [ -x "/usr/bin/apt-get" ]; then
+    # Debian derivatives.
     PACKAGES="\
         emacs23\
         emacs23-el\
@@ -11,12 +14,12 @@ if [ -x "/usr/bin/apt-get" ]; then
         git-man\
         pymacs\
         python-rope\
-        python-ropemacs\
     "
 
     sudo apt-get install ${PACKAGES}
 
 elif [ -x "/usr/bin/pkg-add" ]; then
+    # OpenBSD.
     PACKAGES="\
         python-2.7*\
         wget\
@@ -24,3 +27,20 @@ elif [ -x "/usr/bin/pkg-add" ]; then
 
     sudo pkg_add ${PACKAGES}
 fi
+
+# As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
+# ignores the ropemacs-enable-shortcuts variable when loading.
+# Therefore we load it the hard way.
+cd /tmp
+
+tar xzf ${ROOTDIR}/packages/agr-ropemode-584d3eba7ca6.tar.gz
+cd agr-ropemode-584d3eba7ca6
+sudo /usr/bin/env python setup.py install
+cd ..
+sudo rm -rf agr-ropemode-584d3eba7ca6
+
+tar xzf ${ROOTDIR}/packages/agr-ropemacs-7af544334b85.tar.gz
+cd agr-ropemacs-7af544334b85
+sudo /usr/bin/env python setup.py install
+cd ..
+sudo rm -rf agr-ropemacs-7af544334b85
