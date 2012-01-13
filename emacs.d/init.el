@@ -48,6 +48,8 @@
 ;;; Default to filename at point for C-x C-f.
 (require 'ffap)
 (ffap-bindings)
+(setq browse-url-generic-program "/usr/bin/chromium-browser")
+(setq ffap-url-fetcher 'browse-url-generic)
 (setq ffap-machine-p-known 'accept)  ;No pinging
 (setq ffap-c-path
       (list
@@ -91,6 +93,9 @@
 
 ;;; Mouse yank commands yank at point instead of at click.
 (setq mouse-yank-at-point t)
+
+;;; Delete selected text when typing.
+(delete-selection-mode 1)
 
 ;;; Vertical motion starting at EOL line keeps to EOL.
 (setq track-eol t)
@@ -250,5 +255,7 @@
 ;                                        ; ...
 ;            ))
 
+
 ;;;; Desktop (must be last)
 (desktop-save-mode 1)
+(add-to-list 'desktop-globals-to-save 'query-replace-history)
