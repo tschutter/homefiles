@@ -12,6 +12,8 @@ if [ -x "/usr/bin/apt-get" ]; then
         emacs23-el\
         git-doc\
         git-man\
+        mg\
+        pylint\
         pymacs\
         python-rope\
         tmux\
