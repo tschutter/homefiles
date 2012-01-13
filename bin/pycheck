@@ -11,3 +11,6 @@ pyflakes $1
 
 echo "## pychecker"
 pychecker $1
+
+echo "## pylint"
+pylint $1
