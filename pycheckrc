@@ -1,0 +1,9 @@
+#
+# .pycheckrc file used by pychecker
+#
+
+# ignore warnings from the list of modules
+blacklist = ['optparse']
+
+# turn off all output except warnings
+quiet = 1
