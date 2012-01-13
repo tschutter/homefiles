@@ -104,6 +104,8 @@ def make_link(options, enabled, filename, linkname=None):
         clean_link(options, linkname)
 
     if not enabled:
+        if options.verbose:
+            print "Not linking to '%s'." % filename
         return
 
     # Make the link target relative.  This usually makes the link
