@@ -40,12 +40,12 @@ cd /tmp
 
 tar xzf ${ROOTDIR}/packages/agr-ropemode-584d3eba7ca6.tar.gz
 cd agr-ropemode-584d3eba7ca6
-sudo /usr/bin/env python setup.py install
+sudo /usr/bin/env python setup.py --quiet install
 cd ..
 sudo rm -rf agr-ropemode-584d3eba7ca6
 
 tar xzf ${ROOTDIR}/packages/agr-ropemacs-7af544334b85.tar.gz
 cd agr-ropemacs-7af544334b85
-sudo /usr/bin/env python setup.py install
+sudo /usr/bin/env python setup.py --quiet install
 cd ..
 sudo rm -rf agr-ropemacs-7af544334b85
