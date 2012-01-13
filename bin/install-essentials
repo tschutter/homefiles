@@ -13,6 +13,8 @@ if [ -x "/usr/bin/apt-get" ]; then
         git-doc\
         git-man\
         mg\
+        pychecker\
+        pyflakes\
         pylint\
         pymacs\
         python-rope\
