@@ -15,6 +15,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         pymacs\
         python-rope\
         tmux\
+        xzgv\
     "
 
     sudo apt-get install ${PACKAGES}
