@@ -222,10 +222,11 @@
 ;;; Python debugging.
 ;gud-tooltip-mode
 
-;;; Use ^c-^w or ^c-^v
-(setq py-pychecker-command "pep8")
-(setq py-pychecker-command-args (quote ("--repeat")))
-(setq python-check-command "pep8")
+;;; Static code checks (either ^C-^W or ^C-^V).
+(setq py-pychecker-command "pycheck")
+(setq python-check-command "pycheck")
+
+;;; Python editing.
 (add-hook 'python-mode-hook
           (lambda ()
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
