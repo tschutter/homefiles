@@ -43,10 +43,10 @@ FROM_ADDRESS = "tschutter@corelogic.com"
 SERVER_NAME = "localhost"
 
 ADDRESS_BOOK = {
-    "kyle":   "3033494442@vtext.com",
-    "linda":  "7203184099@vtext.com",
+    "kyle": "3033494442@vtext.com",
+    "linda": "7203184099@vtext.com",
     "skylar": "3033494413@vtext.com",
-    "tom":    "3033494374@vtext.com"
+    "tom": "3033494374@vtext.com"
 }
 
 QUICK_TEXT = {
