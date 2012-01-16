@@ -262,9 +262,19 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
-            (define-key python-mode-map [f12] 'pyp)
-                                        ; ...
+            (define-key python-mode-map [f11] 'pylookup-lookup)  ;lookup in Python doc
+            (define-key python-mode-map [f12] 'pyp)  ;insert debug print
             ))
+
+;;; Python doc lookup.  https://github.com/tsgates/pylookup
+;; Run "M-x pylookup-update-all" to update database.
+(require 'pylookup)
+(setq pylookup-dir "~/.emacs.d/pylookup")
+(setq pylookup-program (concat pylookup-dir "/pylookup.py"))  ;executable
+(setq pylookup-db-file (concat pylookup-dir "/pylookup.db"))  ;database
+(setq pylookup-html-locations '("/usr/share/doc/python2.7/html"))  ;doc source
+(autoload 'pylookup-lookup "pylookup"
+  "Lookup SEARCH-TERM in the Python HTML indexes." t)
 
 ;;; Python ropemacs refactoring.
 (defun load-ropemacs ()

@@ -18,6 +18,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         pylint\
         pymacs\
         python-rope\
+        python2.7-doc\
         tmux\
         w3m\
         w3m-el\
