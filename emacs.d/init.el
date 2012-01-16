@@ -262,7 +262,7 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
-            (define-key python-mode-map [f11] 'pylookup-lookup)  ;lookup in Python doc
+            (define-key python-mode-map (kbd "C-c h") 'pylookup-lookup)  ;lookup in Python doc
             (define-key python-mode-map [f12] 'pyp)  ;insert debug print
             ))
 
