@@ -27,14 +27,15 @@ if [ -x "/usr/bin/apt-get" ]; then
 
     sudo apt-get install ${PACKAGES}
 
-elif [ -x "/usr/bin/pkg-add" ]; then
+elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
     PACKAGES="\
         git\
         python-2.7*\
         emacs-23.3--\
         emacs-python\
-        w3m\
+        pylint\
+        w3m--\
         wget\
     "
 
