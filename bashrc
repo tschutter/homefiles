@@ -23,6 +23,9 @@ PROMPT_DIRTRIM=4
 # And nobody uses icons to indicate minimized windows anymore.
 PROMPT_COMMAND='echo -ne "\033]2;${HOSTNAME}:${PWD/$HOME/~}\007"'
 
+# Don't put duplicate lines or lines which begin with a space in the history.
+HISTCONTROL=ignoreboth
+
 # Append to the history file, don't overwrite it.
 shopt -s histappend
 
