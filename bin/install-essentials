@@ -19,6 +19,8 @@ if [ -x "/usr/bin/apt-get" ]; then
         pymacs\
         python-rope\
         tmux\
+        w3m\
+        w3m-el\
         xzgv\
     "
 
@@ -31,6 +33,7 @@ elif [ -x "/usr/bin/pkg-add" ]; then
         python-2.7*\
         emacs-23.3--\
         emacs-python\
+        w3m\
         wget\
     "
 
