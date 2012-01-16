@@ -255,10 +255,14 @@
 (setq py-pychecker-command "pycheck")
 (setq python-check-command "pycheck")
 
+;;; Simplify insertion of debugging print statements.
+(load "pyp.el")
+
 ;;; Python editing.
 (add-hook 'python-mode-hook
           (lambda ()
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
+            (define-key python-mode-map [f12] 'pyp)
                                         ; ...
             ))
 
