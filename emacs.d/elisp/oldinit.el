@@ -1,26 +1,5 @@
 ;;;; Snippets from old .emacs files.
 
-;;;   ; setup out-going mail
-;;;   (setq mail-host-address "pixel.schutter.home")
-;;;   (setq user-mail-address "t.schutter@comcast.net")
-;;;   (setq send-mail-function 'smtpmail-send-it)
-;;;   (setq message-send-mail-function 'smtpmail-send-it)
-;;;   (setq smtpmail-default-smtp-server "smtp.schutter.home")
-;;;   (setq smtpmail-smtp-server "smtp.schutter.home")
-;;;   ;(setq smtpmail-smtp-service "smtp")
-;;;   (setq smtpmail-local-domain "schutter.home")
-;;;   ;(load-library "smtpmail")
-;;;   ;(setq smtpmail-code-conv-from nil)
-;;;   (setq user-full-name "Tom Schutter")
-;;;   ;;(setq send-mail-function 'smtpmail-send-it) ; if you use `mail'
-;;;   ;;(setq message-send-mail-function 'smtpmail-send-it) ; if you use `message'
-;;;   ;;(setq smtpmail-default-smtp-server "YOUR SMTP HOST")
-;;;   ;;(setq smtpmail-local-domain "YOUR DOMAIN NAME")
-;;;   ;;(setq smtpmail-debug-info t) ; only to debug problems
-;;;
-;;;   ; use Message to compose mail
-;;;   (setq mail-user-agent 'message-user-agent)
-
 ;todo; ;;; Editor behavior: turn on font-lock for all modes
 ;todo; (global-font-lock-mode t)
 ;todo;
@@ -45,8 +24,6 @@
 ;;;   ;(set-face-font 'bold-italic "-*-Courier New-bold-i-*-*-15-90-*-*-c-*-*-ansi-")
 ;;;
 ;;;   ;(set-default-font "-*-Andale Mono-normal-r-*-*-13-97-*-*-c-*-*-ansi-")
-;;;
-;;;   (setq mail-yank-prefix "> ")
 ;;;
 ;;;   ;; find-function setup
 ;;;   (autoload 'find-function "find-function" nil t)
@@ -209,23 +186,6 @@
 ;;;                      (concat "weblint -x Netscape " buffer-file-name))
 ;;;                (setq ispell-skip-sgml-tags t)))
 ;;;
-;todo; ;;;; Email
-;todo;
-;todo; ;;; Email: setup for outgoing mail
-;todo; (require 'smtpmail)
-;todo; (setq send-mail-function 'smtpmail-send-it)
-;todo; (setq smtpmail-default-smtp-server "smtp.bou.platte.com")
-;todo; (setq smtpmail-smtp-service "smtp")
-;todo; (setq smtpmail-local-domain "platte.com")
-;todo; (setq smtpmail-debug-info nil)
-;todo; (load-library "smtpmail")
-;todo; (setq smtpmail-code-conv-from nil)
-;todo;
-;todo; ;;; Email: setup for composing messages
-;todo; ;; turn on fill (word-wrap) when creating messages
-;todo; (add-hook 'message-mode-hook 'turn-on-auto-fill)
-;todo; (add-hook 'mail-mode-hook 'turn-on-auto-fill)
-;todo;
 ;todo; ;;;; LaTeX
 ;todo;
 ;todo; ;;; LaTeX: enable RefTeX for all LaTeX files
@@ -285,15 +245,3 @@
 
 ;todo; (add-to-list 'ffap-alist '("\\.idl\\'" . ffap-c-mode))
 ;todo; (add-to-list 'ffap-alist '("\\.xpm\\'" . ffap-c-mode))
-
-;;; pager.el replaced by (setq scroll-preserve-screen-position t)
-;todo; ;;; Editor behavior: improved PageUp and PageDn (pager.el)
-;todo; (require 'pager)
-;todo; (global-set-key "\C-v"     'pg-dn)
-;todo; (global-set-key [next]     'pg-dn)
-;todo; (global-set-key "\ev"      'pg-up)
-;todo; (global-set-key [prior]    'pg-up)
-;todo; (global-set-key '[M-up]    'row-up)
-;todo; (global-set-key '[M-kp-8]  'row-up)
-;todo; (global-set-key '[M-down]  'row-dn)
-;todo; (global-set-key '[M-kp-2]  'row-dn)

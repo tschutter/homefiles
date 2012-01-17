@@ -1,3 +1,9 @@
+;;;; Local config.
+(if (file-exists-p "~/.emacs-local")
+    (load-file "~/.emacs-local"))
+
+
+;;;; ~/.emacs.d/lisp/
 ;;; Some packages installed in ~/.emacs.d/lisp/ are single files while others
 ;;; are placed inside their own sub-directories.
 ;;; Prepend ~/.emacs.d/lisp/ and all of it's subdirectories to load-path.
@@ -188,6 +194,25 @@
 (setq ps-print-color-p nil)
 (setq ps-print-header nil)
 (setq lpr-page-header-switches '("-F" "--length=61" "--indent=4"))
+
+
+;;;; Email
+;;; Outgoing mail
+(require 'smtpmail)
+;(setq smtpmail-debug-info t)  ;uncomment to debug problems
+
+;;; Use Message to compose mail.
+(setq mail-user-agent 'message-user-agent)
+(setq message-send-mail-function 'smtpmail-send-it)
+(add-hook 'message-mode-hook 'turn-on-auto-fill) ;word wrap
+
+(cond ((equal system-name "penguin")
+       (setq smtpmail-smtp-server "smtp.schutter.home")
+       (setq smtpmail-local-domain "schutter.home")
+       (setq user-mail-address "t.schutter@comcast.net"))
+      (t
+       (setq smtpmail-smtp-server "localhost")
+       (setq user-mail-address "t.schutter@comcast.net")))
 
 
 ;;;; Source code manipulation
