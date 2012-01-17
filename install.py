@@ -151,8 +151,13 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("vi"), "exrc")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
-    make_dot_link(options, file_in_path("mail"), "mailcap")
+    make_dot_link(
+        options,
+        file_in_path("mail") or file_in_path("mutt"),
+        "mailcap"
+    )
     make_dot_link(options, file_in_path("mg"), "mg")
+    make_dot_link(options, file_in_path("mutt"), "mutt")
     make_dot_link(options, True, "profile")
     make_dot_link(options, file_in_path("pycheck"), "pycheckrc")
     make_dot_link(options, file_in_path("pylint"), "pylintrc")

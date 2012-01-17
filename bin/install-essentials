@@ -8,15 +8,20 @@ ROOTDIR="${HOME}/.homefiles"
 if [ -x "/usr/bin/apt-get" ]; then
     # Debian derivatives.
     PACKAGES="\
+        abook\
         emacs23\
         emacs23-el\
+        git\
         git-doc\
         git-man\
         mg\
+        mutt\
+        muttprint\
         pychecker\
         pyflakes\
         pylint\
         pymacs\
+        python-docutils\
         python-rope\
         python2.7-doc\
         tmux\
@@ -30,7 +35,9 @@ if [ -x "/usr/bin/apt-get" ]; then
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
     PACKAGES="\
+        abook\
         git\
+        mutt-1.5.21v0\
         python-2.7*\
         emacs-23.3--\
         emacs-python\

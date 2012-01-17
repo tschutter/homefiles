@@ -298,3 +298,13 @@
 ;            (flyspell-prog-mode)
 ;                                        ; ...
 ;            ))
+
+
+;;;; Editing reStructuredText documents.
+;;; Ubuntu drops the .py extensions on the rst programs in python-docutils.
+(setq rst-compile-toolsets
+  '((html . ("rst2html" ".html" nil))
+    (latex . ("rst2latex" ".tex" nil))
+    (newlatex . ("rst2newlatex" ".tex" nil))
+    (pseudoxml . ("rst2pseudoxml" ".xml" nil))
+    (xml . ("rst2xml" ".xml" nil))))
