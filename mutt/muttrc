@@ -41,6 +41,13 @@ set pager_index_lines=11
 # HTML setup (uses ~/.mailcap)
 auto_view text/html
 
+# vcalendar support
+# sudo apt-get install libdata-ical-perl libtext-autoformat-perl
+# add this line to ~/.mailcap:
+#   text/calendar;clear\;~/.mutt/vcalendar-filter %s; needsterminal
+# auto_view doesn't work
+#auto_view text/calendar
+
 # composing mail
 set use_from=yes
 set edit_headers=yes
