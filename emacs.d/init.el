@@ -229,7 +229,7 @@
 (add-hook 'message-mode-hook 'turn-on-auto-fill) ;word wrap
 ;; mail-abbrevs-setup to be replaced by lbdb-complete
 (setq mail-personal-alias-file "~/.mutt/aliases")
-(add-hook 'mail-setup-hook 'mail-abbrevs-setup)
+(add-hook 'message-setup-hook 'mail-abbrevs-setup)
 
 ;;; LBDB (abook) integration.
 (autoload 'lbdb "lbdb" "Query the Little Brother's Database" t)
