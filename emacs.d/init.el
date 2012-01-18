@@ -199,20 +199,36 @@
 ;;;; Email
 ;;; Outgoing mail
 (require 'smtpmail)
-;(setq smtpmail-debug-info t)  ;uncomment to debug problems
-
-;;; Use Message to compose mail.
-(setq mail-user-agent 'message-user-agent)
-(setq message-send-mail-function 'smtpmail-send-it)
-(add-hook 'message-mode-hook 'turn-on-auto-fill) ;word wrap
-
-(cond ((equal system-name "penguin")
+(cond ((string= system-name "deadeye") (setq system-realm "schutter.home"))
+      ((string= system-name "missy") (setq system-realm "schutter.home"))
+      ((string= system-name "penguin") (setq system-realm "schutter.home"))
+      ((string= system-name "pepsi") (setq system-realm "schutter.home"))
+      ((string= system-name "pixel") (setq system-realm "schutter.home"))
+      ((string= system-name "wampi") (setq system-realm "isc"))
+      (t (setq system-realm "unknown")))
+(cond ((equal system-realm "isc")
+       (setq smtpmail-smtp-server "fdsvdfw01vxms01.infosolco.com")
+       (setq smtpmail-local-domain "corelogic.com")
+       (setq user-mail-address "tschutter@corelogic.com"))
+      ((equal system-realm "iscp")
+       (setq smtpmail-smtp-server "smtp.corelogic.com")
+       (setq smtpmail-local-domain "corelogic.com")
+       (setq user-mail-address "tschutter@corelogic.com"))
+      ((equal system-realm "schutter.home")
        (setq smtpmail-smtp-server "smtp.schutter.home")
        (setq smtpmail-local-domain "schutter.home")
        (setq user-mail-address "t.schutter@comcast.net"))
       (t
        (setq smtpmail-smtp-server "localhost")
        (setq user-mail-address "t.schutter@comcast.net")))
+;(setq smtpmail-debug-info t)  ;uncomment to debug problems
+
+;;; Use Message to compose mail.
+(setq mail-user-agent 'message-user-agent)
+(setq message-send-mail-function 'smtpmail-send-it)
+(add-hook 'message-mode-hook 'turn-on-auto-fill) ;word wrap
+(setq mail-personal-alias-file "~/.mutt/aliases")
+(add-hook 'mail-setup-hook 'mail-abbrevs-setup)
 
 
 ;;;; Source code manipulation
