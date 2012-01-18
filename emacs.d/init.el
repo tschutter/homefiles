@@ -185,6 +185,9 @@
   (insert (format-time-string "%a %Y-%m-%d %H:%M:%S")))
 (global-set-key (kbd "C-c d") 'insert-date)
 
+;;; If there is no newline at the end of the file, append one when saving.
+(setq require-final-newline t)
+
 
 ;;;; Printing
 (require 'ps-print)
