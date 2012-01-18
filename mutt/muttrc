@@ -72,7 +72,7 @@ folder-hook . 'bind index m mail' # set default for non-templates
 folder-hook .*Templates 'bind index m resend-message'
 
 # address book
-set query_command="abook --mutt-query %s"
+set query_command="lbdbq %s"
 bind editor <tab> complete-query
 macro index a "|abook --add-email\n" 'add sender to abook'
 macro pager a "|abook --add-email\n" 'add sender to abook'

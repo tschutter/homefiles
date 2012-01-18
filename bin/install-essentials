@@ -14,6 +14,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         git\
         git-doc\
         git-man\
+        lbdb\
         libdata-ical-perl\
         libtext-autoformat-perl\
         mg\
@@ -43,6 +44,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         python-2.7*\
         emacs-23.3--\
         emacs-python\
+        lbdb--\
         pylint\
         w3m--\
         wget\

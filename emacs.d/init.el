@@ -173,10 +173,10 @@
 (global-set-key (kbd "C-c g") 'goto-line)
 
 ;;; Save and restore point (F3, F4).
-(define-key global-map [\C-f3] '(lambda () (interactive) (point-to-register 33)))  ;^F3 Save
-(define-key global-map [f3] '(lambda () (interactive) (jump-to-register 33)))      ;F3 Restore
-(define-key global-map [\C-f4] '(lambda () (interactive) (point-to-register 34)))  ;^F4 Save
-(define-key global-map [f4] '(lambda () (interactive) (jump-to-register 34)))      ;F4 Restore
+(define-key global-map (kbd "C-<f3>") '(lambda () (interactive) (point-to-register 33)))  ;^F3 Save
+(define-key global-map (kbd "<f3>") '(lambda () (interactive) (jump-to-register 33)))      ;F3 Restore
+(define-key global-map (kbd "C-<f4>") '(lambda () (interactive) (point-to-register 34)))  ;^F4 Save
+(define-key global-map (kbd "<f4>") '(lambda () (interactive) (jump-to-register 34)))      ;F4 Restore
 
 ;;; Insert datetime into current buffer (^C-d).
 (defun insert-date ()
@@ -227,8 +227,16 @@
 (setq mail-user-agent 'message-user-agent)
 (setq message-send-mail-function 'smtpmail-send-it)
 (add-hook 'message-mode-hook 'turn-on-auto-fill) ;word wrap
+;; mail-abbrevs-setup to be replaced by lbdb-complete
 (setq mail-personal-alias-file "~/.mutt/aliases")
 (add-hook 'mail-setup-hook 'mail-abbrevs-setup)
+
+;;; LBDB (abook) integration.
+(autoload 'lbdb "lbdb" "Query the Little Brother's Database" t)
+(autoload 'lbdb-region "lbdb" "Query the Little Brother's Database" t)
+(autoload 'lbdb-maybe-region "lbdb" "Query the Little Brother's Database" t)
+;(require 'lbdb-complete)
+;(global-set-key (kbd "C-c TAB") 'lbdb-complete) ; debug
 
 
 ;;;; Source code manipulation
@@ -284,7 +292,7 @@
           (set-mark (point))
           (forward-list)
           (region-line-wrap))))))
-(define-key global-map [f2] '(lambda () (interactive) (function-line-wrap)))
+(define-key global-map (kbd "<f2>") '(lambda () (interactive) (function-line-wrap)))
 
 
 ;;;; Python
@@ -304,7 +312,7 @@
           (lambda ()
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
             (define-key python-mode-map (kbd "C-c h") 'pylookup-lookup)  ;lookup in Python doc
-            (define-key python-mode-map [f12] 'pyp)  ;insert debug print
+            (define-key python-mode-map (kbd "<f12>") 'pyp)  ;insert debug print
             ))
 
 ;;; Python doc lookup.  https://github.com/tsgates/pylookup
