@@ -24,25 +24,26 @@
 
 
 ;;;; Web browsing
-(require 'w3m-load)
-(setq browse-url-browser-function 'w3m-browse-url)
-(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
-;;; Save the w3m buffers between sessions with desktop.el.
-(defun w3m-register-desktop-save ()
-  "Set `desktop-save-buffer' to a function returning the current URL."
-  (setq desktop-save-buffer (lambda (desktop-dirname) w3m-current-url)))
-(add-hook 'w3m-mode-hook 'w3m-register-desktop-save)
-(defun w3m-restore-desktop-buffer (d-b-file-name d-b-name d-b-misc)
-  "Restore a `w3m' buffer on `desktop' load."
-  (when (eq 'w3m-mode desktop-buffer-major-mode)
-    (let ((url d-b-misc))
-      (when url
-        (require 'w3m)
-        (if (string-match "^file" url)
-            (w3m-find-file (substring url 7))
-          (w3m-goto-url-new-session url))
-        (current-buffer)))))
-(add-to-list 'desktop-buffer-mode-handlers '(w3m-mode . w3m-restore-desktop-buffer))
+(if (not (eq system-type 'windows-nt))
+    (require 'w3m-load)
+    (setq browse-url-browser-function 'w3m-browse-url)
+    (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+    ;;; Save the w3m buffers between sessions with desktop.el.
+    (defun w3m-register-desktop-save ()
+      "Set `desktop-save-buffer' to a function returning the current URL."
+      (setq desktop-save-buffer (lambda (desktop-dirname) w3m-current-url)))
+    (add-hook 'w3m-mode-hook 'w3m-register-desktop-save)
+    (defun w3m-restore-desktop-buffer (d-b-file-name d-b-name d-b-misc)
+      "Restore a `w3m' buffer on `desktop' load."
+      (when (eq 'w3m-mode desktop-buffer-major-mode)
+        (let ((url d-b-misc))
+          (when url
+            (require 'w3m)
+            (if (string-match "^file" url)
+                (w3m-find-file (substring url 7))
+              (w3m-goto-url-new-session url))
+            (current-buffer)))))
+    (add-to-list 'desktop-buffer-mode-handlers '(w3m-mode . w3m-restore-desktop-buffer)))
 
 
 ;;;; Editor behavior
@@ -88,9 +89,11 @@
 ;;; Default to filename at point for C-x C-f.
 (require 'ffap)
 (ffap-bindings)
-;(setq browse-url-generic-program "/usr/bin/chromium-browser")
-;(setq ffap-url-fetcher 'browse-url-generic)
-(setq ffap-url-fetcher 'w3m-browse-url)
+(if (not (eq system-type 'windows-nt))
+    (setq ffap-url-fetcher 'w3m-browse-url)
+  (progn
+    (setq browse-url-generic-program "/usr/bin/chromium-browser")
+    (setq ffap-url-fetcher 'browse-url-generic)))
 (setq ffap-machine-p-known 'accept)  ;No pinging
 (setq ffap-c-path
       (list
