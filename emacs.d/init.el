@@ -79,6 +79,12 @@
   nil)
 (setq initial-scratch-message nil)  ;we know what the scratch buffer is for
 
+;;; Set default major mode to be text-mode instead of fundamental-mode.
+;;; Although the doc says that default-major-mode is obsolete since
+;;; 23.2 and to use major-mode instead, setting major-mode doesn't
+;;; work.
+(setq default-major-mode 'text-mode)
+
 ;;; Default to filename at point for C-x C-f.
 (require 'ffap)
 (ffap-bindings)
@@ -185,9 +191,6 @@
   (insert (format-time-string "%a %Y-%m-%d %H:%M:%S")))
 (global-set-key (kbd "C-c d") 'insert-date)
 
-;;; If there is no newline at the end of the file, append one when saving.
-(setq require-final-newline t)
-
 
 ;;;; Printing
 (require 'ps-print)
@@ -230,16 +233,16 @@
 (setq mail-user-agent 'message-user-agent)
 (setq message-send-mail-function 'smtpmail-send-it)
 (add-hook 'message-mode-hook 'turn-on-auto-fill) ;word wrap
-;; mail-abbrevs-setup to be replaced by lbdb-complete
-(setq mail-personal-alias-file "~/.mutt/aliases")
-(add-hook 'message-setup-hook 'mail-abbrevs-setup)
 
 ;;; LBDB (abook) integration.
 (autoload 'lbdb "lbdb" "Query the Little Brother's Database" t)
 (autoload 'lbdb-region "lbdb" "Query the Little Brother's Database" t)
 (autoload 'lbdb-maybe-region "lbdb" "Query the Little Brother's Database" t)
-;(require 'lbdb-complete)
-;(global-set-key (kbd "C-c TAB") 'lbdb-complete) ; debug
+(add-hook 'message-setup-hook
+          (lambda ()
+            (require 'lbdb-complete)
+            (define-key message-mode-map (kbd "C-c TAB") 'lbdb-complete)
+            ))
 
 
 ;;;; Source code manipulation
