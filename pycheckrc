@@ -1,6 +1,4 @@
-#
-# .pycheckrc file used by pychecker
-#
+# pychecker config file
 
 # ignore warnings from the list of modules
 blacklist = ['optparse']

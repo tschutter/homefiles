@@ -1,11 +1,14 @@
+" vim and gvim config file
+
 " Use indents of 4 spaces, and have them copied down lines.
 set tabstop=4
 set shiftwidth=4
 set shiftround
 set expandtab
+
 " Although autoindent sounds nice, it totally screws up text pasted
-from other apps.  And in vim, I paste more often than creating
-original text.
+" from other apps.  And in vim, I paste more often than creating
+" original text.
 set noautoindent
 set nosmartindent
 

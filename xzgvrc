@@ -1,3 +1,5 @@
+# xzgv config file
+
 # Do not prompt when deleting a file
 delete-single-prompt off
 

@@ -1,3 +1,5 @@
+# lbdb (Little Brother's DataBase) config file
+
 METHODS="m_abook m_muttalias"
 ABOOK_FILES="${HOME}/.abook/addressbook"
 MUTTALIAS_FILES="${HOME}/.mutt/aliases"

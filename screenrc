@@ -1,3 +1,5 @@
+# screen config file
+
 # Change scrollback to 2000 lines
 defscrollback 2000
 
