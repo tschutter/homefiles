@@ -191,6 +191,13 @@
   (insert (format-time-string "%a %Y-%m-%d %H:%M:%S")))
 (global-set-key (kbd "C-c d") 'insert-date)
 
+;;; If there is no newline at the end of the file, append one when
+;;; saving.  This should not be necessary because most modes should
+;;; set require-final-newline to mode-require-final-newline, but most
+;;; do not (Emacs-Lisp for one).  The risk here is if we open a binary
+;;; file we might append a newline.
+(setq require-final-newline t)
+
 
 ;;;; Printing
 (require 'ps-print)
