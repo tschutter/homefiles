@@ -3,8 +3,11 @@ set tabstop=4
 set shiftwidth=4
 set shiftround
 set expandtab
-set autoindent
-set smartindent
+" Although autoindent sounds nice, it totally screws up text pasted
+from other apps.  And in vim, I paste more often than creating
+original text.
+set noautoindent
+set nosmartindent
 
 " Enable syntax highlighting.
 if has("syntax")
