@@ -1,5 +1,13 @@
 ;;;; Snippets from old .emacs files.
 
+;todo; ;;;; Live mode (similar to tail -f) which is specified by dump() output
+;todo; (load-library "live-mode")
+;todo;
+
+;;;   ;; find-function setup
+;;;   (autoload 'find-function "find-function" nil t)
+;;;
+
 ;todo; ;;; Editor behavior: turn on font-lock for all modes
 ;todo; (global-font-lock-mode t)
 ;todo;
@@ -25,9 +33,6 @@
 ;;;
 ;;;   ;(set-default-font "-*-Andale Mono-normal-r-*-*-13-97-*-*-c-*-*-ansi-")
 ;;;
-;;;   ;; find-function setup
-;;;   (autoload 'find-function "find-function" nil t)
-;;;
 ;;;   ;;; CSharp mode
 ;;;   ;;; http://www.emacswiki.org/emacs/CSharpMode
 ;;;   ; Currently broken as of 2010-06-28, search for "23" in wiki.
@@ -37,9 +42,6 @@
 ;;;   ;(setq auto-mode-alist
 ;;;   ;   (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
-;todo; ;;; Editor behavior: default major mode text-mode
-;todo; (setq default-major-mode 'text-mode)
-;todo;
 ;todo; ;;; Editor behavior: turn on word wrap in text-mode
 ;todo; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;todo;
@@ -100,9 +102,6 @@
 ;todo; (define-key menu-bar-tools-menu [c-includes-current-file]
 ;todo;   '("Show C Includes" . c-includes-current-file))
 ;todo;
-;todo; ;;;; Live mode (similar to tail -f) which is specified by dump() output
-;todo; (load-library "live-mode")
-;todo;
 ;todo; ;;;; PRA source code style
 ;todo;
 ;todo; ;;; PRA source code style: C and C++
@@ -125,10 +124,6 @@
 ;todo;
 ;todo; ;;; PRA source code style: DOC++
 ;todo; (setq auto-mode-alist (cons '("\\.dxx\\'" . c-mode) auto-mode-alist))
-;todo;
-;todo; ;;; PRA source code style: no blank lines at EOF
-;todo; (setq require-final-newline 'ask)
-;todo; (setq-default next-line-add-newlines nil)
 ;todo;
 ;todo; ;;; PRA source code style: code fixup
 ;todo; (require 'pra-code-fixup)
