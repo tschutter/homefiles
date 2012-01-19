@@ -355,7 +355,7 @@
 ;            ))
 
 
-;;;; Editing reStructuredText documents.
+;;;; reStructuredText documents.
 ;;; Ubuntu drops the .py extensions on the rst programs in python-docutils.
 (setq rst-compile-toolsets
   '((html . ("rst2html" ".html" nil))
@@ -363,3 +363,8 @@
     (newlatex . ("rst2newlatex" ".tex" nil))
     (pseudoxml . ("rst2pseudoxml" ".xml" nil))
     (xml . ("rst2xml" ".xml" nil))))
+
+
+;;;; OpenSCAD files.
+(autoload 'scad-mode "scad" "Major mode for editing SCAD code." t)
+(add-to-list 'auto-mode-alist '("\\.scad$" . scad-mode))
