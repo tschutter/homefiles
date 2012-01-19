@@ -21,7 +21,9 @@ PROMPT_DIRTRIM=4
 # But using ESC]0 does not work if $TERM == screen.
 # And using ESC]0 does not work in mintty where $TERM == xterm.
 # And nobody uses icons to indicate minimized windows anymore.
-PROMPT_COMMAND='echo -ne "\033]2;${HOSTNAME}:${PWD/$HOME/~}\007"'
+if [ "${EMACS}" != "t" ]; then
+   PROMPT_COMMAND='echo -ne "\033]2;${HOSTNAME}:${PWD/$HOME/~}\007"'
+fi
 
 # Don't put duplicate lines or lines which begin with a space in the history.
 HISTCONTROL=ignoreboth
