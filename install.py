@@ -161,6 +161,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("mutt"), "mutt")
     make_dot_link(options, True, "profile")
     make_dot_link(options, file_in_path("pycheck"), "pycheckrc")
+    make_dot_link(options, True, "pdbrc")
     make_dot_link(options, file_in_path("pylint"), "pylintrc")
     make_dot_link(options, file_in_path("screen"), "screenrc")
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
