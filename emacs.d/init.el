@@ -20,8 +20,8 @@
 
 ;;;; Desktop
 (desktop-save-mode 1)
-(add-to-list 'desktop-globals-to-save 'query-replace-history)
-
+(add-to-list 'desktop-globals-to-save 'query-replace-history)  ;C-%
+(add-to-list 'desktop-globals-to-save 'log-edit-comment-ring)  ;*VC-log*
 
 ;;;; Web browsing
 (if (not (eq system-type 'windows-nt))
