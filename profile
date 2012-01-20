@@ -1,7 +1,9 @@
 # Executed by sh/bash/ksh for login shells.
 # This file should only contain commands understood by sh.
-# Aliases are not inherited by subshells and therefore should not be defined here.
-# Environment variables are intended only for use by .profile and .${SHELL}rc
+# Aliases are not inherited by subshells and therefore should not be
+# defined here.
+# Environment variables that begin with an underscore are intended
+# only for use by .profile and .${SHELL}rc
 
 # Determine the OS.  [Linux, CYGWIN_NT, OpenBSD, SunOS]
 _UNAME=$(uname)
@@ -39,10 +41,15 @@ fi
 # Prepend user's bin directory to the path.
 path_prepend ${HOME}/bin
 
-# Define environment variables.
+# Directory for Python utility functions.
+PYTHONPATH=${HOME}/.homefiles/lib/python; export PYTHONPATH
+
 if [ "${_UNAME}" = "OpenBSD" ]; then
+    # Source directory for pkg_add.
     PKG_PATH=ftp://ftp3.usa.openbsd.org/pub/OpenBSD/`uname -r`/packages/`uname -m`/; export PKG_PATH
 fi
+
+# Less options.
 [ -x "/usr/bin/less" ] && LESS="--quit-at-eof --long-prompt"; export LESS; PAGER="/usr/bin/less"; export PAGER
 
 # Make less more friendly for non-text input files, see lesspipe(1).
