@@ -1,17 +1,5 @@
 ;;;; Snippets from old .emacs files.
 
-;todo; ;;;; Live mode (similar to tail -f) which is specified by dump() output
-;todo; (load-library "live-mode")
-;todo;
-
-;;;   ;; find-function setup
-;;;   (autoload 'find-function "find-function" nil t)
-;;;
-
-;todo; ;;; Editor behavior: turn on font-lock for all modes
-;todo; (global-font-lock-mode t)
-;todo;
-
 ;;;   (load-library "mydiary")
 ;;;
 ;;;   ;; crypt++
@@ -46,9 +34,6 @@
 ;todo; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;todo;
 
-;todo; ;;; Editor behavior: Use MS-Windows cut and paste style
-;todo; (pc-selection-mode)
-;todo;
 ;todo; ;;; Editor behavior: highlight QWER keyword
 ;todo; (font-lock-add-keywords
 ;todo;  'c-mode
@@ -62,11 +47,6 @@
 ;todo; (add-hook 'c-mode-common-hook '(lambda () (imenu-add-to-menubar "Index")))
 ;todo;
 ;todo; ;;;; Editor tools
-;todo;
-;todo; ;;; Editor tools: GUD enable tooltips in GNU Emacs 21.
-;todo; (when (featurep 'tooltip)
-;todo;   (defvar tooltip-gud-tips-p)
-;todo;   (setq tooltip-gud-tips-p t))
 ;todo;
 ;todo; ;;; Editor tools: describe PC-lint message
 ;todo; (defun describe-lint-message (num)

@@ -312,10 +312,12 @@
 (define-key global-map (kbd "<f2>") '(lambda () (interactive) (function-line-wrap)))
 
 
-;;;; Python
+;;;; Common debugging config.
+(gud-tooltip-mode)  ;display a variable's value in a tooltip
+;(setq gud-tooltip-echo-area t)  ;use the echo area instead of frames for GUD tooltips
 
-;;; Python debugging.
-;gud-tooltip-mode
+
+;;;; Python
 
 ;;; Static code checks (either ^C-^W or ^C-^V).
 (setq py-pychecker-command "pycheck")
