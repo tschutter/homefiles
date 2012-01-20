@@ -3,4 +3,5 @@ emacs.d/.recentf
 emacs.d/.recentf~
 emacs.d/backups/
 emacs.d/pylookup/pylookup.db
+lib/python/*.pyc
 mutt/cache
