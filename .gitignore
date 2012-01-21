@@ -5,3 +5,4 @@ emacs.d/backups/
 emacs.d/pylookup/pylookup.db
 lib/python/*.pyc
 mutt/cache
+w3m/history

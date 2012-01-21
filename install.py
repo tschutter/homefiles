@@ -158,6 +158,7 @@ def link_dotfiles(options):
         "mailcap"
     )
     make_dot_link(options, file_in_path("mg"), "mg")
+    make_dot_link(options, file_in_path("mintty"), "minttyrc")
     make_dot_link(options, file_in_path("mutt"), "mutt")
     make_dot_link(options, True, "profile")
     make_dot_link(options, file_in_path("pycheck"), "pycheckrc")
@@ -167,7 +168,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
-    make_dot_link(options, file_in_path("mintty"), "minttyrc")
+    make_dot_link(options, file_in_path("w3m"), "w3m")
     make_link(options, is_ubuntu, "Xdefaults", ".Xresources")
     make_link(options, not is_ubuntu, "Xdefaults", ".Xdefaults")
 
