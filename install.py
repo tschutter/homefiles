@@ -181,6 +181,7 @@ def link_binfiles(options):
             os.mkdir(bindir)
     make_link(options, True, "bin/findfile")
     make_link(options, True, "bin/install-essentials")
+    make_link(options, file_in_path("mutt"), "bin/mutt")
     make_link(options, True, "bin/pycheck")
     make_link(options, True, "bin/tgrep")
     make_link(options, True, "bin/tm")
