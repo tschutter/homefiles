@@ -38,8 +38,9 @@ hdr_order From Date To Cc Subject
 set pager_stop=yes
 set pager_index_lines=11
 
-# HTML setup (uses ~/.mailcap)
-auto_view text/html
+# MIME autoview (uses ~/.mailcap)
+auto_view text/html text/calendar application/pdf application/postscript
+alternative_order text/plain text text/html application/postscript image/*
 
 # vcalendar support
 # sudo apt-get install libdata-ical-perl libtext-autoformat-perl
