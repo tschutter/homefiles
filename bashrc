@@ -52,7 +52,7 @@ fi
 [ -x /usr/bin/notify-send ] && alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Enable programmable completion features.
-if [ -f /etc/bash_completion ]; then
+if [ -f /etc/bash_completion && ! shopt -oq posix ]; then
     . /etc/bash_completion
 fi
 
