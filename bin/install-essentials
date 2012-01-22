@@ -16,6 +16,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         git-man\
         lbdb\
         libdata-ical-perl\
+        libnotify-bin\
         libtext-autoformat-perl\
         mg\
         mutt\
