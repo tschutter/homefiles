@@ -131,6 +131,7 @@
 
 ;;; On-the-fly spell checking.
 (add-hook 'text-mode-hook 'turn-on-flyspell)
+(setq ispell-silently-savep t)  ;save the personal dictionary without confirmation
 
 ;;; Key bindings.
 (global-set-key (kbd "C-z") 'undo)   ;overrides suspend-frame
