@@ -1,6 +1,5 @@
 # local settings
 source ~/.mutt-localrc
-source ~/.mutt/aliases
 
 # IMAP
 # http://mutt.sourceforge.net/imap/

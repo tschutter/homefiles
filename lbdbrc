@@ -1,5 +1,7 @@
 # lbdb (Little Brother's DataBase) config file
 
-METHODS="m_abook m_muttalias"
+# m_muttalias is totally broken.  The long name is not optional.  It
+# cannot handle comma separated addresses.
+
+METHODS="m_abook"
 ABOOK_FILES="${HOME}/.abook/addressbook"
-MUTTALIAS_FILES="${HOME}/.mutt/aliases"
