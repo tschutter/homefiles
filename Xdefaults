@@ -5,17 +5,25 @@
 ! created.  Changes here take effect before the window is created.
 #if HEIGHT > 1100
     Emacs*geometry: 128x60
+    URxvt.geometry: 128x60
     XTerm.vt100.geometry: 128x60
 #elif HEIGHT > 900
     Emacs*geometry: 128x50
+    URxvt.geometry: 128x50
     XTerm.vt100.geometry: 128x50
 #else
     ! HEIGHT does not seem to be defined during an Xubuntu login, and
     ! we will end up here.
     Emacs*geometry: 128x40
+    URxvt.geometry: 128x40
     XTerm.vt100.geometry: 128x40
 #endif
 
 ! Default for OpenBSD is to make new xterms process .profile.
 ! It makes debugging .profile changes easier.
-XTerm*loginShell:true
+XTerm*loginShell: true
+
+! rxvt-unicode(1) settings.
+URxvt.font: xft:Monospace
+URxvt.loginShell: true
+URxvt.saveLines: 1000

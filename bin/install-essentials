@@ -28,6 +28,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         python-docutils\
         python-rope\
         python2.7-doc\
+        rxvt-unicode\
         tmux\
         w3m\
         w3m-el\
@@ -47,6 +48,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         emacs-python\
         lbdb--\
         pylint\
+        rxvt-unicode\
         w3m--\
         wget\
     "
