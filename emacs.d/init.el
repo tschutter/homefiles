@@ -1,8 +1,3 @@
-;;;; Local config.
-(if (file-exists-p "~/.emacs-local")
-    (load-file "~/.emacs-local"))
-
-
 ;;;; ~/.emacs.d/lisp/
 ;;; Some packages installed in ~/.emacs.d/lisp/ are single files while others
 ;;; are placed inside their own sub-directories.
@@ -217,28 +212,9 @@
 ;;;; Email
 ;;; Outgoing mail
 (require 'smtpmail)
-(cond ((string= system-name "deadeye") (setq system-realm "schutter.home"))
-      ((string= system-name "missy") (setq system-realm "schutter.home"))
-      ((string= system-name "penguin") (setq system-realm "schutter.home"))
-      ((string= system-name "pepsi") (setq system-realm "schutter.home"))
-      ((string= system-name "pixel") (setq system-realm "schutter.home"))
-      ((string= system-name "wampi") (setq system-realm "isc"))
-      (t (setq system-realm "unknown")))
-(cond ((equal system-realm "isc")
-       (setq smtpmail-smtp-server "fdsvdfw01vxms01.infosolco.com")
-       (setq smtpmail-local-domain "corelogic.com")
-       (setq user-mail-address "tschutter@corelogic.com"))
-      ((equal system-realm "iscp")
-       (setq smtpmail-smtp-server "smtp.corelogic.com")
-       (setq smtpmail-local-domain "corelogic.com")
-       (setq user-mail-address "tschutter@corelogic.com"))
-      ((equal system-realm "schutter.home")
-       (setq smtpmail-smtp-server "smtp.schutter.home")
-       (setq smtpmail-local-domain "schutter.home")
-       (setq user-mail-address "t.schutter@comcast.net"))
-      (t
-       (setq smtpmail-smtp-server "localhost")
-       (setq user-mail-address "t.schutter@comcast.net")))
+(setq smtpmail-smtp-server "smtp.schutter.home")
+(setq smtpmail-local-domain "schutter.home")
+(setq user-mail-address "t.schutter@comcast.net")
 ;(setq smtpmail-debug-info t)  ;uncomment to debug problems
 
 ;;; Use Message to compose mail.
@@ -393,3 +369,8 @@
 ;;;; OpenSCAD files.
 (autoload 'scad-mode "scad" "Major mode for editing SCAD code." t)
 (add-to-list 'auto-mode-alist '("\\.scad$" . scad-mode))
+
+
+;;;; Local config.
+(if (file-exists-p "~/.emacs-local.el")
+    (load-file "~/.emacs-local.el"))
