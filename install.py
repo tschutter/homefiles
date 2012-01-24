@@ -139,13 +139,24 @@ def make_dot_link(options, enabled, filename):
 
 def make_sig_link(options):
     """Create a link to the appropriate signature file."""
-    userdomain = os.getenv("USERDOMAIN")
-    if userdomain == None:
-        system_name = os.uname()[1]
-        if system_name in ["apple", "passion", "wampi", "wampi-win2003"]:
-            userdomain = "ISC"
+    # Determine the realm.
+    computername = os.uname()[1].lower()
+    prefix = computername[:7]
+    if prefix == "fdsvbld":
+        realm = "ISC"
+    elif prefix == "fdsvdfw":
+        realm = "ISCP"
+    elif prefix == "fdsvmad":
+        realm = "ISC"
+    elif prefix == "fdsvsna":
+        realm = "ISCP"
+    elif computername in ["apple", "passion", "wampi", "wampi-win2003"]:
+        realm = "ISC"
+    else:
+        realm = "HOME"
 
-    if userdomain.startswith("ISC") or userdomain.startswith("WAMPI"):
+    # Link the correct signature.
+    if realm in ["ISC", "ISCP"]:
         make_link(options, True, "signature-corelogic", ".signature")
     else:
         make_link(options, True, "signature-home", ".signature")
