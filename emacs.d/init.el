@@ -1,8 +1,3 @@
-;;;; Local config.
-(if (file-exists-p "~/.emacs-local")
-    (load-file "~/.emacs-local"))
-
-
 ;;;; ~/.emacs.d/lisp/
 ;;; Some packages installed in ~/.emacs.d/lisp/ are single files while others
 ;;; are placed inside their own sub-directories.
@@ -393,3 +388,9 @@
 ;;;; OpenSCAD files.
 (autoload 'scad-mode "scad" "Major mode for editing SCAD code." t)
 (add-to-list 'auto-mode-alist '("\\.scad$" . scad-mode))
+
+
+;;;; Local config.
+;;; This *must* be last so that it can override settings here.
+(if (file-exists-p "~/.emacs-localrc")
+    (load-file "~/.emacs-localrc"))
