@@ -47,7 +47,7 @@
 (defun lbdb-complete-make-string (address)
   "Create a valid email address string from the given address."
   (if (null address) nil
-    (apply 'format "%s <%s>" address)))
+    (format "%s <%s>" (elt address 1) (elt address 0))))
 
 (defun lbdb-complete-completing-read (&rest args)
   "Call ido-completing-read if available."

@@ -131,6 +131,29 @@ def make_dot_link(options, enabled, filename):
     return make_link(options, enabled, filename, "." + filename)
 
 
+def get_system_realm(options):
+    """Return which realm this system belongs to."""
+    realm_map = {
+        "deadeye": "schutter.home",
+        "missy": "schutter.home",
+        "penguin": "schutter.home",
+        "pepsi": "schutter.home",
+        "pixel": "schutter.home",
+        "wampi": "isc"
+    }
+    system_name = os.uname()[1]
+    realm = realm_map.get(system_name, "unknown")
+    return realm
+
+
+def make_sig_link(options):
+    """Create a link to the appropriate signature file."""
+    system_realm = get_system_realm(options)
+    if system_realm == "isc":
+        make_link(options, True, "signature-corelogic", ".signature")
+    else:
+        make_link(options, True, "signature-home", ".signature")
+
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
 
@@ -167,6 +190,7 @@ def link_dotfiles(options):
     make_dot_link(options, True, "pdbrc")
     make_dot_link(options, file_in_path("pylint"), "pylintrc")
     make_dot_link(options, file_in_path("screen"), "screenrc")
+    make_sig_link(options)
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
