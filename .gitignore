@@ -3,6 +3,8 @@ emacs.d/.recentf
 emacs.d/.recentf~
 emacs.d/backups/
 emacs.d/pylookup/pylookup.db
+fabfile.pyc
 lib/python/*.pyc
 mutt/cache
+w3m/.arrived
 w3m/history
