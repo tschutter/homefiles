@@ -70,3 +70,9 @@ Therefore the implementation uses these guidelines:
 
 4. Environment variables that are intended only for .profile and
    .${SHELL}rc use start with a single underscore.
+
+5. The .signature file is selected at install.py time, not at app
+   runtime.  Too many apps use .signature, and each would need to be
+   configured to select the correct one.  It is much easier to put the
+   selection just in install.py.  That means that my role is selected
+   by which machine that I am on.
