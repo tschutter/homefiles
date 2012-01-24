@@ -54,9 +54,6 @@ set use_from=yes
 set edit_headers=yes
 set editor="mg +8"
 
-# signature
-set signature="~/.mutt/gensig.sh|"
-
 # forwarding
 set mime_forward=ask-no
 set mime_forward_decode=no
