@@ -40,7 +40,13 @@ import sys
 
 def file_in_path(filename):
     """Returns True if filename is in PATH."""
+    # Get the PATH.
     path = os.getenv("PATH", os.defpath)
+
+    # Add ~/bin in case this is not a login shell.
+    path = "%s%s%s" % (path, os.pathsep, os.path.expanduser("~/bin"))
+
+    # Loop through all of the path components searching for filename.
     for pathdir in path.split(os.pathsep):
         pathname = os.path.join(pathdir, filename)
         if os.path.exists(pathname):
@@ -131,28 +137,19 @@ def make_dot_link(options, enabled, filename):
     return make_link(options, enabled, filename, "." + filename)
 
 
-def get_system_realm(options):
-    """Return which realm this system belongs to."""
-    realm_map = {
-        "deadeye": "schutter.home",
-        "missy": "schutter.home",
-        "penguin": "schutter.home",
-        "pepsi": "schutter.home",
-        "pixel": "schutter.home",
-        "wampi": "isc"
-    }
-    system_name = os.uname()[1]
-    realm = realm_map.get(system_name, "unknown")
-    return realm
-
-
 def make_sig_link(options):
     """Create a link to the appropriate signature file."""
-    system_realm = get_system_realm(options)
-    if system_realm == "isc":
+    userdomain = os.getenv("USERDOMAIN")
+    if userdomain == None:
+        system_name = os.uname()[1]
+        if system_name in ["apple", "passion", "wampi", "wampi-win2003"]:
+            userdomain = "ISC"
+
+    if userdomain.startswith("ISC") or userdomain.startswith("WAMPI"):
         make_link(options, True, "signature-corelogic", ".signature")
     else:
         make_link(options, True, "signature-home", ".signature")
+
 
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
