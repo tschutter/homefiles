@@ -1,4 +1,6 @@
 .ropeproject/
+emacs.d/.emacs.desktop
+emacs.d/.emacs.desktop.lock
 emacs.d/.recentf
 emacs.d/.recentf~
 emacs.d/backups/

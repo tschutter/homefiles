@@ -1,7 +1,9 @@
-;;;; ~/.emacs.d/lisp/
-;;; Some packages installed in ~/.emacs.d/lisp/ are single files while others
+;;;; emacs(1) config file.
+
+;;;; ~/.emacs.d/elisp/
+;;; Some packages installed in ~/.emacs.d/elisp/ are single files while others
 ;;; are placed inside their own sub-directories.
-;;; Prepend ~/.emacs.d/lisp/ and all of it's subdirectories to load-path.
+;;; Prepend ~/.emacs.d/elisp/ and all of it's subdirectories to load-path.
 ;;; See http://www.emacswiki.org/emacs/LoadPath#AddSubDirectories
 (let ((default-directory "~/.emacs.d/elisp/"))
   (setq load-path
@@ -15,6 +17,8 @@
 
 ;;;; Desktop
 (desktop-save-mode 1)
+(setq desktop-path (list "~/.emacs.d/"))
+(setq desktop-load-locked-desktop nil)  ;do not load desktop if locked
 (add-to-list 'desktop-globals-to-save 'query-replace-history)  ;C-%
 (add-to-list 'desktop-globals-to-save 'log-edit-comment-ring)  ;*VC-log*
 
