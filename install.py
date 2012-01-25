@@ -40,7 +40,13 @@ import sys
 
 def file_in_path(filename):
     """Returns True if filename is in PATH."""
+    # Get the PATH.
     path = os.getenv("PATH", os.defpath)
+
+    # Add ~/bin in case this is not a login shell.
+    path = "%s%s%s" % (path, os.pathsep, os.path.expanduser("~/bin"))
+
+    # Loop through all of the path components searching for filename.
     for pathdir in path.split(os.pathsep):
         pathname = os.path.join(pathdir, filename)
         if os.path.exists(pathname):
@@ -131,28 +137,30 @@ def make_dot_link(options, enabled, filename):
     return make_link(options, enabled, filename, "." + filename)
 
 
-def get_system_realm(options):
-    """Return which realm this system belongs to."""
-    realm_map = {
-        "deadeye": "schutter.home",
-        "missy": "schutter.home",
-        "penguin": "schutter.home",
-        "pepsi": "schutter.home",
-        "pixel": "schutter.home",
-        "wampi": "isc"
-    }
-    system_name = os.uname()[1]
-    realm = realm_map.get(system_name, "unknown")
-    return realm
-
-
 def make_sig_link(options):
     """Create a link to the appropriate signature file."""
-    system_realm = get_system_realm(options)
-    if system_realm == "isc":
+    # Determine the realm.
+    computername = os.uname()[1].lower()
+    prefix = computername[:7]
+    if prefix == "fdsvbld":
+        realm = "ISC"
+    elif prefix == "fdsvdfw":
+        realm = "ISCP"
+    elif prefix == "fdsvmad":
+        realm = "ISC"
+    elif prefix == "fdsvsna":
+        realm = "ISCP"
+    elif computername in ["apple", "passion", "wampi", "wampi-win2003"]:
+        realm = "ISC"
+    else:
+        realm = "HOME"
+
+    # Link the correct signature.
+    if realm in ["ISC", "ISCP"]:
         make_link(options, True, "signature-corelogic", ".signature")
     else:
         make_link(options, True, "signature-home", ".signature")
+
 
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""

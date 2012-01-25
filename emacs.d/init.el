@@ -212,28 +212,33 @@
 ;;;; Email
 ;;; Outgoing mail
 (require 'smtpmail)
-(cond ((string= system-name "deadeye") (setq system-realm "schutter.home"))
-      ((string= system-name "missy") (setq system-realm "schutter.home"))
-      ((string= system-name "penguin") (setq system-realm "schutter.home"))
-      ((string= system-name "pepsi") (setq system-realm "schutter.home"))
-      ((string= system-name "pixel") (setq system-realm "schutter.home"))
-      ((string= system-name "wampi") (setq system-realm "isc"))
-      (t (setq system-realm "unknown")))
-(cond ((equal system-realm "isc")
-       (setq smtpmail-smtp-server "fdsvdfw01vxms01.infosolco.com")
-       (setq smtpmail-local-domain "corelogic.com")
-       (setq user-mail-address "tschutter@corelogic.com"))
-      ((equal system-realm "iscp")
-       (setq smtpmail-smtp-server "smtp.corelogic.com")
-       (setq smtpmail-local-domain "corelogic.com")
-       (setq user-mail-address "tschutter@corelogic.com"))
-      ((equal system-realm "schutter.home")
-       (setq smtpmail-smtp-server "smtp.schutter.home")
-       (setq smtpmail-local-domain "schutter.home")
-       (setq user-mail-address "t.schutter@comcast.net"))
-      (t
-       (setq smtpmail-smtp-server "localhost")
-       (setq user-mail-address "t.schutter@comcast.net")))
+(let* ((computername (downcase system-name))
+       (prefixlen (min (length computername) 7))
+       (prefix (substring computername 0 prefixlen))
+       (realm
+        (cond
+         ((string-equal prefix "fdsvbld") "ISC")
+         ((string-equal prefix "fdsvdfw") "ISCP")
+         ((string-equal prefix "fdsvmad") "ISC")
+         ((string-equal prefix "fdsvsna") "ISCP")
+         ((string-equal computername "apple") "ISC")
+         ((string-equal computername "passion") "ISC")
+         ((string-equal computername "wampi") "ISC")
+         ((string-equal computername "wampi-win2003") "ISC")
+         (t "HOME"))))
+  (cond
+   ((string-equal realm "ISCP")
+    (setq user-mail-address "tschutter@corelogic.com")
+    (setq smtpmail-local-domain "corelogic.com")
+    (setq smtpmail-smtp-server "smtp.corelogic.com"))
+   ((string-equal realm "ISC")
+    (setq user-mail-address "tschutter@corelogic.com")
+    (setq smtpmail-local-domain "corelogic.com")
+    (setq smtpmail-smtp-server "fdsvdfw01vxms01.infosolco.com"))
+   (t
+    (setq user-mail-address "t.schutter@comcast.net")
+    (setq smtpmail-local-domain "schutter.home")
+    (setq smtpmail-smtp-server "smtp.schutter.home"))))
 ;(setq smtpmail-debug-info t)  ;uncomment to debug problems
 
 ;;; Use Message to compose mail.
@@ -392,5 +397,5 @@
 
 ;;;; Local config.
 ;;; This *must* be last so that it can override settings here.
-(if (file-exists-p "~/.emacs-localrc")
-    (load-file "~/.emacs-localrc"))
+(if (file-exists-p "~/.emacs-local.el")
+    (load-file "~/.emacs-local.el"))
