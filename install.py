@@ -165,22 +165,11 @@ def make_sig_link(options):
 def link_dotfiles(options):
     """Create links in ${HOME} to dotfiles."""
 
-    # Determine what platform we are on.
-    uname = os.uname()
-    is_ubuntu = uname[3].find("Ubuntu") >= 0
-    is_cygwin = uname[0].startswith("CYGWIN")
-
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
     clean_link(options, ".bash_profile")
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
-    clean_link(options, ".emacs")
-    if is_cygwin:
-        # ~/.homedir/emacs.d must be copied by hand to ~/.emacs.d
-        pass
-    else:
-        make_dot_link(options, file_in_path("emacs"), "emacs.d")
     make_dot_link(options, file_in_path("vi"), "exrc")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
@@ -203,8 +192,8 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
-    make_link(options, is_ubuntu, "Xdefaults", ".Xresources")
-    make_link(options, not is_ubuntu, "Xdefaults", ".Xdefaults")
+    make_link(options, options.is_ubuntu, "Xdefaults", ".Xresources")
+    make_link(options, not options.is_ubuntu, "Xdefaults", ".Xdefaults")
 
 
 def link_binfiles(options):
@@ -220,6 +209,73 @@ def link_binfiles(options):
     make_link(options, True, "bin/pycheck")
     make_link(options, True, "bin/tgrep")
     make_link(options, True, "bin/tm")
+
+
+def simplify_path(path):
+    """Perform the inverse of os.path.expanduser()."""
+    homedir = os.path.expanduser("~")
+    path = os.path.abspath(path)
+    if path.startswith(homedir):
+        path = os.path.join("~", path[len(homedir) + 1:])
+    return path
+
+
+def create_dotemacs(options, enabled):
+    """Create ${HOME}/.emacs bootstrap file."""
+
+    self_pathname = simplify_path(os.path.abspath(__file__))
+    dotemacs_pathname = os.path.join(options.home, ".emacs")
+    init_el_pathname = simplify_path(
+        os.path.join(options.homefiles, "emacs.d", "init.el")
+    )
+
+    clean_link(options, os.path.join(options.home, ".emacs.d"))
+
+    if not os.path.exists(os.path.expanduser(init_el_pathname)):
+        print "ERROR: File '%s' does not exist." % init_el_pathname
+        sys.exit(1)
+
+    if (
+        enabled
+        and not options.force
+        and os.path.isfile(dotemacs_pathname)
+        and not os.path.islink(dotemacs_pathname)
+    ):
+        # The destination already exists as a file.
+        if options.verbose:
+            print "Bootstrap file already exists from '%s' to '%s'." % (
+                dotemacs_pathname,
+                init_el_pathname
+            )
+        return
+    else:
+        clean_link(options, dotemacs_pathname)
+
+    if not enabled:
+        if options.verbose:
+            print "Not creating '%s'." % dotemacs_pathname
+        return
+
+    # Write the bootstrap file.
+    print "Creating bootstrap file from '%s' to '%s'." % (
+        dotemacs_pathname,
+        init_el_pathname
+    )
+    if not options.dryrun:
+        with open(dotemacs_pathname, "w") as dotemacs_file:
+            dotemacs_body = (
+                ";;;; Bootstrap emacs.d/init.el.\n"
+                ";;;; This is a cross-platform solution to the lack of\n"
+                ";;;; symbolic links on Windows.\n"
+                ";;;; Created by %s.\n"
+                "(let ((init-el-file \"%s\"))\n"
+                "  (if (file-exists-p init-el-file)\n"
+                "      (load-file init-el-file)\n"
+                "    (message \"Unable to load %%s!\" init-el-file)))\n"
+            )
+            dotemacs_file.write(
+                dotemacs_body % (self_pathname, init_el_pathname)
+            )
 
 
 def main():
@@ -263,11 +319,19 @@ def main():
     if len(args) != 0:
         option_parser.error("invalid argument")
 
+    # Determine what platform we are on.
+    uname = os.uname()
+    options.is_ubuntu = uname[3].find("Ubuntu") >= 0
+    options.is_cygwin = uname[0].startswith("CYGWIN")
+    options.is_windows = uname[3].find("Windows") >= 0
+
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
     link_dotfiles(options)
 
     link_binfiles(options)
+
+    create_dotemacs(options, options.is_windows or file_in_path("emacs"))
 
     return 0
 

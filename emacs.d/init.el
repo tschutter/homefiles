@@ -1,11 +1,15 @@
 ;;;; emacs(1) config file.
 
-;;;; ~/.emacs.d/elisp/
-;;; Some packages installed in ~/.emacs.d/elisp/ are single files while others
-;;; are placed inside their own sub-directories.
-;;; Prepend ~/.emacs.d/elisp/ and all of it's subdirectories to load-path.
+;;;; Determine the location of the emacs.d directory.
+(setq emacs-d-directory (file-name-directory load-file-name))
+
+;;;; emacs-d-directory/elisp/
+;;; Some packages installed in emacs-d-directory/elisp/ are single
+;;; files while others are placed inside their own sub-directories.
+;;; Prepend emacs-d-directory/elisp/ and all of it's subdirectories to
+;;; load-path.
 ;;; See http://www.emacswiki.org/emacs/LoadPath#AddSubDirectories
-(let ((default-directory "~/.emacs.d/elisp/"))
+(let ((default-directory (concat emacs-d-directory "elisp/")))
   (setq load-path
         (append
          (let ((load-path (copy-sequence load-path))) ;; Shadow
@@ -16,13 +20,15 @@
 
 
 ;;;; Desktop
+;;; See http://www.emacswiki.org/emacs/DeskTop
 (desktop-save-mode 1)
-(setq desktop-path (list "~/.emacs.d/"))
+(setq desktop-path (list emacs-d-directory))
 (setq desktop-load-locked-desktop nil)  ;do not load desktop if locked
 (add-to-list 'desktop-globals-to-save 'query-replace-history)  ;C-%
 (add-to-list 'desktop-globals-to-save 'log-edit-comment-ring)  ;*VC-log*
 
 ;;;; Web browsing
+;;; http://www.emacswiki.org/emacs/emacs-w3m
 (when (require 'w3m-load nil t)
   (require 'w3m-load)
   (setq browse-url-browser-function 'w3m-browse-url)
@@ -36,12 +42,12 @@
     "Restore a `w3m' buffer on `desktop' load."
     (when (eq 'w3m-mode desktop-buffer-major-mode)
       (let ((url d-b-misc))
-	(when url
-	  (require 'w3m)
-	  (if (string-match "^file" url)
-	      (w3m-find-file (substring url 7))
-	    (w3m-goto-url-new-session url))
-	  (current-buffer)))))
+        (when url
+          (require 'w3m)
+          (if (string-match "^file" url)
+              (w3m-find-file (substring url 7))
+            (w3m-goto-url-new-session url))
+          (current-buffer)))))
   (add-to-list 'desktop-buffer-mode-handlers '(w3m-mode . w3m-restore-desktop-buffer)))
 
 
@@ -57,6 +63,7 @@
 (blink-cursor-mode 0)
 
 ;;; Respawn the scratch buffer if it is killed (C-x k).
+;; currently borked
 (save-excursion
   (set-buffer (get-buffer-create "*scratch*"))
   (make-local-variable 'kill-buffer-query-functions)
@@ -86,6 +93,7 @@
 (setq default-major-mode 'text-mode)
 
 ;;; Default to filename at point for C-x C-f.
+;;; See http://www.emacswiki.org/emacs/FindFileAtPoint
 (require 'ffap)
 (ffap-bindings)
 (if (featurep 'w3m-load)
@@ -105,16 +113,19 @@
        "C:/Program Files/Java/jdk1.6.0_20/include"))
 
 ;;; Enable menu of recently opened files.
+;;; See http://www.emacswiki.org/emacs/RecentFiles
 (require 'recentf)
-(setq recentf-save-file "~/.emacs.d/.recentf")
+(setq recentf-save-file (concat emacs-d-directory ".recentf"))
 (recentf-mode 1)
 
 ;;; Uniquely indentify buffers
+;;; See http://www.emacswiki.org/emacs/uniquify
 (require 'uniquify)
 (setq-default uniquify-buffer-name-style 'forward)
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
 ;;; Display line numbers.
+;;; See http://www.emacswiki.org/emacs/LineNumbers
 (require 'linum)
 (setq linum-format "% 5d")  ;always 5 columns
 (global-linum-mode)         ;all buffers
@@ -128,6 +139,7 @@
 (column-number-mode 1)
 
 ;;; On-the-fly spell checking.
+;;; See http://www.emacswiki.org/emacs/FlySpell
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (setq ispell-silently-savep t)  ;save the personal dictionary without confirmation
 
@@ -173,10 +185,12 @@
 (iswitchb-mode 1)
 
 ;;; Put all backups in one directory.
-(setq backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
+;;; See http://www.emacswiki.org/emacs/BackupDirectory
+(setq backup-directory (concat emacs-d-directory "backups/"))
+(setq backup-directory-alist `(("." . ,backup-directory)))
 (defun make-backup-file-name (file)
-  (concat "~/.emacs.d/backups/" (file-name-nondirectory file) "~"))
-(setq auto-save-list-file-prefix "~/.emacs.d/backups/")
+  (concat backup-directory (file-name-nondirectory file) "~"))
+(setq auto-save-list-file-prefix backup-directory)
 
 ;;; Provide an easy goto-line (^C-g).
 (global-set-key (kbd "C-c g") 'goto-line)
@@ -352,7 +366,7 @@
 ;;; Python doc lookup.  https://github.com/tsgates/pylookup
 ;; Run "M-x pylookup-update-all" to update database.
 (require 'pylookup)
-(setq pylookup-dir "~/.emacs.d/pylookup")
+(setq pylookup-dir (concat emacs-d-directory "pylookup"))
 (setq pylookup-program (concat pylookup-dir "/pylookup.py"))  ;executable
 (setq pylookup-db-file (concat pylookup-dir "/pylookup.db"))  ;database
 (setq pylookup-html-locations '("/usr/share/doc/python2.7/html"))  ;doc source
@@ -360,6 +374,8 @@
   "Lookup SEARCH-TERM in the Python HTML indexes." t)
 
 ;;; Python ropemacs refactoring.
+;;; Currently this is too expensive to do for all Python files, so we
+;;; load ropemacs only if requested.
 (defun load-ropemacs ()
   "Load pymacs and ropemacs"
   (interactive)
