@@ -37,6 +37,9 @@ if [ -x "/usr/bin/apt-get" ]; then
 
     sudo apt-get install ${PACKAGES}
 
+    # Set the executable from rxvt-unicode as the default xterm.
+    sudo update-alternatives --set x-terminal-emulator /usr/bin/urxvt
+
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
     PACKAGES="\
