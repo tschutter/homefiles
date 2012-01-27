@@ -1,7 +1,10 @@
 ;;;; emacs(1) config file.
 
-;;;; Determine the location of the emacs.d directory.
+;;;; Configure some standard directory names.
+;;; Determine the location of the emacs.d directory.
 (setq emacs-d-directory (file-name-directory load-file-name))
+;;; Location for state and cache files.
+(setq emacs-var-directory (concat emacs-d-directory "var/"))
 
 ;;;; emacs-d-directory/elisp/
 ;;; Some packages installed in emacs-d-directory/elisp/ are single
@@ -22,7 +25,9 @@
 ;;;; Desktop
 ;;; See http://www.emacswiki.org/emacs/DeskTop
 (desktop-save-mode 1)
-(setq desktop-path (list emacs-d-directory))
+(setq desktop-base-file-name "desktop")  ;no need for leading dot
+(setq desktop-base-lock-name "desktop.lock")  ;no need for leading dot
+(setq desktop-path (list emacs-var-directory))
 (setq desktop-load-locked-desktop nil)  ;do not load desktop if locked
 (add-to-list 'desktop-globals-to-save 'query-replace-history)  ;C-%
 (add-to-list 'desktop-globals-to-save 'log-edit-comment-ring)  ;*VC-log*
@@ -115,7 +120,7 @@
 ;;; Enable menu of recently opened files.
 ;;; See http://www.emacswiki.org/emacs/RecentFiles
 (require 'recentf)
-(setq recentf-save-file (concat emacs-d-directory ".recentf"))
+(setq recentf-save-file (concat emacs-var-directory "recentf"))
 (recentf-mode 1)
 
 ;;; Uniquely indentify buffers
@@ -186,7 +191,7 @@
 
 ;;; Put all backups in one directory.
 ;;; See http://www.emacswiki.org/emacs/BackupDirectory
-(setq backup-directory (concat emacs-d-directory "backups/"))
+(setq backup-directory (concat emacs-var-directory "backups/"))
 (setq backup-directory-alist `(("." . ,backup-directory)))
 (defun make-backup-file-name (file)
   (concat backup-directory (file-name-nondirectory file) "~"))
@@ -366,9 +371,8 @@
 ;;; Python doc lookup.  https://github.com/tsgates/pylookup
 ;; Run "M-x pylookup-update-all" to update database.
 (require 'pylookup)
-(setq pylookup-dir (concat emacs-d-directory "pylookup"))
-(setq pylookup-program (concat pylookup-dir "/pylookup.py"))  ;executable
-(setq pylookup-db-file (concat pylookup-dir "/pylookup.db"))  ;database
+(setq pylookup-program (concat emacs-d-directory "pylookup.py"))  ;executable
+(setq pylookup-db-file (concat emacs-var-directory "pylookup.db"))  ;database
 (setq pylookup-html-locations '("/usr/share/doc/python2.7/html"))  ;doc source
 (autoload 'pylookup-lookup "pylookup"
   "Lookup SEARCH-TERM in the Python HTML indexes." t)
