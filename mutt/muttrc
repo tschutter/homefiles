@@ -1,12 +1,12 @@
 # IMAP
 # http://mutt.sourceforge.net/imap/
-set certificate_file=~/.mutt/cache/certificates
+set certificate_file=~/.mutt/var/certificates
 set mail_check=60
 set timeout=15
 
 # Caching.
-set header_cache=~/.mutt/cache/headers
-set message_cachedir=~/.mutt/cache
+set header_cache=~/.mutt/var/headers
+set message_cachedir=~/.mutt/var
 
 # ?
 set move=no
@@ -24,7 +24,7 @@ folder-hook . 'set index_format="%4C %Z %D %-20.20L %X (%4c) %s"'
 macro index .c "T.\n;WN^T.\n" "Mark all messages as read"
 
 # Highlight some messages in the index (last match wins).
-# Must remove cache/headers for changes here to take effect.
+# Must remove mutt/var/headers for changes here to take effect.
 color index white        blue   "~U" # unread
 color index brightgreen  black  "(~f linda.schutter | ~f deraadt)"
 color index brightgreen  blue   "(~f linda.schutter | ~f deraadt) ~U"
