@@ -373,7 +373,8 @@
             (define-key python-mode-map (kbd "<f12>") 'pyp)  ;insert debug print
             ))
 
-;;; Python doc lookup.  https://github.com/tsgates/pylookup
+;;; Python doc lookup.
+;;; See https://github.com/tsgates/pylookup
 ;; Run "M-x pylookup-update-all" to update database.
 (require 'pylookup)
 (setq pylookup-program (concat emacs-d-directory "pylookup.py"))  ;executable
@@ -408,7 +409,16 @@
 ;            ))
 
 
+;;;; C#
+;;; See http://www.emacswiki.org/emacs/CSharpMode
+;;; Downloaded 0.8.5 from http://code.google.com/p/csharpmode/
+(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
+(setq auto-mode-alist
+      (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+
+
 ;;;; reStructuredText documents.
+;;; See http://www.emacswiki.org/emacs/reStructuredText
 ;;; Ubuntu drops the .py extensions on the rst programs in python-docutils.
 (setq rst-compile-toolsets
   '((html . ("rst2html" ".html" nil))
@@ -419,6 +429,7 @@
 
 
 ;;;; OpenSCAD files.
+;;; Downloaded v88 from https://github.com/openscad/openscad/blob/master/contrib/scad.el
 (autoload 'scad-mode "scad" "Major mode for editing SCAD code." t)
 (add-to-list 'auto-mode-alist '("\\.scad$" . scad-mode))
 
