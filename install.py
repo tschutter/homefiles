@@ -192,8 +192,8 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
-    make_link(options, options.is_ubuntu, "Xdefaults", ".Xresources")
-    make_link(options, not options.is_ubuntu, "Xdefaults", ".Xdefaults")
+    # Smack the ~/.Xresources link if it exists.
+    make_link(options, False, "Xdefaults", ".Xresources")
 
 
 def link_binfiles(options):
@@ -320,10 +320,10 @@ def main():
         option_parser.error("invalid argument")
 
     # Determine what platform we are on.
-    uname = os.uname()
-    options.is_ubuntu = uname[3].find("Ubuntu") >= 0
-    options.is_cygwin = uname[0].startswith("CYGWIN")
-    options.is_windows = uname[3].find("Windows") >= 0
+    if sys.platform == "cygwin":
+        options.is_cygwin = True
+    elif sys.platform.startswith("win"):
+        options.is_windows = True
 
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
@@ -331,7 +331,10 @@ def main():
 
     link_binfiles(options)
 
-    create_dotemacs(options, options.is_windows or file_in_path("emacs"))
+    create_dotemacs(
+        options,
+        options.is_cygwin or options.is_windows or file_in_path("emacs")
+    )
 
     return 0
 
