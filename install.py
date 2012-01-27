@@ -65,6 +65,13 @@ def clean_link(options, linkname):
             os.unlink(link_pathname)
 
     elif os.path.exists(link_pathname):
+        if os.path.isdir(link_pathname):
+            if len(os.listdir(link_pathname)) == 0:
+                print "Removing empty directory '%s'." % link_pathname
+                if not options.dryrun:
+                    os.rmdir(link_pathname)
+                    return
+
         # The destination exists as a file or dir.  Back it up.
         print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
         if not options.dryrun:
