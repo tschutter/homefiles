@@ -279,6 +279,11 @@
             ))
 
 
+;;;; Eshell
+(require 'eshell)
+(setq eshell-directory-name (concat emacs-var-directory "eshell/"))
+
+
 ;;;; Source code manipulation
 
 ;;; Display and cleanup bogus whitespace.
