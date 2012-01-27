@@ -68,12 +68,8 @@
 (blink-cursor-mode 0)
 
 ;;; Respawn the scratch buffer if it is killed (C-x k).
-;; currently borked
-(save-excursion
-  (set-buffer (get-buffer-create "*scratch*"))
-  (make-local-variable 'kill-buffer-query-functions)
-  (add-hook 'kill-buffer-query-functions 'kill-scratch-buffer))
 (defun kill-scratch-buffer ()
+  "Kill the *scratch* buffer and then respawn it."
   ;; The next line is just in case someone calls this manually
   (set-buffer (get-buffer-create "*scratch*"))
 
@@ -90,6 +86,7 @@
   ;; Since we killed it, don't let caller do that.
   nil)
 (setq initial-scratch-message nil)  ;we know what the scratch buffer is for
+(kill-scratch-buffer)  ;install the hook
 
 ;;; Set default major mode to be text-mode instead of fundamental-mode.
 ;;; Although the doc says that default-major-mode is obsolete since
@@ -222,6 +219,7 @@
 
 
 ;;;; Printing
+;;; See http://www.emacswiki.org/emacs/PrintingFromEmacs
 (require 'ps-print)
 (setq ps-number-of-columns 2)
 (setq ps-landscape-mode t)
@@ -280,6 +278,7 @@
 
 
 ;;;; Eshell
+;;; See http://www.emacswiki.org/emacs/CategoryEshell
 (require 'eshell)
 (setq eshell-directory-name (concat emacs-var-directory "eshell/"))
 
@@ -287,6 +286,7 @@
 ;;;; Source code manipulation
 
 ;;; Display and cleanup bogus whitespace.
+;;; See http://www.emacswiki.org/emacs/WhiteSpace
 (require 'whitespace)
 (setq whitespace-style '(face tabs trailing indentation empty))
 (global-whitespace-mode 1)
