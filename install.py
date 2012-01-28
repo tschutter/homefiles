@@ -229,6 +229,28 @@ def simplify_path(path):
     return path
 
 
+def install_fonts(options):
+    """Install fonts."""
+    if options.is_cygwin or options.is_windows:
+        src_dir = os.path.join(options.homefiles, "fonts")
+        if options.is_cygwin:
+            dst_dir = "/cygdrive/c/WINDOWS/Fonts"
+        else:
+            dst_dir = "C:/WINDOWS/Fonts"
+        for filename in os.listdir(src_dir):
+            if filename.endswith(".ttf"):
+                src_pathname = os.path.join(src_dir, filename)
+                dst_pathname = os.path.join(dst_dir, filename)
+                if not options.force and os.path.exists(dst_pathname):
+                    continue
+                print "Copying font from '%s' to '%s'." % (
+                    src_pathname,
+                    dst_pathname
+                )
+                if not options.dryrun:
+                    shutil.copy2(src_pathname, dst_pathname)
+
+
 def create_dotemacs(options, enabled):
     """Create ${HOME}/.emacs bootstrap file."""
 
@@ -343,6 +365,8 @@ def main():
         options,
         options.is_cygwin or options.is_windows or file_in_path("emacs")
     )
+
+    install_fonts(options)
 
     return 0
 
