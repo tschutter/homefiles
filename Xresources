@@ -8,24 +8,28 @@
 ! Changes to Emacs geometry in init.el take effect after the window is
 ! created.  Changes here take effect before the window is created.
 #if HEIGHT > 1100
-    Emacs*geometry: 128x60
-    URxvt.geometry: 128x60
-    XTerm.vt100.geometry: 128x60
+#   define FONT Ubuntu Mono:pixelsize=16
+#   define TEXT_GEOMETRY 128x60
 #elif HEIGHT > 900
-    Emacs*geometry: 128x50
-    URxvt.geometry: 128x50
-    XTerm.vt100.geometry: 128x50
+#   define FONT Ubuntu Mono:pixelsize=14
+#   define TEXT_GEOMETRY 128x50
 #else
-    Emacs*geometry: 128x40
-    URxvt.geometry: 128x40
-    XTerm.vt100.geometry: 128x40
+#   define FONT Ubuntu Mono:pixelsize=12
+#   define TEXT_GEOMETRY 128x40
 #endif
+
+! emacs(1) settings.
+Emacs.font: FONT
+Emacs.geometry: TEXT_GEOMETRY
+
+! rxvt-unicode(1) settings.
+URxvt.font: xft:FONT
+URxvt.geometry: TEXT_GEOMETRY
+URxvt.loginShell: true
+URxvt.saveLines: 1000
 
 ! Default for OpenBSD is to make new xterms process .profile.
 ! It makes debugging .profile changes easier.
 XTerm*loginShell: true
-
-! rxvt-unicode(1) settings.
-URxvt.font: xft:Monospace
-URxvt.loginShell: true
-URxvt.saveLines: 1000
+XTerm.vt100.font: xft:FONT
+XTerm.vt100.geometry: TEXT_GEOMETRY
