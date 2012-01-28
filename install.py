@@ -328,7 +328,7 @@ def main():
 
     # Determine what platform we are on.
     options.is_cygwin = sys.platform == "cygwin"
-    options.is_windows = sys.platform.startswith("win"):
+    options.is_windows = sys.platform.startswith("win")
 
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
