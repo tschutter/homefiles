@@ -18,6 +18,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         libdata-ical-perl\
         libnotify-bin\
         libtext-autoformat-perl\
+        mcpp\
         mg\
         mutt\
         muttprint\
@@ -52,6 +53,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         lbdb--\
         pylint\
         rxvt-unicode\
+        ucpp\
         w3m--\
         wget\
     "

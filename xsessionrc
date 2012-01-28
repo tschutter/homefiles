@@ -1,0 +1,25 @@
+# xsessionrc sourced by Xsession
+
+# Some sessions (like ?????) load ~/.Xresources with the -nocpp
+# option, which breaks our setup because our Xresources file relies on
+# cpp.  Therefore we do *not* make a link from ~/.Xresources to
+# ~/.homefiles/Xresources and instead run xrdb ourselves.
+if [ -f ~/.homefiles/Xresources ]; then
+    # cpp is usually slow because it loads the entire c compiler
+    if [ -x /usr/bin/mcpp ]; then
+        CPP="-cpp /usr/bin/mcpp"
+    elif [ -x /usr/local/bin/ucpp ]; then
+        CPP="-cpp /usr/local/bin/ucpp"
+    elif [ -x /usr/bin/cpp ]; then
+        CPP="-cpp /usr/bin/cpp"
+    else
+        CPP=""  # hope that xrdb gets it right
+    fi
+    xrdb -merge ${CPP} ~/.homefiles/Xresources
+    # Logging of this merge can be found near the beginning of
+    # ~/.xsession-errors
+fi
+
+# Local Variables:
+# mode:sh
+# End:

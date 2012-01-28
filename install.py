@@ -175,7 +175,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
-    clean_link(options, ".bash_profile")
+    clean_link(options, os.path.join(options.home, ".bash_profile"))
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     make_dot_link(options, file_in_path("vi"), "exrc")
     make_dot_link(options, file_in_path("git"), "gitconfig")
@@ -199,8 +199,10 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
-    # Smack the ~/.Xresources link if it exists.
-    make_link(options, False, "Xdefaults", ".Xresources")
+    # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
+    clean_link(options, os.path.join(options.home, ".Xdefaults"))
+    clean_link(options, os.path.join(options.home, ".Xresources"))
+    make_dot_link(options, options.is_xwindows, "xsessionrc")
 
 
 def link_binfiles(options):
@@ -329,6 +331,7 @@ def main():
     # Determine what platform we are on.
     options.is_cygwin = sys.platform == "cygwin"
     options.is_windows = sys.platform.startswith("win")
+    options.is_xwindows = not (options.is_cygwin or options.is_windows)
 
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
