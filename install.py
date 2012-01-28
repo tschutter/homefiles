@@ -327,10 +327,8 @@ def main():
         option_parser.error("invalid argument")
 
     # Determine what platform we are on.
-    if sys.platform == "cygwin":
-        options.is_cygwin = True
-    elif sys.platform.startswith("win"):
-        options.is_windows = True
+    options.is_cygwin = sys.platform == "cygwin"
+    options.is_windows = sys.platform.startswith("win"):
 
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
