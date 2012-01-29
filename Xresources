@@ -13,6 +13,9 @@
 #elif HEIGHT > 900
 #   define FONT Ubuntu Mono:pixelsize=14
 #   define TEXT_GEOMETRY 128x50
+#elif HEIGHT > 790
+#   define FONT Ubuntu Mono:pixelsize=14
+#   define TEXT_GEOMETRY 128x45
 #else
 #   define FONT Ubuntu Mono:pixelsize=12
 #   define TEXT_GEOMETRY 128x40
