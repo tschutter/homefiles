@@ -273,17 +273,21 @@ def create_dotemacs(options, enabled):
     if not options.dryrun:
         with open(dotemacs_pathname, "w") as dotemacs_file:
             dotemacs_body = (
-                ";;;; Bootstrap emacs.d/init.el.\n"
+                ";;;; Bootstrap %s.\n"
                 ";;;; This is a cross-platform solution to the lack of\n"
                 ";;;; symbolic links on Windows.\n"
                 ";;;; Created by %s.\n"
                 "(let ((init-el-file \"%s\"))\n"
                 "  (if (file-exists-p init-el-file)\n"
                 "      (load-file init-el-file)\n"
-                "    (message \"Unable to load %%s!\" init-el-file)))\n"
+                "    (message \"Init file %%s does not exist!\" init-el-file)))\n"
             )
             dotemacs_file.write(
-                dotemacs_body % (self_pathname, init_el_pathname)
+                dotemacs_body % (
+                    init_el_pathname,
+                    self_pathname,
+                    init_el_pathname
+                )
             )
 
 
