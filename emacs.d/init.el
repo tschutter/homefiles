@@ -402,11 +402,10 @@
 
 
 ;;;; C++
-;(add-hook 'c++-mode-hook
-;          (lambda ()
-;            (flyspell-prog-mode)
-;                                        ; ...
-;            ))
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)
+            ))
 
 
 ;;;; C#
@@ -415,6 +414,10 @@
 (autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
 (setq auto-mode-alist
       (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+(add-hook 'csharp-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)
+            ))
 
 
 ;;;; reStructuredText documents.
