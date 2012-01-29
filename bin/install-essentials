@@ -7,6 +7,7 @@ ROOTDIR="${HOME}/.homefiles"
 
 if [ -x "/usr/bin/apt-get" ]; then
     # Debian derivatives.
+    # ncurses-term adds /etc/terminfo for urxvt
     PACKAGES="\
         abook\
         emacs23\
@@ -22,6 +23,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         mg\
         mutt\
         muttprint\
+        ncurses-term\
         pychecker\
         pyflakes\
         pylint\
