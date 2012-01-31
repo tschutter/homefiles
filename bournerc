@@ -65,7 +65,8 @@ fi
 
 # Set the window title to a default value when running ssh.  If the
 # target machine is configured correctly, it will immediately set the
-# window title back to something useful.
+# window title back to something useful.  The 'tr' trick is a portable
+# way to handle escaped chars with echo.
 alias ssh="echo -n 'E]0;sshA' | tr 'EA' '\033\007'; ssh"
 
 # Local Variables:
