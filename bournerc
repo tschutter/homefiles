@@ -51,6 +51,7 @@ _HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
 _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
 export _HOSTNAME
 
+# Define some prompt strings.
 # \[ begin a sequence of non-printing characters
 # \] end a sequence of non-printing characters
 # \a an ASCII bell character (007)
@@ -59,9 +60,28 @@ export _HOSTNAME
 # \w the current working directory, with $HOME abbreviated with a tilde
 # \$ if the effective UID is 0, a #, otherwise a $
 # \e]0;STRING\a sets the icon name and window title to STRING
-if [ "${EMACS}" != "t" ]; then
-   PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t ${_HOSTNAME}:\w\$ '
-fi
+ps1-default() {
+    # Default prompt string.
+    if [ "${EMACS}" != "t" ]; then
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]${_HOSTNAME}:\w\$ '
+    fi
+}
+ps1-time() {
+    # Prompt string with timestamp.  Useful if you want to know when a
+    # command was run.
+    if [ "${EMACS}" != "t" ]; then
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t ${_HOSTNAME}:\w\$ '
+    fi
+}
+ps1-history() {
+    # Prompt string with history numbers.
+    if [ "${EMACS}" != "t" ]; then
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:${_HOSTNAME}:\w\$ '
+    fi
+}
+
+# Select the default prompt string.
+ps1-default
 
 # Set the window title to a default value when running ssh.  If the
 # target machine is configured correctly, it will immediately set the
