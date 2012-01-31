@@ -35,3 +35,4 @@ Key                    Action
 ====================== =======================================================
 Alt-.                  Insert the last argument of the previous command
 Ctrl-k                 Kill the rest of the current line
+====================== =======================================================
