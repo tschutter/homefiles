@@ -35,6 +35,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         tmux\
         w3m\
         w3m-el\
+        xsel\
         xzgv\
     "
 
@@ -58,6 +59,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         ucpp\
         w3m--\
         wget\
+        xsel\
     "
 
     sudo pkg_add -i -z ${PACKAGES}

@@ -1,7 +1,7 @@
 ! X resources
 ! Loaded by ~/xsessionrc
 
-! Use "xrdb -merge -cpp /usr/bin/cpp ~/.homefiles/Xresources" to reload.
+! Use "xrdb -merge -cpp /usr/bin/cpp Xresources" to reload.
 ! Use "xrdb -query" to see currently loaded settings.
 ! Cpp directives (#) and comments (!) must be in the first column.
 
@@ -30,6 +30,23 @@ URxvt.font: xft:FONT
 URxvt.geometry: TEXT_GEOMETRY
 URxvt.loginShell: true
 URxvt.saveLines: 1000
+
+! See https://github.com/muennich/urxvt-perls/blob/master/README.md
+! Setting perl-lib assumes that urxvt is started in the HOME
+! directory.  Neither "~" nor "$HOME" works here.
+URxvt.perl-lib: ./.urxvt/perl/
+URxvt.perl-ext-common: default,matcher,clipboard
+
+! click on URL to launch (perl-ext-common:matcher)
+URxvt.urlLauncher: x-www-browser
+URxvt.matcher.button: 2
+
+! Ctrl-C, Ctrl-V clipboard interaction (perl-ext-common:clipboard)
+!URxvt.keysym.Shift-Control-C: perl:clipboard:copy
+!URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
 
 ! Default for OpenBSD is to make new xterms process .profile.
 ! It makes debugging .profile changes easier.
