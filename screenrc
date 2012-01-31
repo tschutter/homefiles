@@ -3,7 +3,10 @@
 # Change scrollback to 2000 lines
 defscrollback 2000
 
-# status line at the bottom
+# Status line at the bottom
 hardstatus on
 hardstatus alwayslastline
 hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G}[%H %l]"
+
+# Do not display copyright message at startup
+startup_message off
