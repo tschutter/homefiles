@@ -18,3 +18,7 @@ bind '^[[3~'=delete-char-forward # del
 if [ -f ~/.kshrc-local ]; then
     . ~/.kshrc-local
 fi
+
+# Local Variables:
+# mode:sh
+# End:

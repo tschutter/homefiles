@@ -51,8 +51,23 @@ _HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
 _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
 export _HOSTNAME
 
-if [ "`id -u`" -eq 0 ]; then
-    PS1='${_HOSTNAME}:\w# '
-else
-    PS1='${_HOSTNAME}:\w$ '
+# \[ begin a sequence of non-printing characters
+# \] end a sequence of non-printing characters
+# \a an ASCII bell character (007)
+# \e an ASCII escape character (033)
+# \t the current time in 24-hour HH:MM:SS format
+# \w the current working directory, with $HOME abbreviated with a tilde
+# \$ if the effective UID is 0, a #, otherwise a $
+# \e]0;STRING\a sets the icon name and window title to STRING
+if [ "${EMACS}" != "t" ]; then
+   PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t ${_HOSTNAME}:\w\$ '
 fi
+
+# Set the window title to a default value when running ssh.  If the
+# target machine is configured correctly, it will immediately set the
+# window title back to something useful.
+alias ssh="echo -n 'E]0;sshA' | tr 'EA' '\033\007'; ssh"
+
+# Local Variables:
+# mode:sh
+# End:

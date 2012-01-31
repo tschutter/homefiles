@@ -12,19 +12,6 @@ fi
 # Note that PROMPT_DIRTRIM is a bashism.
 PROMPT_DIRTRIM=4
 
-# If this is an xterm set the title to host:dir.
-# Note that PROMPT_COMMAND is a bashism.
-# According to the Intertubes:
-#     ESC]0;stringBEL sets the icon name and window title to string
-#     ESC]1;stringBEL sets the icon name to string
-#     ESC]2;stringBEL sets the window title to string
-# But using ESC]0 does not work if $TERM == screen.
-# And using ESC]0 does not work in mintty where $TERM == xterm.
-# And nobody uses icons to indicate minimized windows anymore.
-if [ "${EMACS}" != "t" ]; then
-   PROMPT_COMMAND='echo -ne "\033]2;${HOSTNAME}:${PWD/$HOME/~}\007"'
-fi
-
 # Don't put duplicate lines or lines which begin with a space in the history.
 HISTCONTROL=ignoreboth
 
@@ -60,3 +47,7 @@ fi
 if [ -f ~/.bashrc-local ]; then
     . ~/.bashrc-local
 fi
+
+# Local Variables:
+# mode:sh
+# End:
