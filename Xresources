@@ -30,6 +30,8 @@ URxvt.font: xft:FONT
 URxvt.geometry: TEXT_GEOMETRY
 URxvt.loginShell: true
 URxvt.saveLines: 1000
+URxvt.scrollBar_right: true
+URxvt.scrollTtyOutput: false
 
 ! See https://github.com/muennich/urxvt-perls/blob/master/README.md
 ! Setting perl-lib assumes that urxvt is started in the HOME
