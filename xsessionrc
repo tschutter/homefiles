@@ -4,6 +4,9 @@
 # option, which breaks our setup because our Xresources file relies on
 # cpp.  Therefore we do *not* make a link from ~/.Xresources to
 # ~/.homefiles/Xresources and instead run xrdb ourselves.
+#
+# And in addition, we can define macros to be used in Xresources such
+# as HOME.
 if [ -f ~/.homefiles/Xresources ]; then
     # cpp is usually slow because it loads the entire c compiler
     if [ -x /usr/bin/mcpp ]; then
