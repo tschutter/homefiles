@@ -1,7 +1,7 @@
 ! X resources
 ! Loaded by ~/xsessionrc
 
-! Use "xrdb -merge -cpp /usr/bin/cpp Xresources" to reload.
+! Use "xrdb -merge -cpp /usr/bin/cpp -DHOME=${HOME} Xresources" to reload.
 ! Use "xrdb -query" to see currently loaded settings.
 ! Cpp directives (#) and comments (!) must be in the first column.
 
@@ -34,9 +34,7 @@ URxvt.scrollBar_right: true
 URxvt.scrollTtyOutput: false
 
 ! See https://github.com/muennich/urxvt-perls/blob/master/README.md
-! Setting perl-lib assumes that urxvt is started in the HOME
-! directory.  Neither "~" nor "$HOME" works here.
-URxvt.perl-lib: ./.urxvt/perl/
+URxvt.perl-lib: HOME/.urxvt/perl/
 URxvt.perl-ext-common: default,matcher,clipboard
 
 ! click on URL to launch (perl-ext-common:matcher)

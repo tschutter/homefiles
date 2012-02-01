@@ -15,7 +15,7 @@ if [ -f ~/.homefiles/Xresources ]; then
     else
         CPP=""  # hope that xrdb gets it right
     fi
-    xrdb -merge ${CPP} ~/.homefiles/Xresources
+    xrdb -merge ${CPP} -DHOME=${HOME} ~/.homefiles/Xresources
     # Logging of this merge can be found near the beginning of
     # ~/.xsession-errors
 fi
