@@ -7,6 +7,7 @@ Installs files in tschutter/homefiles using symbolic links.
 from optparse import OptionParser
 import os
 import shutil
+import subprocess
 import sys
 
 
@@ -142,7 +143,7 @@ def make_sig_link(options):
 
 
 def link_dotfiles(options):
-    """Create links in ${HOME} to dotfiles."""
+    """Create links in ~ to dotfiles."""
 
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
@@ -179,7 +180,7 @@ def link_dotfiles(options):
 
 
 def link_binfiles(options):
-    """Create links in ${HOME}/bin."""
+    """Create links in ~/bin."""
     bindir = os.path.join(options.home, "bin")
     if not os.path.isdir(bindir):
         print "Creating dir '%s'." % bindir
@@ -231,7 +232,7 @@ def install_fonts(options):
 
 
 def create_dotemacs(options, enabled):
-    """Create ${HOME}/.emacs bootstrap file."""
+    """Create ~/.emacs bootstrap file."""
 
     self_pathname = simplify_path(os.path.abspath(__file__))
     dotemacs_pathname = os.path.join(options.home, ".emacs")
@@ -281,7 +282,7 @@ def create_dotemacs(options, enabled):
                 "(let ((init-el-file \"%s\"))\n"
                 "  (if (file-exists-p init-el-file)\n"
                 "      (load-file init-el-file)\n"
-                "    (message \"Init file %%s does not exist!\" init-el-file)))\n"
+                "    (message \"File %%s does not exist!\" init-el-file)))\n"
             )
             dotemacs_file.write(
                 dotemacs_body % (
@@ -290,6 +291,38 @@ def create_dotemacs(options, enabled):
                     init_el_pathname
                 )
             )
+
+
+def create_dotless(options):
+    """
+    Create ~/.less file.
+
+    The lesskey program creates the ~/.less file.
+    """
+
+    dotless_pathname = os.path.join(options.home, ".less")
+    lesskey = [
+        "#env",
+        "LESSHISTFILE=%s" % os.path.join(options.homefiles, "var", "lesshst")
+    ]
+
+    if file_in_path("less"):
+        if options.force or not os.path.exists(dotless_pathname):
+            print "Running lesskey to create '%s'." % dotless_pathname
+            if not options.dryrun:
+                process = subprocess.Popen(
+                    ["lesskey", "-"],
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+                stdoutdata, stderrdata = process.communicate(
+                    "\n".join(lesskey)
+                )
+                print stdoutdata,
+                print stderrdata,
+    else:
+        clean_link(options, dotless_pathname)
 
 
 def main():
@@ -348,6 +381,8 @@ def main():
         options,
         options.is_cygwin or options.is_windows or file_in_path("emacs")
     )
+
+    create_dotless(options)
 
     install_fonts(options)
 

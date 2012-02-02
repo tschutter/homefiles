@@ -9,8 +9,18 @@ else
 fi
 
 [ -x "/usr/bin/lynx" ] && alias lynx="/usr/bin/lynx -accept_all_cookies"
+[ -x "/usr/local/bin/lynx" ] && alias lynx="/usr/local/bin/lynx -accept_all_cookies"
 
-[ -x "/usr/bin/less" ] && alias more="/usr/bin/less"
+# We don't set the LESS environment variable, because that applies to
+# PAGER usage (think man).
+if [ -x "/usr/bin/less" ]; then
+    alias more="/usr/bin/less --no-init --quit-at-eof --LONG-PROMPT"
+    alias less="/usr/bin/less --no-init --quit-at-eof --LONG-PROMPT"
+fi
+if [ -x "/usr/local/bin/less" ]; then
+    alias more="/usr/local/bin/less --no-init --quit-at-eof --LONG-PROMPT"
+    alias less="/usr/local/bin/less --no-init --quit-at-eof --LONG-PROMPT"
+fi
 
 if [ "${_UNAME}" = "CYGWIN_NT" ]; then
     # -W: show windows as well as cygwin processes

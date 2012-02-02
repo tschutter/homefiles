@@ -49,8 +49,9 @@ if [ "${_UNAME}" = "OpenBSD" ]; then
     PKG_PATH=ftp://ftp3.usa.openbsd.org/pub/OpenBSD/`uname -r`/packages/`uname -m`/; export PKG_PATH
 fi
 
-# Less options.
-[ -x "/usr/bin/less" ] && LESS="--quit-at-eof --long-prompt"; export LESS; PAGER="/usr/bin/less"; export PAGER
+# Use less(1) for a pager.
+# Do not set the LESS environment variable, because that also applies to PAGER.
+[ -x "/usr/bin/less" ] && PAGER="/usr/bin/less"; export PAGER
 
 # Make less more friendly for non-text input files, see lesspipe(1).
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
