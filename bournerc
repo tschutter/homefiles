@@ -2,29 +2,36 @@
 # Sourced by .${SHELL}rc
 
 # Aliases.
-if [ "${_UNAME}" = "OpenBSD" ]; then
-    alias dir="/bin/ls -l"
-else
-    alias dir="/bin/ls -lb"  # -b = C-style escapes for nongraphic characters
-fi
 
-[ -x "/usr/bin/lynx" ] && alias lynx="/usr/bin/lynx -accept_all_cookies"
-[ -x "/usr/local/bin/lynx" ] && alias lynx="/usr/local/bin/lynx -accept_all_cookies"
+# lynx(1) writes to .lynxrc, so we use an aliases instead.
+if [ -x "/usr/bin/lynx" -o -x "/usr/local/bin/lynx" ]; then
+    alias lynx="lynx -accept_all_cookies"
+fi
 
 # We don't set the LESS environment variable, because that applies to
 # PAGER usage (think man).
-if [ -x "/usr/bin/less" ]; then
-    alias more="/usr/bin/less --no-init --quit-at-eof --LONG-PROMPT"
-    alias less="/usr/bin/less --no-init --quit-at-eof --LONG-PROMPT"
-fi
-if [ -x "/usr/local/bin/less" ]; then
-    alias more="/usr/local/bin/less --no-init --quit-at-eof --LONG-PROMPT"
-    alias less="/usr/local/bin/less --no-init --quit-at-eof --LONG-PROMPT"
+if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
+    alias more="less --no-init --quit-at-eof --LONG-PROMPT"
+    alias less="less --no-init --quit-at-eof --LONG-PROMPT"
 fi
 
 if [ "${_UNAME}" = "CYGWIN_NT" ]; then
     # -W: show windows as well as cygwin processes
     alias ps="ps -W"
+fi
+
+# Enable color support in various programs.
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls="ls --color=auto"
+    alias dir="dir --color=auto -lb"  # -b = C-style escapes for nongraphic characters
+    alias grep="grep --color=auto"
+else
+    if [ "${_UNAME}" = "OpenBSD" ]; then
+        alias dir="/bin/ls -l"
+    else
+        alias dir="/bin/ls -lb"  # -b = C-style escapes for nongraphic characters
+    fi
 fi
 
 # Functions.
