@@ -319,8 +319,10 @@ def create_dotless(options):
                 stdoutdata, stderrdata = process.communicate(
                     "\n".join(lesskey)
                 )
-                print stdoutdata,
-                print stderrdata,
+                if len(stdoutdata.rstrip()) > 0:
+                    print stdoutdata.rstrip()
+                if len(stderrdata.rstrip()) > 0:
+                    print stderrdata.rstrip()
     else:
         clean_link(options, dotless_pathname)
 
