@@ -87,4 +87,4 @@ set print_command="muttprint --rcfile ~/.mutt/muttprintrc"
 
 # Local config.
 # This *must* be last so that it can override settings here.
-source ~/.mutt-localrc
+source ~/.muttrc-local
