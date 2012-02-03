@@ -9,6 +9,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 
 
 def file_in_path(filename):
@@ -203,26 +204,60 @@ def simplify_path(path):
     return path
 
 
+def create_tmp_file(prefix, suffix, contents):
+    """Create a temporary file containing contents."""
+    handle, pathname = tempfile.mkstemp(
+        prefix=prefix,
+        suffix=suffix,
+        text=True
+    )
+    with os.fdopen(handle) as tmp_file:
+        tmp_file.write(contents)
+    return pathname
+
+
+def run_command(args, stdinstr):
+    """Run an external command, returning stdout and stderr as a string."""
+    process = subprocess.Popen(
+        args,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    stdoutdata, stderrdata = process.communicate(stdinstr)
+    return stdoutdata + stderrdata
+
+
 def install_fonts(options):
     """Install fonts."""
+    # See http://blogs.technet.com/b/heyscriptingguy/archive/\
+    # 2008/04/25/how-can-i-install-fonts-using-a-script.aspx
     if options.is_cygwin or options.is_windows:
         src_dir = os.path.join(options.homefiles, "fonts")
-        if options.is_cygwin:
-            dst_dir = "/cygdrive/c/WINDOWS/Fonts"
-        else:
-            dst_dir = "C:/WINDOWS/Fonts"
+        # Need to see what cygwin local and cygwin ssh do here...
+        system_root = os.environ["SystemRoot"]
+        dst_dir = os.path.join(system_root, "Fonts")
         for filename in os.listdir(src_dir):
             if filename.endswith(".ttf"):
                 src_pathname = os.path.join(src_dir, filename)
                 dst_pathname = os.path.join(dst_dir, filename)
                 if not options.force and os.path.exists(dst_pathname):
                     continue
-                print "Copying font from '%s' to '%s'." % (
-                    src_pathname,
-                    dst_pathname
-                )
+                print "Installing font '%s'." % src_pathname
                 if not options.dryrun:
-                    shutil.copy2(src_pathname, dst_pathname)
+                    vbs_text = (
+                        'Set objShell = CreateObject("Shell.Application")\n'
+                        'Set objFolder = objShell.Namespace(&H14&)\n'
+                        'objFolder.CopyHere "%s"\n' % src_pathname
+                    )
+                    vbs_pathname = create_tmp_file(
+                        "install-font",
+                        ".vbs",
+                        vbs_text
+                    )
+                    run_command([vbs_pathname], None)
+                    #os.unlink(vbs_pathname)
+                    #shutil.copy2(src_pathname, dst_pathname)
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
         system_has_ubuntu_mono = os.path.exists(
@@ -293,7 +328,7 @@ def create_dotemacs(options, enabled):
             )
 
 
-def create_dotless(options):
+def create_dotless(options, enabled):
     """
     Create ~/.less file.
 
@@ -306,23 +341,13 @@ def create_dotless(options):
         "LESSHISTFILE=%s" % os.path.join(options.homefiles, "var", "lesshst")
     ]
 
-    if file_in_path("less"):
+    if enabled:
         if options.force or not os.path.exists(dotless_pathname):
             print "Running lesskey to create '%s'." % dotless_pathname
             if not options.dryrun:
-                process = subprocess.Popen(
-                    ["lesskey", "-"],
-                    stdin=subprocess.PIPE,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
-                stdoutdata, stderrdata = process.communicate(
-                    "\n".join(lesskey)
-                )
-                if len(stdoutdata.rstrip()) > 0:
-                    print stdoutdata.rstrip()
-                if len(stderrdata.rstrip()) > 0:
-                    print stderrdata.rstrip()
+                outstr = run_command(["lesskey", "-"], "\n".join(lesskey))
+                if len(outstr.rstrip()) > 0:
+                    print outstr.rstrip()
     else:
         clean_link(options, dotless_pathname)
 
@@ -384,7 +409,7 @@ def main():
         options.is_cygwin or options.is_windows or file_in_path("emacs")
     )
 
-    create_dotless(options)
+    create_dotless(options, file_in_path("less"))
 
     install_fonts(options)
 
