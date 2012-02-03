@@ -68,6 +68,14 @@ _HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
 _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
 export _HOSTNAME
 
+# _PS1_PREFIX can be optionally set in .bashrc-local or .kshrc-local
+# to indicate the type of machine.  For example:
+#     case ${_HOSTNAME} in
+#         firewall)
+#             _PS1_PREFIX='\[\e[1;31m\]FW\[\e[0m\] ' # bright red
+#             ;;
+#     esac
+
 # Define some prompt strings.
 # \[ begin a sequence of non-printing characters
 # \] end a sequence of non-printing characters
@@ -80,20 +88,20 @@ export _HOSTNAME
 ps1-default() {
     # Default prompt string.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]${_HOSTNAME}:\w\$ '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w\$ '
     fi
 }
 ps1-time() {
     # Prompt string with timestamp.  Useful if you want to know when a
     # command was run.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t ${_HOSTNAME}:\w\$ '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_PREFIX}${_HOSTNAME}':\w\$ '
     fi
 }
 ps1-history() {
     # Prompt string with history numbers.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:${_HOSTNAME}:\w\$ '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_PREFIX}${_HOSTNAME}':\w\$ '
     fi
 }
 
