@@ -22,6 +22,10 @@
          load-path)))
 
 
+;;;; Emacs window (frame)
+(setq frame-title-format (concat "%b@" system-name))  ;%b = buffer name
+
+
 ;;;; Desktop
 ;;; See http://www.emacswiki.org/emacs/DeskTop
 (desktop-save-mode 1)
@@ -31,6 +35,7 @@
 (setq desktop-load-locked-desktop nil)  ;do not load desktop if locked
 (add-to-list 'desktop-globals-to-save 'query-replace-history)  ;C-%
 (add-to-list 'desktop-globals-to-save 'log-edit-comment-ring)  ;*VC-log*
+
 
 ;;;; Web browsing
 ;;; http://www.emacswiki.org/emacs/emacs-w3m
