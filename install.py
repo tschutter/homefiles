@@ -206,12 +206,9 @@ def simplify_path(path):
 
 def create_tmp_file(prefix, suffix, contents):
     """Create a temporary file containing contents."""
-    handle, pathname = tempfile.mkstemp(
-        prefix=prefix,
-        suffix=suffix,
-        text=True
-    )
-    with os.fdopen(handle) as tmp_file:
+    handle, pathname = tempfile.mkstemp(prefix=prefix, suffix=suffix)
+    #os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+    with os.fdopen(handle, "wb") as tmp_file:
         tmp_file.write(contents)
     return pathname
 
@@ -228,6 +225,34 @@ def run_command(args, stdinstr):
     return stdoutdata + stderrdata
 
 
+def cygpathW(pathname):
+    """Converts a pathname to Windows style X:\dir\file."""
+    if sys.platform == "cygwin":
+        pipe = subprocess.Popen(
+            ["cygpath", "--windows", pathname],
+            stdout=subprocess.PIPE
+        ).stdout
+        for line in pipe:
+            pathname = line.strip()
+        pipe.close()
+
+    return pathname
+
+
+def cygpathU(pathname):
+    """Converts a pathname to Cygwin style /cygpath/X/dir/file."""
+    if sys.platform == "cygwin":
+        pipe = subprocess.Popen(
+            ["cygpath", "--unix", pathname],
+            stdout=subprocess.PIPE
+        ).stdout
+        for line in pipe:
+            pathname = line.strip()
+        pipe.close()
+
+    return pathname
+
+
 def install_fonts(options):
     """Install fonts."""
     # See http://blogs.technet.com/b/heyscriptingguy/archive/\
@@ -235,28 +260,29 @@ def install_fonts(options):
     if options.is_cygwin or options.is_windows:
         src_dir = os.path.join(options.homefiles, "fonts")
         # Need to see what cygwin local and cygwin ssh do here...
-        system_root = os.environ["SystemRoot"]
+        system_root = os.environ["SYSTEMROOT"]
         dst_dir = os.path.join(system_root, "Fonts")
         for filename in os.listdir(src_dir):
             if filename.endswith(".ttf"):
                 src_pathname = os.path.join(src_dir, filename)
                 dst_pathname = os.path.join(dst_dir, filename)
+                dst_pathname = cygpathU(dst_pathname)
                 if not options.force and os.path.exists(dst_pathname):
                     continue
                 print "Installing font '%s'." % src_pathname
                 if not options.dryrun:
                     vbs_text = (
-                        'Set objShell = CreateObject("Shell.Application")\n'
-                        'Set objFolder = objShell.Namespace(&H14&)\n'
-                        'objFolder.CopyHere "%s"\n' % src_pathname
+                        'Set objShell = CreateObject("Shell.Application")\r\n'
+                        'Set objFolder = objShell.Namespace(&H14&)\r\n'
+                        'objFolder.CopyHere "%s"\r\n' % cygpathW(src_pathname)
                     )
                     vbs_pathname = create_tmp_file(
                         "install-font",
                         ".vbs",
                         vbs_text
                     )
-                    run_command([vbs_pathname], None)
-                    #os.unlink(vbs_pathname)
+                    #run_command([vbs_pathname], None)
+                    os.unlink(vbs_pathname)
                     #shutil.copy2(src_pathname, dst_pathname)
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
