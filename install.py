@@ -281,9 +281,21 @@ def install_fonts(options):
                         ".vbs",
                         vbs_text
                     )
-                    #run_command([vbs_pathname], None)
+                    cmd_exe = os.path.join(
+                        cygpathU(system_root),
+                        "system32",
+                        "cmd.exe"
+                    )
+                    run_command(
+                        [
+                            cmd_exe,
+                            "/c",
+                            "start",
+                            cygpathW(vbs_pathname)
+                        ],
+                        None
+                    )
                     os.unlink(vbs_pathname)
-                    #shutil.copy2(src_pathname, dst_pathname)
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
         system_has_ubuntu_mono = os.path.exists(
@@ -437,7 +449,7 @@ def main():
 
     create_dotless(options, file_in_path("less"))
 
-    #install_fonts(options)
+    install_fonts(options)
 
     return 0
 
