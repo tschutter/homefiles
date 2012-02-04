@@ -164,7 +164,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("mintty"), "minttyrc")
     make_dot_link(options, file_in_path("mutt"), "mutt")
     make_dot_link(options, True, "profile")
-    make_dot_link(options, file_in_path("pycheck"), "pycheckrc")
+    make_dot_link(options, file_in_path("pychecker"), "pycheckrc")
     make_dot_link(options, True, "pdbrc")
     make_dot_link(options, file_in_path("pylint"), "pylintrc")
     make_dot_link(options, file_in_path("screen"), "screenrc")
@@ -437,7 +437,7 @@ def main():
 
     create_dotless(options, file_in_path("less"))
 
-    install_fonts(options)
+    #install_fonts(options)
 
     return 0
 
