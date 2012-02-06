@@ -12,8 +12,9 @@ fi
 # Note that PROMPT_DIRTRIM is a bashism.
 PROMPT_DIRTRIM=4
 
-# Don't put duplicate lines or lines which begin with a space in the history.
-HISTCONTROL=ignoreboth
+# Don't save duplicate lines in the history list.
+# Do save lines that begin with a space; I sometimes accidently do that.
+HISTCONTROL=ignoredups
 
 # Append to the history file, don't overwrite it.
 shopt -s histappend
