@@ -7,6 +7,7 @@ Installs files in tschutter/homefiles using symbolic links.
 from optparse import OptionParser
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -207,7 +208,7 @@ def simplify_path(path):
 def create_tmp_file(prefix, suffix, contents):
     """Create a temporary file containing contents."""
     handle, pathname = tempfile.mkstemp(prefix=prefix, suffix=suffix)
-    #os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+    os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
     with os.fdopen(handle, "wb") as tmp_file:
         tmp_file.write(contents)
     return pathname
@@ -225,7 +226,7 @@ def run_command(args, stdinstr):
     return stdoutdata + stderrdata
 
 
-def cygpathW(pathname):
+def cygpath_w(pathname):
     """Converts a pathname to Windows style X:\dir\file."""
     if sys.platform == "cygwin":
         pipe = subprocess.Popen(
@@ -239,7 +240,7 @@ def cygpathW(pathname):
     return pathname
 
 
-def cygpathU(pathname):
+def cygpath_u(pathname):
     """Converts a pathname to Cygwin style /cygpath/X/dir/file."""
     if sys.platform == "cygwin":
         pipe = subprocess.Popen(
@@ -266,7 +267,7 @@ def install_fonts(options):
             if filename.endswith(".ttf"):
                 src_pathname = os.path.join(src_dir, filename)
                 dst_pathname = os.path.join(dst_dir, filename)
-                dst_pathname = cygpathU(dst_pathname)
+                dst_pathname = cygpath_u(dst_pathname)
                 if not options.force and os.path.exists(dst_pathname):
                     continue
                 print "Installing font '%s'." % src_pathname
@@ -274,7 +275,7 @@ def install_fonts(options):
                     vbs_text = (
                         'Set objShell = CreateObject("Shell.Application")\r\n'
                         'Set objFolder = objShell.Namespace(&H14&)\r\n'
-                        'objFolder.CopyHere "%s"\r\n' % cygpathW(src_pathname)
+                        'objFolder.CopyHere "%s"\r\n' % cygpath_w(src_pathname)
                     )
                     vbs_pathname = create_tmp_file(
                         "install-font",
@@ -282,20 +283,21 @@ def install_fonts(options):
                         vbs_text
                     )
                     cmd_exe = os.path.join(
-                        cygpathU(system_root),
+                        cygpath_u(system_root),
                         "system32",
                         "cmd.exe"
                     )
-                    run_command(
+                    outstr = run_command(
                         [
                             cmd_exe,
                             "/c",
                             "start",
-                            cygpathW(vbs_pathname)
+                            cygpath_w(vbs_pathname)
                         ],
                         None
                     )
-                    os.unlink(vbs_pathname)
+                    if len(outstr.rstrip()) > 0:
+                        print outstr.rstrip()
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
         system_has_ubuntu_mono = os.path.exists(
