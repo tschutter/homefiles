@@ -298,6 +298,7 @@ def install_fonts(options):
                     )
                     if len(outstr.rstrip()) > 0:
                         print outstr.rstrip()
+                    os.unlink(vbs_pathname)
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
         system_has_ubuntu_mono = os.path.exists(
