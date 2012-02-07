@@ -294,6 +294,7 @@ def install_fonts(options):
                             cmd_exe,
                             "/c",
                             "start",
+                            "/wait",
                             cygpath_w(vbs_pathname)
                         ],
                         None
