@@ -152,6 +152,8 @@ def link_dotfiles(options):
     make_dot_link(options, True, "bournerc")
     clean_link(options, os.path.join(options.home, ".bash_profile"))
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
+    clean_link(options, os.path.join(options.home, ".emacs"))
+    make_dot_link(options, file_in_path("emacs"), "emacs.d")
     make_dot_link(options, file_in_path("vi"), "exrc")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
@@ -307,68 +309,6 @@ def install_fonts(options):
         make_dot_link(options, not system_has_ubuntu_mono, "fonts")
 
 
-def create_dotemacs(options, enabled):
-    """Create ~/.emacs bootstrap file."""
-
-    self_pathname = simplify_path(os.path.abspath(__file__))
-    dotemacs_pathname = os.path.join(options.home, ".emacs")
-    init_el_pathname = simplify_path(
-        os.path.join(options.homefiles, "emacs.d", "init.el")
-    )
-
-    clean_link(options, os.path.join(options.home, ".emacs.d"))
-
-    if not os.path.exists(os.path.expanduser(init_el_pathname)):
-        print "ERROR: File '%s' does not exist." % init_el_pathname
-        sys.exit(1)
-
-    if (
-        enabled
-        and not options.force
-        and os.path.isfile(dotemacs_pathname)
-        and not os.path.islink(dotemacs_pathname)
-    ):
-        # The destination already exists as a file.
-        if options.verbose:
-            print "Bootstrap file already exists from '%s' to '%s'." % (
-                dotemacs_pathname,
-                init_el_pathname
-            )
-        return
-    else:
-        clean_link(options, dotemacs_pathname)
-
-    if not enabled:
-        if options.verbose:
-            print "Not creating '%s'." % dotemacs_pathname
-        return
-
-    # Write the bootstrap file.
-    print "Creating bootstrap file from '%s' to '%s'." % (
-        dotemacs_pathname,
-        init_el_pathname
-    )
-    if not options.dryrun:
-        with open(dotemacs_pathname, "w") as dotemacs_file:
-            dotemacs_body = (
-                ";;;; Bootstrap %s.\n"
-                ";;;; This is a cross-platform solution to the lack of\n"
-                ";;;; symbolic links on Windows.\n"
-                ";;;; Created by %s.\n"
-                "(let ((init-el-file \"%s\"))\n"
-                "  (if (file-exists-p init-el-file)\n"
-                "      (load-file init-el-file)\n"
-                "    (message \"File %%s does not exist!\" init-el-file)))\n"
-            )
-            dotemacs_file.write(
-                dotemacs_body % (
-                    init_el_pathname,
-                    self_pathname,
-                    init_el_pathname
-                )
-            )
-
-
 def create_dotless(options, enabled):
     """
     Create ~/.less file.
@@ -444,11 +384,6 @@ def main():
     link_dotfiles(options)
 
     link_binfiles(options)
-
-    create_dotemacs(
-        options,
-        options.is_cygwin or options.is_windows or file_in_path("emacs")
-    )
 
     create_dotless(options, file_in_path("less"))
 
