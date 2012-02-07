@@ -205,7 +205,12 @@ User buffers are those not starting with *."
 (setq-default uniquify-buffer-name-style 'forward)
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
-;;; Display line numbers.
+;;; Display the size of the buffer, line number, and column number in the mode line.
+(size-indication-mode 1)
+(line-number-mode 1)
+(column-number-mode 1)
+
+;;; Display line numbers on the left side of the window.
 ;;; See http://www.emacswiki.org/emacs/LineNumbers
 (require 'linum)
 (setq linum-format "% 5d")  ;always 5 columns
@@ -215,9 +220,6 @@ User buffers are those not starting with *."
            (minibufferp)    ;except the minibuffer
            (string-match "^\\*" (buffer-name (current-buffer))))  ;except special buffers
     (linum-mode 1)))
-
-;;; Put column number in mode line.
-(column-number-mode 1)
 
 ;;; On-the-fly spell checking.
 ;;; See http://www.emacswiki.org/emacs/FlySpell
