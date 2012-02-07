@@ -331,7 +331,10 @@ def create_dotless(options, enabled):
         if options.force or not os.path.exists(dotless_pathname):
             print "Running lesskey to create '%s'." % dotless_pathname
             if not options.dryrun:
-                outstr = run_command(["lesskey", "-"], "\n".join(lesskey))
+                outstr = run_command(
+                    ["lesskey", "-o", dotless_pathname, "-"],
+                    "\n".join(lesskey)
+                )
                 if len(outstr.rstrip()) > 0:
                     print outstr.rstrip()
     else:
