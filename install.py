@@ -11,6 +11,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+import time
 
 
 def file_in_path(filename):
@@ -294,13 +295,16 @@ def install_fonts(options):
                             cmd_exe,
                             "/c",
                             "start",
-                            "/wait",
                             cygpath_w(vbs_pathname)
                         ],
                         None
                     )
                     if len(outstr.rstrip()) > 0:
                         print outstr.rstrip()
+                    # We should give the "/wait" parameter to the
+                    # start command above.  But that sometimes causes
+                    # a hang.  Therefore we just sleep here.
+                    time.sleep(5)
                     os.unlink(vbs_pathname)
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
