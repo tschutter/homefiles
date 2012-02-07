@@ -37,6 +37,13 @@
 (add-to-list 'desktop-globals-to-save 'log-edit-comment-ring)  ;*VC-log*
 
 
+;;;; Bookmarks
+(setq bookmark-default-file (concat emacs-var-directory "emacs.bmk"))
+(global-set-key (kbd "<kp-1>") 'bookmark-bmenu-list)
+(global-set-key (kbd "<kp-2>") 'bookmark-set)
+(global-set-key (kbd "<kp-3>") 'bookmark-jump)
+
+
 ;;;; Web browsing
 ;;; http://www.emacswiki.org/emacs/emacs-w3m
 (when (require 'w3m-load nil t)
@@ -61,16 +68,70 @@
   (add-to-list 'desktop-buffer-mode-handlers '(w3m-mode . w3m-restore-desktop-buffer)))
 
 
-;;;; Editor behavior
+;;;; Buffer manipulation
+(defun close-current-buffer ()
+  "Close the current buffer.
 
-;;; We don't need to see the startup message.
-(setq inhibit-startup-message t)
+Similar to (kill-buffer (current-buffer)) with the following additions:
 
-;;; Turn off the toolbar.
-(tool-bar-mode -1)
+* Prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
+* Make sure the buffer shown after closing is a user buffer.
 
-;;; Turn off blinking cursor.
-(blink-cursor-mode 0)
+A special buffer is one who's name starts with *.
+Else it is a user buffer."
+  (interactive)
+  (let (special-buffer-p is-special-buffer-after)
+    (if (string-match "^*" (buffer-name))
+        (setq special-buffer-p t)
+      (setq special-buffer-p nil))
+
+    ;; Offer to save buffers that are non-empty and modified, even for non-file visiting buffer.
+    ;; Because kill-buffer does not offer to save buffers that are not associated with files.
+    (when (and (buffer-modified-p)
+               (not special-buffer-p)
+               (not (string-equal major-mode "dired-mode"))
+               (if (equal (buffer-file-name) nil)
+                   (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
+                 t
+                 )
+               )
+      (if (yes-or-no-p
+           (concat "Buffer " (buffer-name) " modified; kill anyway? "))
+          (save-buffer)
+        (set-buffer-modified-p nil)))
+
+    ;; close
+    (kill-buffer (current-buffer))
+
+    ;; if emacs buffer, switch to a user buffer
+    (if (string-match "^*" (buffer-name))
+        (setq is-special-buffer-after t)
+      (setq is-special-buffer-after nil))
+    (when is-special-buffer-after
+      (next-user-buffer))
+    ))
+
+(defun next-user-buffer ()
+  "Switch to the next user buffer in cyclic order.\n
+User buffers are those not starting with *."
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (and (string-match "^*" (buffer-name)) (< i 50))
+      (setq i (1+ i)) (next-buffer))))
+
+(defun previous-user-buffer ()
+  "Switch to the previous user buffer in cyclic order.\n
+User buffers are those not starting with *."
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (and (string-match "^*" (buffer-name)) (< i 50))
+      (setq i (1+ i)) (previous-buffer))))
+
+(global-set-key (kbd "<kp-divide>") 'previous-user-buffer)
+(global-set-key (kbd "<kp-multiply>") 'next-user-buffer)
+(global-set-key (kbd "<kp-subtract>") 'close-current-buffer)
 
 ;;; Respawn the scratch buffer if it is killed (C-x k).
 (defun kill-scratch-buffer ()
@@ -92,6 +153,18 @@
   nil)
 (setq initial-scratch-message nil)  ;we know what the scratch buffer is for
 (kill-scratch-buffer)  ;install the hook
+
+
+;;;; Editor behavior
+
+;;; We don't need to see the startup message.
+(setq inhibit-startup-message t)
+
+;;; Turn off the toolbar.
+(tool-bar-mode -1)
+
+;;; Turn off blinking cursor.
+(blink-cursor-mode 0)
 
 ;;; Set default major mode to be text-mode instead of fundamental-mode.
 ;;; Although the doc says that default-major-mode is obsolete since
@@ -124,6 +197,7 @@
 (require 'recentf)
 (setq recentf-save-file (concat emacs-var-directory "recentf"))
 (recentf-mode 1)
+(global-set-key (kbd "<kp-4>") 'recentf-open-files)
 
 ;;; Uniquely indentify buffers
 ;;; See http://www.emacswiki.org/emacs/uniquify
@@ -153,6 +227,7 @@
 ;;; Key bindings.
 (global-set-key (kbd "C-z") 'undo)   ;overrides suspend-frame
 (global-set-key (kbd "C-S-z") 'redo)
+(global-set-key (kbd "<kp-7>") (lambda () "" (interactive) (find-file "~/.plan")))
 
 ;;; Mouse yank commands yank at point instead of at click.
 (setq mouse-yank-at-point t)
