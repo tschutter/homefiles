@@ -226,10 +226,11 @@ User buffers are those not starting with *."
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (setq ispell-silently-savep t)  ;save the personal dictionary without confirmation
 
-;;; Key bindings.
+;;; Various key bindings.
 (global-set-key (kbd "C-z") 'undo)   ;overrides suspend-frame
 (global-set-key (kbd "C-S-z") 'redo)
 (global-set-key (kbd "<kp-7>") (lambda () "" (interactive) (find-file "~/.plan")))
+(global-set-key (kbd "C-h n") 'man)  ;overrides view-emacs-news
 
 ;;; Mouse yank commands yank at point instead of at click.
 (setq mouse-yank-at-point t)
