@@ -9,9 +9,8 @@
 # as HOME.
 if [ -f ~/.homefiles/Xresources ]; then
     # cpp is usually slow because it loads the entire c compiler
-    if [ -x /usr/bin/mcpp ]; then
-        CPP="-cpp /usr/bin/mcpp"
-    elif [ -x /usr/local/bin/ucpp ]; then
+    # mcpp is not an option because it puts spaces around replaced tokens
+    if [ -x /usr/local/bin/ucpp ]; then
         CPP="-cpp /usr/local/bin/ucpp"
     elif [ -x /usr/bin/cpp ]; then
         CPP="-cpp /usr/bin/cpp"
