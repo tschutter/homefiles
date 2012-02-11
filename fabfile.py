@@ -17,6 +17,7 @@ env.abort_on_prompts = True
 env.shell = "/bin/sh -l -c"
 
 env.hosts = [
+    "crookshanks",
     "deadeye",
     "missy",
     "molly",
