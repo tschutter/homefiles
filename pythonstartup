@@ -1,4 +1,7 @@
-# Loaded by interactive Python sessions via PYTHONSTARTUP environment variable.
+# Loaded by interactive Python sessions via PYTHONSTARTUP environment
+# variable.
+#
+# See http://docs.python.org/tutorial/interactive.html
 
 import atexit
 import os
