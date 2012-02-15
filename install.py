@@ -25,12 +25,11 @@ def simplify_path(path):
 
 def create_vardir(options):
     """Create ~/.var directory."""
-    vardir = os.path.join(options.homedir, ".var")
-    if os.path.isdir(vardir):
+    if os.path.isdir(options.vardir):
         return
-    print "Creating '%s' directory." % simplify_path(vardir)
+    print "Creating '%s' directory." % simplify_path(options.vardir)
     if not options.dryrun:
-        os.mkdir(vardir, 0700)
+        os.mkdir(options.vardir, 0700)
 
 
 def file_in_path(filename):
@@ -174,7 +173,7 @@ def create_dotless(options, enabled):
     dotless_pathname = os.path.join(options.homefiles, "less")
     lesskey = [
         "#env",
-        "LESSHISTFILE=%s" % os.path.join(options.homedir, "var", "less_history")
+        "LESSHISTFILE=%s" % os.path.join(options.vardir, "less_history")
     ]
 
     if enabled:
@@ -365,15 +364,23 @@ def main():
         action="store",
         dest="homedir",
         metavar="DIR",
-        default=os.path.expanduser("~"),
+        default="~",
         help="specify directory to install to (default=%default)"
+    )
+    option_parser.add_option(
+        "--var",
+        action="store",
+        dest="vardir",
+        metavar="DIR",
+        default=os.path.join("~", ".var"),
+        help="specify var directory (default=%default)"
     )
     option_parser.add_option(
         "--force",
         action="store_true",
         dest="force",
         default=False,
-        help="replace existing symbolic links"
+        help="replace existing files and symbolic links"
     )
     option_parser.add_option(
         "-n",
@@ -394,6 +401,8 @@ def main():
     (options, args) = option_parser.parse_args()
     if len(args) != 0:
         option_parser.error("invalid argument")
+    options.homedir = os.path.expanduser(options.homedir)
+    options.vardir = os.path.expanduser(options.vardir)
 
     # Determine what platform we are on.
     options.is_cygwin = sys.platform == "cygwin"
