@@ -197,6 +197,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
+    clean_link(options, os.path.join(options.homedir, ".bash_history"))
     clean_link(options, os.path.join(options.homedir, ".bash_profile"))
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     clean_link(options, os.path.join(options.homedir, ".emacs"))
