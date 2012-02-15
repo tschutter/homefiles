@@ -42,10 +42,10 @@ fi
 path_prepend ${HOME}/bin
 
 # MySQL history.
-MYSQL_HISTFILE=${HOME}/.var/mysql_history
+MYSQL_HISTFILE=${HOME}/.var/mysql_history; export MYSQL_HISTFILE
 
 # Config for Python interactive sessions.
-PYTHONSTARTUP=${HOME}/.pythonstartup
+PYTHONSTARTUP=${HOME}/.pythonstartup; export PYTHONSTARTUP
 
 # Directory for Python utility functions.
 PYTHONPATH=${HOME}/.homefiles/lib/python; export PYTHONPATH

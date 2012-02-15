@@ -1,6 +1,9 @@
 # Loaded by interactive Python sessions via PYTHONSTARTUP environment
 # variable.
 #
+# For occasional use.  If you are looking in here, you probably should
+# be using ipython instead.
+#
 # See http://docs.python.org/tutorial/interactive.html
 
 import atexit
@@ -12,7 +15,8 @@ import rlcompleter
 readline.parse_and_bind('tab: complete')
 
 # Store command history.
-history_path = os.path.expanduser("~/.var/python_history")
+history_path_ = "~/.var/python_history"
+history_path = os.path.expanduser(history_path_)
 
 def save_history(history_path=history_path):
     import readline
@@ -23,4 +27,6 @@ if os.path.exists(history_path):
 
 atexit.register(save_history)
 
-del os, atexit, readline, rlcompleter, save_history, history_path
+print "History saved to %s; use TAB for auto-completion." % history_path_
+
+del os, atexit, readline, rlcompleter, save_history, history_path_, history_path
