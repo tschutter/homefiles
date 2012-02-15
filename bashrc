@@ -18,7 +18,6 @@ HISTCONTROL=ignoredups
 
 # Save history files in ~/.var/.
 HISTFILE=${HOME}/.var/bash_history
-MYSQL_HISTFILE=${HOME}/.var/mysql_history
 
 # Append to the history file, don't overwrite it.
 shopt -s histappend
