@@ -2,7 +2,7 @@
 
 # Command line history.
 import atexit, os, readline
-histfile = os.path.expanduser("~/.homefiles/var/pdb-history")
+histfile = os.path.expanduser("~/.var/pdb_history")
 try:
     readline.read_history_file(histfile)
 except IOError:

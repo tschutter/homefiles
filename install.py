@@ -14,6 +14,25 @@ import tempfile
 import time
 
 
+def simplify_path(path):
+    """Perform the inverse of os.path.expanduser()."""
+    homedir = os.path.expanduser("~")
+    path = os.path.abspath(path)
+    if path.startswith(homedir):
+        path = os.path.join("~", path[len(homedir) + 1:])
+    return path
+
+
+def create_vardir(options):
+    """Create ~/.var directory."""
+    vardir = os.path.join(options.homedir, ".var")
+    if os.path.isdir(vardir):
+        return
+    print "Creating '%s' directory." % simplify_path(vardir)
+    if not options.dryrun:
+        os.mkdir(vardir, 0700)
+
+
 def file_in_path(filename):
     """Returns True if filename is in PATH."""
     # Get the PATH.
@@ -32,7 +51,7 @@ def file_in_path(filename):
 
 def clean_link(options, linkname):
     """Delete link or backup files and dirs."""
-    link_pathname = os.path.join(options.home, linkname)
+    link_pathname = os.path.join(options.homedir, linkname)
 
     if os.path.islink(link_pathname):
         # The destination exists as a symbolic link.
@@ -66,7 +85,7 @@ def make_link(options, enabled, filename, linkname=None):
 
     # Determine the source and destination pathnames.
     file_pathname = os.path.join(options.homefiles, filename)
-    link_pathname = os.path.join(options.home, linkname)
+    link_pathname = os.path.join(options.homedir, linkname)
 
     # The target filename should always exist.
     if not os.path.exists(file_pathname):
@@ -102,7 +121,7 @@ def make_link(options, enabled, filename, linkname=None):
     filedir = os.path.dirname(filename)
     link_target = os.path.relpath(
         file_pathname,
-        os.path.join(options.home, filedir)
+        os.path.join(options.homedir, filedir)
     )
 
     # Make the symbolic link from link_pathname to link_target.
@@ -145,20 +164,49 @@ def make_sig_link(options):
         make_link(options, True, "signature-home", ".signature")
 
 
+def create_dotless(options, enabled):
+    """
+    Create ~/.homefiles/.less file.
+
+    The lesskey program creates the .less file.
+    """
+
+    dotless_pathname = os.path.join(options.homefiles, "less")
+    lesskey = [
+        "#env",
+        "LESSHISTFILE=%s" % os.path.join(options.homedir, "var", "less_history")
+    ]
+
+    if enabled:
+        if options.force or not os.path.exists(dotless_pathname):
+            print "Running lesskey to create '%s'." % dotless_pathname
+            if not options.dryrun:
+                outstr = run_command(
+                    ["lesskey", "-o", dotless_pathname, "-"],
+                    "\n".join(lesskey)
+                )
+                if len(outstr.rstrip()) > 0:
+                    print outstr.rstrip()
+    else:
+        clean_link(options, dotless_pathname)
+
+
 def link_dotfiles(options):
     """Create links in ~ to dotfiles."""
 
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
-    clean_link(options, os.path.join(options.home, ".bash_profile"))
+    clean_link(options, os.path.join(options.homedir, ".bash_profile"))
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
-    clean_link(options, os.path.join(options.home, ".emacs"))
+    clean_link(options, os.path.join(options.homedir, ".emacs"))
     make_dot_link(options, file_in_path("emacs"), "emacs.d")
     make_dot_link(options, file_in_path("vi"), "exrc")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(options, file_in_path("lbdbq"), "lbdbrc")
+    create_dotless(options, file_in_path("less"))
+    make_dot_link(options, file_in_path("less"), "less")
     make_dot_link(
         options,
         file_in_path("mail") or file_in_path("mutt"),
@@ -179,14 +227,14 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
     # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
-    clean_link(options, os.path.join(options.home, ".Xdefaults"))
-    clean_link(options, os.path.join(options.home, ".Xresources"))
+    clean_link(options, os.path.join(options.homedir, ".Xdefaults"))
+    clean_link(options, os.path.join(options.homedir, ".Xresources"))
     make_dot_link(options, options.is_xwindows, "xsessionrc")
 
 
 def link_binfiles(options):
     """Create links in ~/bin."""
-    bindir = os.path.join(options.home, "bin")
+    bindir = os.path.join(options.homedir, "bin")
     if not os.path.isdir(bindir):
         print "Creating dir '%s'." % bindir
         if not options.dryrun:
@@ -197,15 +245,6 @@ def link_binfiles(options):
     make_link(options, True, "bin/pycheck")
     make_link(options, True, "bin/tgrep")
     make_link(options, True, "bin/tm")
-
-
-def simplify_path(path):
-    """Perform the inverse of os.path.expanduser()."""
-    homedir = os.path.expanduser("~")
-    path = os.path.abspath(path)
-    if path.startswith(homedir):
-        path = os.path.join("~", path[len(homedir) + 1:])
-    return path
 
 
 def create_tmp_file(prefix, suffix, contents):
@@ -314,33 +353,6 @@ def install_fonts(options):
         make_dot_link(options, not system_has_ubuntu_mono, "fonts")
 
 
-def create_dotless(options, enabled):
-    """
-    Create ~/.less file.
-
-    The lesskey program creates the ~/.less file.
-    """
-
-    dotless_pathname = os.path.join(options.home, ".less")
-    lesskey = [
-        "#env",
-        "LESSHISTFILE=%s" % os.path.join(options.homefiles, "var", "lesshst")
-    ]
-
-    if enabled:
-        if options.force or not os.path.exists(dotless_pathname):
-            print "Running lesskey to create '%s'." % dotless_pathname
-            if not options.dryrun:
-                outstr = run_command(
-                    ["lesskey", "-o", dotless_pathname, "-"],
-                    "\n".join(lesskey)
-                )
-                if len(outstr.rstrip()) > 0:
-                    print outstr.rstrip()
-    else:
-        clean_link(options, dotless_pathname)
-
-
 def main():
     """main"""
     option_parser = OptionParser(
@@ -350,7 +362,7 @@ def main():
     option_parser.add_option(
         "--home",
         action="store",
-        dest="home",
+        dest="homedir",
         metavar="DIR",
         default=os.path.expanduser("~"),
         help="specify directory to install to (default=%default)"
@@ -389,11 +401,11 @@ def main():
 
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
+    create_vardir(options)
+
     link_dotfiles(options)
 
     link_binfiles(options)
-
-    create_dotless(options, file_in_path("less"))
 
     install_fonts(options)
 
