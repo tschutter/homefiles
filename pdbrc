@@ -13,4 +13,5 @@ alias ps pi self
 alias pl p_ locals() local:
 
 # Execute non-pdb commands.
+import os
 execfile(os.path.expanduser("~/.pdbrc.py"))
