@@ -1,5 +1,3 @@
-# mintty (Cygwin) config file
-
 Columns=128
 Rows=51
 ForegroundColour=0,0,0
