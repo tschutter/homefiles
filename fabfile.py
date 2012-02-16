@@ -21,6 +21,7 @@ env.hosts = [
     "deadeye",
     "missy",
     "molly",
+    "penguin",
     "pepsi",
     "shadow"
 ]
