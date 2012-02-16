@@ -13,4 +13,4 @@ alias ps pi self
 alias pl p_ locals() local:
 
 # Execute non-pdb commands.
-execfile("/home/tschutter/.homefiles/pdbrc.py")
+execfile(os.path.expanduser("~/.pdbrc.py"))
