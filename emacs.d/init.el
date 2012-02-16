@@ -1,10 +1,12 @@
 ;;;; emacs(1) config file.
 
 ;;;; Configure some standard directory names.
-;;; Determine the location of the emacs.d directory.
+;;; Determine the location of the .emacs.d directory.
 (setq emacs-d-directory (file-name-directory load-file-name))
 ;;; Location for state and cache files.
-(setq emacs-var-directory (concat emacs-d-directory "var/"))
+(setq emacs-var-directory (expand-file-name "~/.var/emacs/"))
+(make-directory emacs-var-directory t)  ;create it if it does not exist
+(set-file-modes emacs-var-directory #o700)  ;and make it private
 
 ;;;; emacs-d-directory/elisp/
 ;;; Some packages installed in emacs-d-directory/elisp/ are single
