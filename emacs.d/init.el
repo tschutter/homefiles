@@ -211,6 +211,7 @@ User buffers are those not starting with *."
 (size-indication-mode 1)
 (line-number-mode 1)
 (column-number-mode 1)
+;(which-function-mode 1)  ;if you can't tell what function you are in, your functions are too long
 
 ;;; Display line numbers on the left side of the window.
 ;;; See http://www.emacswiki.org/emacs/LineNumbers
