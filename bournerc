@@ -116,9 +116,7 @@ ps1-default
 # If this ssh is part of a pipe, then we don't want to inject the
 # control sequence into the output stream.  Fixes bash-completion of
 # scp filenames.
-#
-# The 'tr' trick is a portable way to handle escaped chars with echo.
-alias ssh="[ -t 1 ] && echo -n 'E]0;sshA' | tr 'EA' '\033\007'; ssh"
+alias ssh="[ -t 1 ] && echo -ne '\033]0;ssh\007' ; ssh"
 
 # Local Variables:
 # mode:sh
