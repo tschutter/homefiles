@@ -110,9 +110,15 @@ ps1-default
 
 # Set the window title to a default value when running ssh.  If the
 # target machine is configured correctly, it will immediately set the
-# window title back to something useful.  The 'tr' trick is a portable
-# way to handle escaped chars with echo.
-alias ssh="echo -n 'E]0;sshA' | tr 'EA' '\033\007'; ssh"
+# window title back to something useful.
+#
+# The [ -t 1 ] test determines if we are being called from a terminal.
+# If this ssh is part of a pipe, then we don't want to inject the
+# control sequence into the output stream.  Fixes bash-completion of
+# scp filenames.
+#
+# The 'tr' trick is a portable way to handle escaped chars with echo.
+alias ssh="[ -t 1 ] && echo -n 'E]0;sshA' | tr 'EA' '\033\007'; ssh"
 
 # Local Variables:
 # mode:sh
