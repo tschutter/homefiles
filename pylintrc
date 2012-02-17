@@ -22,6 +22,9 @@ disable=C0323,R0903,W0703
 
 [REPORTS]
 
+# Select the output format to one that can be used by editors.
+output-format=parseable
+
 # Include message ID in output.
 include-ids=yes
 
