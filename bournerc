@@ -34,7 +34,7 @@ else
     fi
 fi
 
-# Functions.
+# Directory navigation functions.
 _cdhelper() {
     CMD="cd $1"
     shift
@@ -111,11 +111,6 @@ ps1-default
 # Set the window title to a default value when running ssh.  If the
 # target machine is configured correctly, it will immediately set the
 # window title back to something useful.
-#
-# The [ -t 1 ] test determines if we are being called from a terminal.
-# If this ssh is part of a pipe, then we don't want to inject the
-# control sequence into the output stream.  Fixes bash-completion of
-# scp filenames.
 alias ssh="[ -t 1 ] && echo -ne '\033]0;ssh\007' ; ssh"
 
 # Local Variables:
