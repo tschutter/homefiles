@@ -62,7 +62,27 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
     "
 
     sudo pkg_add -i -z ${PACKAGES}
+
+elif [ -x "/usr/bin/zypper" ]; then
+    # OpenSUSE.
+    PACKAGES="\
+        emacs-23.3\
+        git\
+        mutt\
+        rxvt-unicode\
+        tmux\
+        w3m\
+        xsel\
+        xzgv\
+    "
+
+    sudo zypper install --auto-agree-with-licenses --no-recommends ${PACKAGES}
+
+else
+    echo "ERROR: Unknown package manager."
+    exit 1
 fi
+exit 0
 
 # As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
 # ignores the ropemacs-enable-shortcuts variable when loading.
