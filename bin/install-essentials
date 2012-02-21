@@ -82,7 +82,6 @@ else
     echo "ERROR: Unknown package manager."
     exit 1
 fi
-exit 0
 
 # As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
 # ignores the ropemacs-enable-shortcuts variable when loading.
