@@ -68,6 +68,7 @@ elif [ -x "/usr/bin/zypper" ]; then
     PACKAGES="\
         emacs-23.3\
         git\
+        lynx\
         mutt\
         rxvt-unicode\
         tmux\
