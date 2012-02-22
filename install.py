@@ -8,10 +8,54 @@ from optparse import OptionParser
 import os
 import shutil
 import stat
-import subprocess
 import sys
+if sys.version_info >= (2, 4):
+    import subprocess
 import tempfile
 import time
+
+
+def run_command(args, stdinstr):
+    """Run an external command, returning stdout and stderr as a string."""
+    if sys.version_info < (2, 4):
+        print "WARNING: Not running %s" % " ".join(args)
+    else:
+        process = subprocess.Popen(
+            args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        stdoutdata, stderrdata = process.communicate(stdinstr)
+        return stdoutdata + stderrdata
+
+
+def cygpath_w(pathname):
+    """Converts a pathname to Windows style X:\dir\file."""
+    if sys.platform == "cygwin":
+        pipe = subprocess.Popen(
+            ["cygpath", "--windows", pathname],
+            stdout=subprocess.PIPE
+        ).stdout
+        for line in pipe:
+            pathname = line.strip()
+        pipe.close()
+
+    return pathname
+
+
+def cygpath_u(pathname):
+    """Converts a pathname to Cygwin style /cygpath/X/dir/file."""
+    if sys.platform == "cygwin":
+        pipe = subprocess.Popen(
+            ["cygpath", "--unix", pathname],
+            stdout=subprocess.PIPE
+        ).stdout
+        for line in pipe:
+            pathname = line.strip()
+        pipe.close()
+
+    return pathname
 
 
 def simplify_path(path):
@@ -259,46 +303,6 @@ def create_tmp_file(prefix, suffix, contents):
     os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
     tmp_file = os.fdopen(handle, "wb")
     tmp_file.write(contents)
-    return pathname
-
-
-def run_command(args, stdinstr):
-    """Run an external command, returning stdout and stderr as a string."""
-    process = subprocess.Popen(
-        args,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
-    stdoutdata, stderrdata = process.communicate(stdinstr)
-    return stdoutdata + stderrdata
-
-
-def cygpath_w(pathname):
-    """Converts a pathname to Windows style X:\dir\file."""
-    if sys.platform == "cygwin":
-        pipe = subprocess.Popen(
-            ["cygpath", "--windows", pathname],
-            stdout=subprocess.PIPE
-        ).stdout
-        for line in pipe:
-            pathname = line.strip()
-        pipe.close()
-
-    return pathname
-
-
-def cygpath_u(pathname):
-    """Converts a pathname to Cygwin style /cygpath/X/dir/file."""
-    if sys.platform == "cygwin":
-        pipe = subprocess.Popen(
-            ["cygpath", "--unix", pathname],
-            stdout=subprocess.PIPE
-        ).stdout
-        for line in pipe:
-            pathname = line.strip()
-        pipe.close()
-
     return pathname
 
 
