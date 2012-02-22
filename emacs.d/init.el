@@ -239,6 +239,7 @@ User buffers are those not starting with *."
 (setq mouse-yank-at-point t)
 
 ;;; Delete selected text when typing.
+(require 'delsel)  ;required for OpenSUSE-12.1 emacs-23.3-6.1.2
 (delete-selection-mode 1)
 
 ;;; Vertical motion starting at EOL line keeps to EOL.
