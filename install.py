@@ -117,11 +117,14 @@ def make_link(options, enabled, filename, linkname=None):
 
     # Make the link target relative.  This usually makes the link
     # shorter in ls output.
-    filedir = os.path.dirname(filename)
-    link_target = os.path.relpath(
-        file_pathname,
-        os.path.join(options.homedir, filedir)
-    )
+    if sys.version_info < (2, 6):
+        link_target = file_pathname
+    else:
+        filedir = os.path.dirname(filename)
+        link_target = os.path.relpath(
+            file_pathname,
+            os.path.join(options.homedir, filedir)
+        )
 
     # Make the symbolic link from link_pathname to link_target.
     print "Creating symbolic link from '%s' to '%s'." % (
