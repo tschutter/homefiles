@@ -254,8 +254,8 @@ def create_tmp_file(prefix, suffix, contents):
     """Create a temporary file containing contents."""
     handle, pathname = tempfile.mkstemp(prefix=prefix, suffix=suffix)
     os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-    with os.fdopen(handle, "wb") as tmp_file:
-        tmp_file.write(contents)
+    tmp_file = os.fdopen(handle, "wb")
+    tmp_file.write(contents)
     return pathname
 
 
