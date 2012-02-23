@@ -17,7 +17,8 @@ Ctrl-O                 Opens a local file
 Ctrl-click link        Opens the link in a new tab in the background
 Ctrl+Shift-click link  Opens the link in a new tab and switches to the newly opened tab
 Ctrl-W                 Closes the current tab or pop-up
-Backspace              Goes to the previous page in your browsing history for the tab
+Alt-Left               Goes to the previous page in your browsing history for the tab
+Alt-Right              Goes to the next page in your browsing history for the tab
 Ctrl-F                 Opens the find bar
 Ctrl-G                 Finds the next match
 Ctrl+Shift-G           Finds the previous match
