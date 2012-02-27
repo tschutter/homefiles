@@ -79,6 +79,22 @@ elif [ -x "/usr/bin/zypper" ]; then
 
     sudo zypper install --auto-agree-with-licenses --no-recommends ${PACKAGES}
 
+elif [ -x "/usr/bin/yum" ]; then
+    # Red Hat, CentOS.
+    PACKAGES="\
+        emacs-23*\
+        git\
+        lynx\
+        mutt\
+        rxvt-unicode\
+        tmux\
+        w3m\
+        xsel\
+        xzgv\
+    "
+
+    sudo yum install ${PACKAGES}
+
 else
     echo "ERROR: Unknown package manager."
     exit 1
