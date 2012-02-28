@@ -9,6 +9,9 @@ alias pi p_ %1.__dict__ %1.
 # Print the member variables of self.
 alias ps pi self
 
+# Print the globals.
+alias pg p_ globals() global:
+
 # Print the locals.
 alias pl p_ locals() local:
 
