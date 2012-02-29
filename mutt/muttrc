@@ -1,3 +1,10 @@
+# mutt(1) config file
+
+# Load local config.  This *must* be first, because it will define
+# $folder, and the assignment to $folder must occur before "+" or "="
+# is referenced by any other variables.
+source ~/.muttrc-local
+
 # IMAP
 # http://mutt.sourceforge.net/imap/
 set certificate_file=~/.var/mutt/certificates
@@ -84,7 +91,3 @@ set pgp_auto_decode=yes
 
 # Printing.
 set print_command="muttprint --rcfile ~/.mutt/muttprintrc"
-
-# Local config.
-# This *must* be last so that it can override settings here.
-source ~/.muttrc-local
