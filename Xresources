@@ -39,7 +39,7 @@ URxvt.perl-ext-common: default,matcher,clipboard
 
 ! click on URL to launch (perl-ext-common:matcher)
 URxvt.urlLauncher: x-www-browser
-URxvt.matcher.button: 2
+URxvt.matcher.button: 1
 
 ! Ctrl-C, Ctrl-V clipboard interaction (perl-ext-common:clipboard)
 !URxvt.keysym.Shift-Control-C: perl:clipboard:copy
