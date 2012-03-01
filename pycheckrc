@@ -5,3 +5,6 @@ blacklist = ['optparse']
 
 # turn off all output except warnings
 quiet = 1
+
+# increase the maximum number of warnings to be displayed
+limit = 200
