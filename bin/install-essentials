@@ -19,10 +19,12 @@ if [ -x "/usr/bin/apt-get" ]; then
         libdata-ical-perl\
         libnotify-bin\
         libtext-autoformat-perl\
+        lpr\
         mg\
         mutt\
         muttprint\
         ncurses-term\
+        psutils\
         pychecker\
         pyflakes\
         pylint\
@@ -32,8 +34,8 @@ if [ -x "/usr/bin/apt-get" ]; then
         python2.7-doc\
         rxvt-unicode\
         tmux\
-        w3m\
         w3m-el\
+        w3m\
         xsel\
         xzgv\
     "
@@ -53,6 +55,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         emacs-23.3--\
         emacs-python\
         lbdb--\
+        psutils--letter\
         pylint\
         rxvt-unicode\
         ucpp\
