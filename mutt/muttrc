@@ -90,4 +90,5 @@ source ~/.mutt/gpg.rc
 set pgp_auto_decode=yes
 
 # Printing.
-set print_command="muttprint --rcfile ~/.mutt/muttprintrc"
+# Add to ~/.muttrc-local:
+#     set print_command="muttprint -p oki-c330"

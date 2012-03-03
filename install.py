@@ -262,6 +262,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("mg"), "mg")
     make_dot_link(options, file_in_path("mintty"), "minttyrc")
     make_dot_link(options, file_in_path("mutt"), "mutt")
+    make_dot_link(options, file_in_path("muttprint"), "muttprintrc")
     make_dot_link(options, True, "profile")
     make_dot_link(options, file_in_path("pychecker"), "pycheckrc")
     make_dot_link(options, file_in_path("pdb"), "pdbrc")
