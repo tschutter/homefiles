@@ -1,7 +1,7 @@
 # pychecker config file
 
 # ignore warnings from the list of modules
-blacklist = ['optparse']
+blacklist = ['_fastmath', 'optparse', 'ssl']
 
 # turn off all output except warnings
 quiet = 1
