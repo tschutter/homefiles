@@ -111,7 +111,10 @@ ps1-default
 # Set the window title to a default value when running ssh.  If the
 # target machine is configured correctly, it will immediately set the
 # window title back to something useful.
-alias ssh="[ -t 1 ] && echo -ne '\033]0;ssh\007' ; ssh"
+alias ssh="[ -t 1 ] && echo -ne '\033]0;ssh\007'; ssh"
+
+# It's nice to know which window has our email.
+alias mutt="[ -t 1 ] && echo -ne '\033]0;mutt\007'; mutt"
 
 # Local Variables:
 # mode:sh

@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Set the terminal title.
-/bin/echo -ne "\033]0;mutt\007"
-
-# Launch mutt.
-/usr/bin/mutt $*
