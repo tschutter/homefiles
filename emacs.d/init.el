@@ -412,7 +412,7 @@ User buffers are those not starting with *."
 ;;; Display and cleanup bogus whitespace.
 ;;; See http://www.emacswiki.org/emacs/WhiteSpace
 (require 'whitespace)
-(setq whitespace-style '(face tabs trailing indentation empty))
+(setq whitespace-style '(face trailing tabs empty indentation space-before-tab))
 (global-whitespace-mode 1)
 (setq whitespace-action '(auto-cleanup))
 
@@ -492,6 +492,7 @@ User buffers are those not starting with *."
 (add-hook 'python-mode-hook
           (lambda ()
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
+            (add-to-list 'whitespace-style 'lines-tail)
             (define-key python-mode-map (kbd "C-c h") 'pylookup-lookup)  ;lookup in Python doc
             (define-key python-mode-map (kbd "<f11>") 'pdb-insert-break)  ;insert debug break
             (define-key python-mode-map (kbd "<f12>") 'pyp)  ;insert debug print
@@ -526,9 +527,13 @@ User buffers are those not starting with *."
 
 
 ;;;; C++
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-hook 'c++-mode-hook
           (lambda ()
             (flyspell-prog-mode)
+            ;; PxPoint legacy
+            (setq indent-tabs-mode t)
+            (setq whitespace-style '(face trailing tabs empty space-before-tab))
             ))
 
 
