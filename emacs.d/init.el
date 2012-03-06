@@ -492,6 +492,7 @@ User buffers are those not starting with *."
 (add-hook 'python-mode-hook
           (lambda ()
             (flyspell-prog-mode)  ;on-the-fly spell check in comments
+            (make-local-variable 'whitespace-style)
             (add-to-list 'whitespace-style 'lines-tail)
             (define-key python-mode-map (kbd "C-c h") 'pylookup-lookup)  ;lookup in Python doc
             (define-key python-mode-map (kbd "<f11>") 'pdb-insert-break)  ;insert debug break
@@ -533,6 +534,7 @@ User buffers are those not starting with *."
             (flyspell-prog-mode)
             ;; PxPoint legacy
             (setq indent-tabs-mode t)
+            (make-local-variable 'whitespace-style)
             (setq whitespace-style '(face trailing tabs empty space-before-tab))
             ))
 
