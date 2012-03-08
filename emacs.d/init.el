@@ -23,10 +23,20 @@
             (normal-top-level-add-subdirs-to-load-path)))
          load-path)))
 
-
 ;;;; Emacs window (frame)
 (setq frame-title-format (concat "%b@" system-name))  ;%b = buffer name
 
+;;;; Default font
+;;; Setting the font here is problematic because it triggers a window
+;;; resize, which may push the window off of the screen.
+(if (and window-system (eq system-type 'windows-nt))
+    (if (string-equal system-name "FDSVBLD01W70027")
+        (progn
+          ;; Rick, Ashish, and Adam prefer light on dark.
+          ;; colorscheme desert
+          ;; Rick prefers a larger font.
+          (set-face-attribute 'default nil :font "Consolas-13"))
+      (set-face-attribute 'default nil :font "Consolas-11")))
 
 ;;;; Desktop
 ;;; See http://www.emacswiki.org/emacs/DeskTop
@@ -226,7 +236,8 @@ User buffers are those not starting with *."
 
 ;;; On-the-fly spell checking.
 ;;; See http://www.emacswiki.org/emacs/FlySpell
-(add-hook 'text-mode-hook 'turn-on-flyspell)
+(if (not (eq system-type 'windows-nt))
+    (add-hook 'text-mode-hook 'turn-on-flyspell))
 (setq ispell-silently-savep t)  ;save the personal dictionary without confirmation
 
 ;;; Various key bindings.
@@ -491,7 +502,8 @@ User buffers are those not starting with *."
 ;;; Python editing.
 (add-hook 'python-mode-hook
           (lambda ()
-            (flyspell-prog-mode)  ;on-the-fly spell check in comments
+            (if (not (eq system-type 'windows-nt))
+                (flyspell-prog-mode))  ;on-the-fly spell check in comments
             (make-local-variable 'whitespace-style)
             (add-to-list 'whitespace-style 'lines-tail)
             (define-key python-mode-map (kbd "C-c h") 'pylookup-lookup)  ;lookup in Python doc
@@ -531,7 +543,8 @@ User buffers are those not starting with *."
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-hook 'c++-mode-hook
           (lambda ()
-            (flyspell-prog-mode)
+            (if (not (eq system-type 'windows-nt))
+                (flyspell-prog-mode))
             ;; PxPoint legacy
             (setq indent-tabs-mode t)
             (make-local-variable 'whitespace-style)
@@ -547,7 +560,8 @@ User buffers are those not starting with *."
       (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 (add-hook 'csharp-mode-hook
           (lambda ()
-            (flyspell-prog-mode)
+            (if (not (eq system-type 'windows-nt))
+                (flyspell-prog-mode))
             ))
 
 
