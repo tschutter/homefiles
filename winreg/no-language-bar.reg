@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+; Disable? the language bar.
+[HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar]
+"ShowStatus"=dword:00000003
