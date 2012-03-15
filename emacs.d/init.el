@@ -184,6 +184,11 @@ User buffers are those not starting with *."
 ;;; work.
 (setq default-major-mode 'text-mode)
 
+;;; Enable extra dired functionality such as virtual-dired.
+(setq dired-x-hands-off-my-keys t)  ; don't bind C-x C-f
+(add-hook 'dired-load-hook
+          (function (lambda () (load "dired-x"))))
+
 ;;; Default to filename at point for C-x C-f.
 ;;; See http://www.emacswiki.org/emacs/FindFileAtPoint
 (require 'ffap)
