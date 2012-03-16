@@ -1,7 +1,9 @@
 Windows Registry Editor Version 5.00
 
+; Disable screen saver.
 [HKEY_CURRENT_USER\Control Panel\Desktop]
 "ScreenSaveActive"="0"
 
 [HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Control Panel\Desktop]
+"ScreenSaveActive"="0"
 "ScreenSaveTimeOut"="36000"
