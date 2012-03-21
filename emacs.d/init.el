@@ -440,8 +440,8 @@ User buffers are those not starting with *."
   (interactive)
   (require 'secrets "secrets.el.gpg")
   (erc :server "localhost" :port 6667 :nick bitlbee-nick))
-; register user BITLBEE-PASS
-; account add yahoo tom.schutter tom-yahoo
+; register user BITLBEE-PASSWORD
+; account add yahoo tom.schutter YAHOO-PASSWORD
 
 
 ;;;; Source code manipulation
