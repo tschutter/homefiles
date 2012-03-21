@@ -236,7 +236,7 @@ User buffers are those not starting with *."
 (defun linum-on ()
   (unless (or
            (minibufferp)    ;except the minibuffer
-           (string-match "^\\*" (buffer-name (current-buffer))))  ;except special buffers
+           (string-match "^\\*\\|&" (buffer-name (current-buffer))))  ;except special buffers
     (linum-mode 1)))
 
 ;;; On-the-fly spell checking.
@@ -421,6 +421,25 @@ User buffers are those not starting with *."
 ;;; See http://www.emacswiki.org/emacs/CategoryEshell
 (require 'eshell)
 (setq eshell-directory-name (concat emacs-var-directory "eshell/"))
+
+
+;;;; BitlBee ERC InternetRelayChat.
+;;; http://emacs-fu.blogspot.com/search/label/erc
+;;; http://wiki.bitlbee.org/quickstart
+(defun bitlbee-identify ()
+  (when (and (string= "localhost" erc-session-server)
+             (string= "&bitlbee" (buffer-name)))
+    (erc-message "PRIVMSG" (format "%s identify user %s"
+                                   (erc-default-target)
+                                   bitlbee-password))))
+(add-hook 'erc-join-hook 'bitlbee-identify)
+(defun chat ()
+  "Connect to IM networks using bitlbee."
+  (interactive)
+  (require 'secrets "secrets.el.gpg")
+  (erc :server "localhost" :port 6667 :nick bitlbee-nick))
+; register user BITLBEE-PASS
+; account add yahoo tom.schutter tom-yahoo
 
 
 ;;;; Source code manipulation
