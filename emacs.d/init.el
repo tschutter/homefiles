@@ -424,8 +424,10 @@ User buffers are those not starting with *."
 
 
 ;;;; BitlBee ERC InternetRelayChat.
+;;; sudo apt-get install bitlbee-libpurple
 ;;; http://emacs-fu.blogspot.com/search/label/erc
 ;;; http://wiki.bitlbee.org/quickstart
+;;; http://wiki.bitlbee.org/bitlbee-sipe
 (defun bitlbee-identify ()
   (when (and (string= "localhost" erc-session-server)
              (string= "&bitlbee" (buffer-name)))
