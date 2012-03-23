@@ -210,6 +210,7 @@ User buffers are those not starting with *."
 ;;; TRAMP remote file access
 ;;; http://www.gnu.org/software/tramp/
 ;;; To activate, open file of the form /machine:localname
+(require 'tramp)  ; required to correctly modify  tramp-remote-process-environment
 (setq tramp-default-method "ssh")
 (setq tramp-persistency-file-name (concat emacs-var-directory "tramp"))
 (setq tramp-remote-process-environment
