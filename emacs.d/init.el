@@ -212,6 +212,13 @@ User buffers are those not starting with *."
 ;;; To activate, open file of the form /machine:localname
 (setq tramp-default-method "ssh")
 (setq tramp-persistency-file-name (concat emacs-var-directory "tramp"))
+(setq tramp-remote-process-environment
+      (split-string
+       (replace-regexp-in-string
+        "HOME/\.tramp_history"
+        "HOME/.var/tramp_history"
+        (mapconcat 'identity tramp-remote-process-environment "|"))
+       "|"))  ; move ~/.tramp_history file created on target to ~/.var/
 
 
 ;;;; Editor behavior
