@@ -23,8 +23,10 @@
             (normal-top-level-add-subdirs-to-load-path)))
          load-path)))
 
+
 ;;;; Emacs window (frame)
 (setq frame-title-format (concat "%b@" system-name))  ;%b = buffer name
+
 
 ;;;; Default font
 ;;; Setting the font here is problematic because it triggers a window
@@ -37,6 +39,7 @@
           ;; Rick prefers a larger font.
           (set-face-attribute 'default nil :font "Consolas-13"))
       (set-face-attribute 'default nil :font "Consolas-11")))
+
 
 ;;;; Desktop
 ;;; See http://www.emacswiki.org/emacs/DeskTop
@@ -80,7 +83,7 @@
   (add-to-list 'desktop-buffer-mode-handlers '(w3m-mode . w3m-restore-desktop-buffer)))
 
 
-;;;; Buffer manipulation
+;;;; Opening files and buffer manipulation
 (defun close-current-buffer ()
   "Close the current buffer.
 
@@ -166,24 +169,6 @@ User buffers are those not starting with *."
 (setq initial-scratch-message nil)  ;we know what the scratch buffer is for
 (kill-scratch-buffer)  ;install the hook
 
-
-;;;; Editor behavior
-
-;;; We don't need to see the startup message.
-(setq inhibit-startup-message t)
-
-;;; Turn off the toolbar.
-(tool-bar-mode -1)
-
-;;; Turn off blinking cursor.
-(blink-cursor-mode 0)
-
-;;; Set default major mode to be text-mode instead of fundamental-mode.
-;;; Although the doc says that default-major-mode is obsolete since
-;;; 23.2 and to use major-mode instead, setting major-mode doesn't
-;;; work.
-(setq default-major-mode 'text-mode)
-
 ;;; Enable extra dired functionality such as virtual-dired.
 (setq dired-x-hands-off-my-keys t)  ; don't bind C-x C-f
 (add-hook 'dired-load-hook
@@ -221,6 +206,30 @@ User buffers are those not starting with *."
 (require 'uniquify)
 (setq-default uniquify-buffer-name-style 'forward)
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+;;; TRAMP remote file access
+;;; http://www.gnu.org/software/tramp/
+;;; To activate, open file of the form /machine:localname
+(setq tramp-default-method "ssh")
+(setq tramp-persistency-file-name (concat emacs-var-directory "tramp"))
+
+
+;;;; Editor behavior
+
+;;; We don't need to see the startup message.
+(setq inhibit-startup-message t)
+
+;;; Turn off the toolbar.
+(tool-bar-mode -1)
+
+;;; Turn off blinking cursor.
+(blink-cursor-mode 0)
+
+;;; Set default major mode to be text-mode instead of fundamental-mode.
+;;; Although the doc says that default-major-mode is obsolete since
+;;; 23.2 and to use major-mode instead, setting major-mode doesn't
+;;; work.
+(setq default-major-mode 'text-mode)
 
 ;;; Display the size of the buffer, line number, and column number in the mode line.
 (size-indication-mode 1)
