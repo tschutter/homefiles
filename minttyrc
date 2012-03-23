@@ -1,8 +1,8 @@
 Columns=128
-Rows=51
+Rows=45
 ForegroundColour=0,0,0
 BackgroundColour=255,255,255
-BoldAsFont=yes
+BoldAsFont=no
 Font=Ubuntu Mono
 FontHeight=14
 FontSmoothing=full
