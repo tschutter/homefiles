@@ -29,7 +29,9 @@ if [ -x "/usr/bin/apt-get" ]; then
         pylint\
         pymacs\
         python-docutils\
+        python-pip\
         python-rope\
+        python2.7-dev\
         python2.7-doc\
         rxvt-unicode\
         tmux\
@@ -44,6 +46,13 @@ if [ -x "/usr/bin/apt-get" ]; then
     # Set the executable from rxvt-unicode as the default xterm.
     sudo update-alternatives --set x-terminal-emulator /usr/bin/urxvt
 
+    PYPI_PACKAGES="\
+        line_profiler\
+        pyprof2calltree\
+    "
+
+    sudo pip install ${PYPI_PACKAGES}
+
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
     PACKAGES="\
@@ -55,6 +64,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         emacs-python\
         lbdb--\
         psutils--letter\
+        py-pip\
         pylint\
         rxvt-unicode\
         ucpp\
