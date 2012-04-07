@@ -38,8 +38,14 @@ max-line-length=80
 
 [DESIGN]
 
+# Maximum number of arguments for a function (see R0913).
+max-args=20
+
+# Maximum number of local variables (see R0914).
+max-locals=20
+
 # Maximum number of attributes for a class (see R0902).
-max-attributes=12
+max-attributes=18
 
 # Maximum number of branch for function / method body (see R0912).
 # Default of 12 does not handle "switch/case" structures.
