@@ -1,9 +1,24 @@
 # pychecker config file
 
-# ignore warnings from the list of modules
-blacklist = ['_fastmath', 'optparse', 'ssl']
+# unreachable code
+unreachableCode = 0  # 0.8.19 is broken
 
-# turn off all output except warnings
+# 1 is used in a conditional statement (if 1: or while 1:)
+constant1 = True
+
+# no module doc strings
+noDocModule = True
+
+# no class doc strings
+noDocClass = True
+
+# no function/method doc strings
+noDocFunc = 0  # 0.8.19 complains about __init__ not having doc string
+
+# ignore warnings from the list of modules
+blacklist = ["_fastmath", "optparse", "ssl", "xml/etree/ElementTree"]
+
+# turn off all output except errors/warnings
 quiet = 1
 
 # increase the maximum number of warnings to be displayed
