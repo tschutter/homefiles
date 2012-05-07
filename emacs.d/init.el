@@ -588,6 +588,7 @@ User buffers are those not starting with *."
           (lambda ()
             (if (not (eq system-type 'windows-nt))
                 (flyspell-prog-mode))
+            (setq-default c-basic-offset 4)
             ))
 
 
