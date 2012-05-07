@@ -588,11 +588,6 @@ User buffers are those not starting with *."
           (lambda ()
             (if (not (eq system-type 'windows-nt))
                 (flyspell-prog-mode))
-            ;; PxPoint legacy
-            (setq indent-tabs-mode t)
-            (setq-default c-basic-offset 4)
-            (make-local-variable 'whitespace-style)
-            (setq whitespace-style '(face trailing tabs empty space-before-tab))
             ))
 
 
