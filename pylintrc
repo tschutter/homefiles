@@ -18,7 +18,9 @@ persistent=no
 # W0703: Catch "Exception"
 #        Python2.6 SystemExit, KeyboardInterrupt no longer inherit from Exception.  See
 #        http://stackoverflow.com/questions/756180/pylint-warning-on-except-exception
-disable=C0323,R0903,W0703
+# I0011: Locally disabling .....
+#        Why would I want a notice that I had locally disabled a warning?
+disable=C0323,R0903,W0703,I0011
 
 [REPORTS]
 
