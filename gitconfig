@@ -1,9 +1,17 @@
 # git config file
 
 [alias]
+    # hist = one-line per commit log
     hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-    stat = status
+
+    # stat = short status
+    stat = status -s
+
+    # unadd/unstage = remove files/directories from staging
+    unadd = reset
     unstage = reset
+
+    # visual = graphical repository browser
     visual = !gitk
 
 [core]
