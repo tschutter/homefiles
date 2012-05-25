@@ -16,7 +16,13 @@ noDocClass = True
 noDocFunc = 0  # 0.8.19 complains about __init__ not having doc string
 
 # ignore warnings from the list of modules
-blacklist = ["_fastmath", "optparse", "ssl", "xml/etree/ElementTree"]
+blacklist = [
+    "_fastmath",
+    "optparse",
+    "ssl",
+    "unittest/case",
+    "xml/etree/ElementTree"
+]
 
 # turn off all output except errors/warnings
 quiet = 1
