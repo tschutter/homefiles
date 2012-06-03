@@ -4,7 +4,7 @@
 Installs files in tschutter/homefiles using symbolic links.
 """
 
-from optparse import OptionParser
+import optparse
 import os
 import shutil
 import stat
@@ -366,7 +366,7 @@ def install_fonts(options):
 
 def main():
     """main"""
-    option_parser = OptionParser(
+    option_parser = optparse.OptionParser(
         usage="usage: %prog [options]\n" +
             "  Installs files in tschutter/homefiles using symbolic links."
     )
