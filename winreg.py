@@ -65,7 +65,7 @@ class Reg():
         # Close the key.
         _winreg.CloseKey(key)
 
-    def set_value(self, key_path, value, create_key=None):
+    def set_value(self, key_path, vtype, value, create_key=None):
         """Associates a string value with a specified key."""
         if create_key == None:
             create_key = False
@@ -117,20 +117,26 @@ class Reg():
                     key,
                     value_name,
                     0,
-                    _winreg.REG_SZ,
+                    vtype,
                     str(value)
                 )
 
         # Close the key.
         _winreg.CloseKey(key)
 
+    def set_value_dword(self, key_path, value, create_key=None):
+        set_value(self, key_path, _winreg.REG_DWORD, value, create_key)
+
+    def set_value_str(self, key_path, value, create_key=None):
+        set_value(self, key_path, _winreg.REG_SZ, value, create_key)
+
 
 def no_screen_saver(reg):
     """Disable the screen saver."""
-    reg.set_value(r"HKCU\Control Panel\Desktop\ScreenSaveActive", "0")
+    reg.set_value_str(r"HKCU\Control Panel\Desktop\ScreenSaveActive", "0")
     reg.delete_value(r"HKCU\Control Panel\Desktop\SCRNSAVE.EXE")
 
-    reg.set_value(
+    reg.set_value_str(
         r"HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveActive",
         "0",
         create_key = False
@@ -138,7 +144,7 @@ def no_screen_saver(reg):
     reg.delete_value(
         r"HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\SCRNSAVE.EXE"
     )
-    reg.set_value(
+    reg.set_value_str(
         r"HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveTimeOut",
         "36000",
         create_key = False
