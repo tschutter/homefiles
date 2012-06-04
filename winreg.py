@@ -118,17 +118,17 @@ class Reg():
                     value_name,
                     0,
                     vtype,
-                    str(value)
+                    value
                 )
 
         # Close the key.
         _winreg.CloseKey(key)
 
     def set_value_dword(self, key_path, value, create_key=None):
-        set_value(self, key_path, _winreg.REG_DWORD, value, create_key)
+        self.set_value(key_path, _winreg.REG_DWORD, int(value), create_key)
 
     def set_value_str(self, key_path, value, create_key=None):
-        set_value(self, key_path, _winreg.REG_SZ, value, create_key)
+        self.set_value(key_path, _winreg.REG_SZ, str(value), create_key)
 
 
 def no_screen_saver(reg):
@@ -148,6 +148,14 @@ def no_screen_saver(reg):
         r"HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveTimeOut",
         "36000",
         create_key = False
+    )
+
+
+def no_hide_known_file_extensions(reg):
+    """Disable "Hide known file extensions" in Windows Explorer."""
+    reg.set_value_dword(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt",
+        0
     )
 
 
@@ -185,6 +193,7 @@ def main():
     reg = Reg(options)
 
     # Update the registry.
+    no_hide_known_file_extensions(reg)
     no_screen_saver(reg)
 
     return 0
