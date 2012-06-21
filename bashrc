@@ -33,7 +33,7 @@ if [ "${_UNAME}" = "CYGWIN_NT" ]; then
 
     # Run a batch file.
     launch() {
-        ${SYSTEMROOT}/system32/cmd.exe /c start `/usr/bin/cygpath.exe --windows $1`
+        cygstart "$1"
     }
 fi
 
