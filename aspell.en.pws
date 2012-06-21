@@ -1,4 +1,4 @@
-personal_ws-1.1 en 24 
+personal_ws-1.1 en 25 
 bashrc
 httpd
 Cygwin
@@ -10,6 +10,7 @@ OpenGL
 tschutter
 stunnel
 Valgrind
+Xiance
 Schutter
 config
 kshrc
