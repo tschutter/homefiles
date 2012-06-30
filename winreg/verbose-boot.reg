@@ -1,6 +1,0 @@
-Windows Registry Editor Version 5.00
-
-; Display status messages during startup and shutdown.
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System]
-"verbosestatus"=dword:00000001
-; Needs verification!

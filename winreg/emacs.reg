@@ -1,7 +1,0 @@
-Windows Registry Editor Version 5.00
-
-; Setting the font in init.el is problematic because it triggers a
-; window resize, which usually pushes the window off of the screen.
-[HKEY_CURRENT_USER\SOFTWARE\GNU\Emacs]
-"Emacs.Face.AttributeFont"="Consolas-11"
-"Emacs.Geometry"="128x55"

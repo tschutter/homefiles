@@ -1,8 +1,0 @@
-Windows Registry Editor Version 5.00
-
-; Disable the Shutdown Event Tracker.
-; KB Article(293814): Description of the Shutdown Event Tracker
-; http://support.microsoft.com/default.aspx?scid=kb;en-us;293814
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Reliability]
-"ShutdownReasonUI"=dword:00000000
-; Needs verification!
