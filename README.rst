@@ -5,7 +5,7 @@ Usage
 -----
 ::
 
-    git clone git://github.com/tschutter/homefiles.git $HOME/.homefiles
+    git clone --recursive git://github.com/tschutter/homefiles.git $HOME/.homefiles
     $HOME/.homefiles/install.sh
     $HOME/bin/install-essentials
 
