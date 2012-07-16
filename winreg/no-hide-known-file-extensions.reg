@@ -1,6 +1,0 @@
-Windows Registry Editor Version 5.00
-
-; Disable "Hide known file extensions" in Explorer.
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"HideFileExt"=dword:00000000
-; Needs verification!

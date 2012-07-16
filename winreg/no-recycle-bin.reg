@@ -1,9 +1,0 @@
-Windows Registry Editor Version 5.00
-
-; Do not move files to the recycle bin.
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\BitBucket]
-"NukeOnDelete"=dword:1
-
-; Remove the recycle bin from the desktop.
-[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{645FF040-5081-101B-9F08-00AA002F954E}]
-; Needs verification!
