@@ -20,6 +20,8 @@ string-rectangle (C-x r t)
     Replace rectangle contents with STRING on each line.  The length
     of STRING need not be the same as the rectangle width.
 
+exchange-point-and-mark (C-x C-x)
+    Put the mark where point is now, and point where the mark is now.
 
 More Complex Procedures
 -----------------------
