@@ -78,7 +78,7 @@ def main():
         message = message.replace(key, value)
     idx = message.find("@")
     if idx >= 0:
-        (key, _) = message[idx:].partition(" ")
+        key = message[idx:].partition(" ")[0]
         print "ERROR: unknown quick text '%s'." % key
         return 1
 
