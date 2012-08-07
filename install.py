@@ -283,7 +283,11 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
     make_dot_link(options, file_in_path("urxvt"), "urxvt")
     make_dot_link(options, file_in_path("valgrind"), "valgrindrc")
-    clean_link(options, os.path.join(options.homedir, ".viminfo"))
+    clean_link(
+        options,
+        os.path.join(options.homedir, ".viminfo"),
+        backup=False
+    )
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
