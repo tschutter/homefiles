@@ -92,7 +92,7 @@ def file_in_path(filename):
     return False
 
 
-def clean_link(options, linkname):
+def clean_link(options, linkname, backup=True):
     """Delete link or backup files and dirs."""
     link_pathname = os.path.join(options.homedir, linkname)
 
@@ -111,9 +111,14 @@ def clean_link(options, linkname):
                     return
 
         # The destination exists as a file or dir.  Back it up.
-        print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
-        if not options.dryrun:
-            shutil.move(link_pathname, options.homefiles)
+        if backup:
+            print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
+            if not options.dryrun:
+                shutil.move(link_pathname, options.homefiles)
+        else:
+            print "Deleting file or directory '%s'." % link_pathname
+            if not options.dryrun:
+                os.unlink(link_pathname)
 
 
 def make_link(options, enabled, filename, linkname=None):
@@ -243,7 +248,11 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
-    clean_link(options, os.path.join(options.homedir, ".bash_history"))
+    clean_link(
+        options,
+        os.path.join(options.homedir, ".bash_history"),
+        backup=False
+    )
     clean_link(options, os.path.join(options.homedir, ".bash_profile"))
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     clean_link(options, os.path.join(options.homedir, ".emacs"))
@@ -274,7 +283,11 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
     make_dot_link(options, file_in_path("urxvt"), "urxvt")
     make_dot_link(options, file_in_path("valgrind"), "valgrindrc")
-    clean_link(options, os.path.join(options.homedir, ".viminfo"))
+    clean_link(
+        options,
+        os.path.join(options.homedir, ".viminfo"),
+        backup=False
+    )
     make_dot_link(options, file_in_path("vi"), "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
