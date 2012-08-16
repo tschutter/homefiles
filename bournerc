@@ -34,6 +34,9 @@ else
     fi
 fi
 
+# Terminal control.
+alias cls="reset; echo -n ''"
+
 # Directory navigation functions.
 _cdhelper() {
     CMD="cd $1"
@@ -62,7 +65,7 @@ uuuu() {
     _cdhelper ../../../.. $*
 }
 
-# Prompt.
+# Prompt and window title.
 # Determine the hostname.
 _HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
 _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
