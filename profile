@@ -5,9 +5,13 @@
 # Environment variables that begin with an underscore are intended
 # only for use by .profile and .${SHELL}rc
 
-# Determine the OS.  [Linux, CYGWIN_NT, OpenBSD, SunOS]
+# Determine the OS.  [Linux, Cygwin, OpenBSD, SunOS]
 _UNAME=$(uname)
-_UNAME=${_UNAME%%-*} # Strip any version info
+if [ "${_UNAME%%-*}" = "CYGWIN_NT" ]; then
+    _WINVER=${_UNAME#*-}  # Strip prefix
+    _WINVER=${_WINVER%-*}  # Strip suffix
+    _UNAME="Cygwin"
+fi
 export _UNAME
 
 path_append() {
@@ -33,7 +37,7 @@ if [ "${_UNAME}" = "OpenBSD" ]; then
 fi
 
 # Add sysadm dirs to path.
-if [ "${_UNAME}" != "CYGWIN_NT" ]; then
+if [ "${_UNAME}" != "Cygwin" ]; then
     path_prepend /sbin
     path_prepend /usr/sbin
 fi

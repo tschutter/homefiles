@@ -27,7 +27,7 @@ shopt -s histappend
 shopt -s checkwinsize
 
 # Platform specific definitions.
-if [ "${_UNAME}" = "CYGWIN_NT" ]; then
+if [ "${_UNAME}" = "Cygwin" ]; then
     # Ignore case while completing
     set completion-ignore-case on
 

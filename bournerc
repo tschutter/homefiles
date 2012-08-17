@@ -15,7 +15,7 @@ if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
     alias less="less --no-init --quit-at-eof --LONG-PROMPT"
 fi
 
-if [ "${_UNAME}" = "CYGWIN_NT" ]; then
+if [ "${_UNAME}" = "Cygwin" ]; then
     # -W: show windows as well as cygwin processes
     alias ps="ps -W"
 fi
