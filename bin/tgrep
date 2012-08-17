@@ -61,9 +61,10 @@ SYSTEM=`${UNAME}`
 
 # Skip Subversion metadata files
 # Skip cvs metadata files
+# Skip cmake generated files
 # Search regular files (not directory files)
 # Skip backup files
-FIND_OPTS="-name .svn -prune -o -name .git -prune -o -name CVS -prune -o -type f ! -name *~"
+FIND_OPTS="-name .svn -prune -o -name .git -prune -o -name CVS -prune -o -name CMakeFiles -prune -o -type f ! -name *~"
 
 # List of names to restrict search to
 FIND_NAMES=""
