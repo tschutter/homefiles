@@ -10,6 +10,8 @@ _UNAME=$(uname)
 if [ "${_UNAME%%-*}" = "CYGWIN_NT" ]; then
     _WINVER=${_UNAME#*-}  # Strip prefix
     _WINVER=${_WINVER%-*}  # Strip suffix
+    _WINVER_MAJOR=${_WINVER%.*}
+    _WINVER_MINOR=${_WINVER#*.}
     _UNAME="Cygwin"
 fi
 export _UNAME

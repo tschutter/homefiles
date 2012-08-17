@@ -71,6 +71,19 @@ _HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
 _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
 export _HOSTNAME
 
+# Determine '$' or '#' for the suffix.
+if [ ${_WINVER_MAJOR:-0} -ge 5 ]; then
+    # On Vista or newer, use '#' if running as Administrator.
+    if [ -r /proc/registry/HKEY_LOCAL_MACHINE/SECURITY ]; then
+        _PS_DOLLAR="#"
+    else
+        _PS_DOLLAR="$"
+    fi
+else
+    # \$ if the effective UID is 0, a #, otherwise a $
+    _PS_DOLLAR="\\$"
+fi
+
 # _PS1_PREFIX can be optionally set in .bashrc-local or .kshrc-local
 # to indicate the type of machine.  For example:
 #     case ${_HOSTNAME} in
@@ -86,25 +99,24 @@ export _HOSTNAME
 # \e an ASCII escape character (033)
 # \t the current time in 24-hour HH:MM:SS format
 # \w the current working directory, with $HOME abbreviated with a tilde
-# \$ if the effective UID is 0, a #, otherwise a $
 # \e]0;STRING\a sets the icon name and window title to STRING
 ps1-default() {
     # Default prompt string.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w\$ '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w'${_PS_DOLLAR}' '
     fi
 }
 ps1-time() {
     # Prompt string with timestamp.  Useful if you want to know when a
     # command was run.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_PREFIX}${_HOSTNAME}':\w\$ '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_PREFIX}${_HOSTNAME}':\w'${_PS_DOLLAR}' '
     fi
 }
 ps1-history() {
     # Prompt string with history numbers.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_PREFIX}${_HOSTNAME}':\w\$ '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_PREFIX}${_HOSTNAME}':\w'${_PS_DOLLAR}' '
     fi
 }
 
