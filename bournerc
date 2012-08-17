@@ -72,8 +72,9 @@ _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
 export _HOSTNAME
 
 # Determine '$' or '#' for the suffix.
-if [ ${_WINVER_MAJOR:-0} -ge 5 ]; then
+if [ ${_WINVER_MAJOR:-0} -ge 6 ]; then
     # On Vista or newer, use '#' if running as Administrator.
+    # See http://cygwin.com/ml/cygwin/2012-02/msg00806.html
     if [ -r /proc/registry/HKEY_LOCAL_MACHINE/SECURITY ]; then
         _PS_DOLLAR="#"
     else
