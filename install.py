@@ -304,6 +304,7 @@ def link_binfiles(options):
         print "Creating dir '%s'." % bindir
         if not options.dryrun:
             os.mkdir(bindir)
+    make_link(options, True, "bin/append-missing-newline")
     make_link(options, True, "bin/findfile")
     make_link(options, True, "bin/install-essentials")
     make_link(options, True, "bin/pycheck")
