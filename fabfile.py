@@ -17,13 +17,14 @@ fabric.api.env.abort_on_prompts = True
 fabric.api.env.shell = "/bin/sh -l -c"
 
 DEPLOY_HOSTS = [
-    "crookshanks",
+#    "crookshanks",
     "deadeye",
     "missy",
     "molly",
     "penguin",
     "pepsi",
-    "shadow"
+    "shadow",
+    "tschutter@shadow:2222"
 ]
 
 
@@ -43,7 +44,7 @@ def _is_host_up(host, port):
     return host_status
 
 
-#@parallel # waiting for fab-1.3
+#@fabric.api.parallel # broken?
 @fabric.api.hosts(DEPLOY_HOSTS)
 def deploy():
     """Deploy .homefiles updates to known hosts."""
