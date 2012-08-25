@@ -50,7 +50,7 @@ home() {
     _cdhelper ${HOME} $*
 }
 src() {
-    _cdhelper ${SRC} $*
+    _cdhelper ${SRC:-${HOME}/src} $*
 }
 u() {
     _cdhelper .. $*
