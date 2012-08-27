@@ -1,0 +1,116 @@
+#!/bin/sh
+#
+# Find files with non-ascii characters
+#
+# Copyright (c) 2006-2012 Tom Schutter
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#    - Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    - Redistributions in binary form must reproduce the above
+#      copyright notice, this list of conditions and the following
+#      disclaimer in the documentation and/or other materials provided
+#      with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+# Disable file name generation (globbing).
+set -f
+
+# Function that locates an executable.
+# The first parameter is the executable filename.
+# The second parameter is a variable that will hold the absolute pathname.
+locate_exe() {
+    if [ -x /usr/bin/$1 ]; then
+        eval "$2=/usr/bin/$1"
+    elif [ -x /bin/$1 ]; then
+        eval "$2=/bin/$1"
+    elif [ -x /usr/local/bin/$1 ]; then
+        eval "$2=/usr/local/bin/$1"
+    else
+        echo "ERROR: Unable to locate the '$1' program."
+        exit 2
+    fi
+}
+
+# Locate executables.
+locate_exe "find" FIND
+locate_exe "grep" GREP
+locate_exe "uname" UNAME
+locate_exe "xargs" XARGS
+
+# SYSTEM is set to either Linux, CYGWIN_NT, or SunOS.
+# The $(cmd) syntax is invalid with SunOS /bin/sh.
+SYSTEM=`${UNAME}`
+
+# Skip Subversion metadata files
+# Skip cvs metadata files
+# Skip cmake generated files
+# Search regular files (not directory files)
+# Skip backup files
+FIND_OPTS="-name .svn -prune -o -name .git -prune -o -name CVS -prune -o -name CMakeFiles -prune -o -type f ! -name *~"
+
+# List of names to restrict search to
+FIND_NAMES=""
+
+if [ "${SYSTEM}" = "SunOS" ]; then
+    FIND_PRINT="-print"
+    XARGS_OPTS=""
+else
+    # -print0 = print the full file name, followed by a null character
+    FIND_PRINT="-print0"
+    # -0 = Input items are terminated by a null character
+    XARGS_OPTS="-0"
+fi
+
+if [ "${SYSTEM}" = "SunOS" ]; then
+    GREP="/usr/xpg4/bin/grep"
+    # -n = Prefix each line of output with the 1-based line number
+    # -E = Interpret PATTERN as an extended regular expression
+    GREP_OPTS="-n -E"
+else
+    # -n = Prefix each line of output with the 1-based line number
+    # -E = Interpret PATTERN as an extended regular expression
+    # -I = Process a binary file as if it did not contain matching data
+    GREP_OPTS="-n -P -I"
+fi
+
+# http://stackoverflow.com/questions/3001177/how-do-i-grep-for-non-ascii-characters-in-unix
+PATTERN="'[\x80-\xFF]'"
+
+for ARG in "$@"; do
+    if [ "${ARG}" = "--help" ]; then
+        echo "Find files with non-ascii characters." >&2
+        echo "" >&2
+        echo "USAGE: $0 ['filespec' ...]" >&2
+        exit 2
+    fi
+    if [ -z "${FIND_NAMES}" ]; then
+        FIND_NAMES="-name ${ARG}"
+    else
+        FIND_NAMES="${FIND_NAMES} -o -name ${ARG}"
+    fi
+done
+
+if [ ! -z "$FIND_NAMES" ]; then
+    FIND_NAMES = "\( ${FIND_NAMES} \)"
+fi
+
+exec ${FIND} . ${FIND_OPTS} $FIND_NAMES ${FIND_PRINT} |\
+    ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} "${PATTERN}" /dev/null
