@@ -111,13 +111,13 @@ for ARG in "$@"; do
         -*) GREP_OPTS="${GREP_OPTS} ${ARG}"
             shift ;;
         *)  if [ -z "${PATTERN}" ]; then
-            PATTERN="${ARG}";
+                PATTERN="${ARG}";
             else
-            if [ -z "${FIND_NAMES}" ]; then
-                FIND_NAMES="-name ${ARG}"
-            else
-                FIND_NAMES="${FIND_NAMES} -o -name ${ARG}"
-            fi
+                if [ -z "${FIND_NAMES}" ]; then
+                    FIND_NAMES="-name ${ARG}"
+                else
+                    FIND_NAMES="${FIND_NAMES} -o -name ${ARG}"
+                fi
             fi
             shift ;;
     esac
@@ -132,5 +132,5 @@ if [ ! -z "$FIND_NAMES" ]; then
     FIND_NAMES = "\( ${FIND_NAMES} \)"
 fi
 
-exec ${FIND} . ${FIND_OPTS} $FIND_NAMES ${FIND_PRINT} |\
-    ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} "${PATTERN}" /dev/null
+exec ${FIND} . ${FIND_OPTS} $FIND_NAMES ${FIND_PRINT}\
+    | ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} "${PATTERN}" /dev/null
