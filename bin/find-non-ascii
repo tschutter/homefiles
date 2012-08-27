@@ -91,9 +91,6 @@ else
     GREP_OPTS="-n -P -I"
 fi
 
-# http://stackoverflow.com/questions/3001177/how-do-i-grep-for-non-ascii-characters-in-unix
-PATTERN="'[\x80-\xFF]'"
-
 for ARG in "$@"; do
     if [ "${ARG}" = "--help" ]; then
         echo "Find files with non-ascii characters." >&2
@@ -112,5 +109,8 @@ if [ ! -z "$FIND_NAMES" ]; then
     FIND_NAMES = "\( ${FIND_NAMES} \)"
 fi
 
-exec ${FIND} . ${FIND_OPTS} $FIND_NAMES ${FIND_PRINT} |\
-    ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} "${PATTERN}" /dev/null
+# http://stackoverflow.com/questions/3001177/how-do-i-grep-for-non-ascii-characters-in-unix
+PATTERN="[\\x80-\\xFF]"
+
+exec ${FIND} . ${FIND_OPTS} $FIND_NAMES ${FIND_PRINT}\
+    | ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} ${PATTERN} /dev/null
