@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Find files with non-ascii characters
+# Find files with non-ASCII characters
 #
 # Copyright (c) 2006-2012 Tom Schutter
 # All rights reserved.
@@ -32,6 +32,15 @@
 
 # Disable file name generation (globbing).
 set -f
+
+usage() {
+    echo "Find files with non-ASCII characters." >&2
+    echo "" >&2
+    echo "USAGE: $0 [grep-options] ['filespec' ...]" >&2
+    echo "  Where grep-options include:" >&2
+    echo "    -l = Prints only the filename" >&2
+    echo "    -n = Prefix each line of output with the line number" >&2
+}
 
 # Function that locates an executable.
 # The first parameter is the executable filename.
@@ -81,36 +90,38 @@ fi
 
 if [ "${SYSTEM}" = "SunOS" ]; then
     GREP="/usr/xpg4/bin/grep"
-    # -n = Prefix each line of output with the 1-based line number
-    # -E = Interpret PATTERN as an extended regular expression
-    GREP_OPTS="-n -E"
+    # -P = Interpret PATTERN as a Perl regular expression
+    GREP_OPTS="-P"
 else
-    # -n = Prefix each line of output with the 1-based line number
-    # -E = Interpret PATTERN as an extended regular expression
+    # -P = Interpret PATTERN as a Perl regular expression
     # -I = Process a binary file as if it did not contain matching data
-    GREP_OPTS="-n -P -I"
+    GREP_OPTS="-P -I"
 fi
 
 for ARG in "$@"; do
-    if [ "${ARG}" = "--help" ]; then
-        echo "Find files with non-ascii characters." >&2
-        echo "" >&2
-        echo "USAGE: $0 ['filespec' ...]" >&2
-        exit 2
-    fi
-    if [ -z "${FIND_NAMES}" ]; then
-        FIND_NAMES="-name ${ARG}"
-    else
-        FIND_NAMES="${FIND_NAMES} -o -name ${ARG}"
-    fi
+    case ${ARG} in
+        --help)
+            usage
+            exit 2
+            ;;
+        -*) GREP_OPTS="${GREP_OPTS} ${ARG}"
+            ;;
+        *)
+            if [ -z "${FIND_NAMES}" ]; then
+                FIND_NAMES="-name ${ARG}"
+            else
+                FIND_NAMES="${FIND_NAMES} -o -name ${ARG}"
+            fi
+            ;;
+    esac
 done
 
-if [ ! -z "$FIND_NAMES" ]; then
-    FIND_NAMES = "\( ${FIND_NAMES} \)"
+if [ ! -z "${FIND_NAMES}" ]; then
+      FIND_NAMES="( ${FIND_NAMES} )"
 fi
 
 # http://stackoverflow.com/questions/3001177/how-do-i-grep-for-non-ascii-characters-in-unix
 PATTERN="[\\x80-\\xFF]"
 
-exec ${FIND} . ${FIND_OPTS} $FIND_NAMES ${FIND_PRINT}\
+exec ${FIND} . ${FIND_OPTS} ${FIND_NAMES} ${FIND_PRINT}\
     | ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} ${PATTERN} /dev/null
