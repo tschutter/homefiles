@@ -33,20 +33,32 @@
 # Disable file name generation (globbing).
 set -f
 
+usage() {
+    echo "Directory tree grep." >&2
+    echo "" >&2
+    echo "USAGE: $0 [grep-options] pattern ['filespec' ...]" >&2
+    echo "  Where grep-options include:" >&2
+    echo "    -i = Ignore case" >&2
+    echo "    -h = Suppress the prefixing of filenames on output" >&2
+    echo "    -l = Prints only the filename" >&2
+    echo "    -n = Prefix each line of output with the line number" >&2
+    echo "    -v = Prints only lines that do not contain a match" >&2
+}
+
 # Function that locates an executable.
 # The first parameter is the executable filename.
 # The second parameter is a variable that will hold the absolute pathname.
 locate_exe() {
-  if [ -x /usr/bin/$1 ]; then
-    eval "$2=/usr/bin/$1"
-  elif [ -x /bin/$1 ]; then
-    eval "$2=/bin/$1"
-  elif [ -x /usr/local/bin/$1 ]; then
-    eval "$2=/usr/local/bin/$1"
-  else
-    echo "ERROR: Unable to locate the '$1' program."
-    exit 2
-  fi
+    if [ -x /usr/bin/$1 ]; then
+        eval "$2=/usr/bin/$1"
+    elif [ -x /bin/$1 ]; then
+        eval "$2=/bin/$1"
+    elif [ -x /usr/local/bin/$1 ]; then
+        eval "$2=/usr/local/bin/$1"
+    else
+        echo "ERROR: Unable to locate the '$1' program."
+        exit 2
+    fi
 }
 
 # Locate executables.
@@ -70,61 +82,55 @@ FIND_OPTS="-name .svn -prune -o -name .git -prune -o -name CVS -prune -o -name C
 FIND_NAMES=""
 
 if [ "${SYSTEM}" = "SunOS" ]; then
-  FIND_PRINT="-print"
-  XARGS_OPTS=""
+    FIND_PRINT="-print"
+    XARGS_OPTS=""
 else
-  # -print0 = print the full file name, followed by a null character
-  FIND_PRINT="-print0"
-  # -0 = Input items are terminated by a null character
-  XARGS_OPTS="-0"
+    # -print0 = print the full file name, followed by a null character
+    FIND_PRINT="-print0"
+    # -0 = Input items are terminated by a null character
+    XARGS_OPTS="-0"
 fi
 
 if [ "${SYSTEM}" = "SunOS" ]; then
-  GREP="/usr/xpg4/bin/grep"
-  # -E = Interpret PATTERN as an extended regular expression
-  GREP_OPTS="-E"
+    GREP="/usr/xpg4/bin/grep"
+    # -E = Interpret PATTERN as an extended regular expression
+    GREP_OPTS="-E"
 else
-  # -E = Interpret PATTERN as an extended regular expression
-  # -I = Process a binary file as if it did not contain matching data
-  GREP_OPTS="-E -I"
+    # -E = Interpret PATTERN as an extended regular expression
+    # -I = Process a binary file as if it did not contain matching data
+    GREP_OPTS="-E -I"
 fi
 
 PATTERN=""
 
 for ARG in "$@"; do
-  case ${ARG} in
-    -*) GREP_OPTS="${GREP_OPTS} ${ARG}"
-        shift ;;
-    *)  if [ -z "${PATTERN}" ]; then
-          PATTERN="${ARG}";
-        else
-          if [ -z "${FIND_NAMES}" ]; then
-            FIND_NAMES="-name ${ARG}"
-          else
-            FIND_NAMES="${FIND_NAMES} -o -name ${ARG}"
-          fi
-        fi
-        shift ;;
-  esac
+    case ${ARG} in
+        --help)
+            usage
+            exit 2 ;;
+        -*) GREP_OPTS="${GREP_OPTS} ${ARG}"
+            shift ;;
+        *)  if [ -z "${PATTERN}" ]; then
+            PATTERN="${ARG}";
+            else
+            if [ -z "${FIND_NAMES}" ]; then
+                FIND_NAMES="-name ${ARG}"
+            else
+                FIND_NAMES="${FIND_NAMES} -o -name ${ARG}"
+            fi
+            fi
+            shift ;;
+    esac
 done
 
 if [ -z "${PATTERN}" ]; then
-  echo "Directory tree grep." >&2
-  echo "" >&2
-  echo "USAGE: $0 [grep-options] pattern ['filespec' ...]" >&2
-  echo "  Where grep-options include:" >&2
-  echo "    -i = Ignore case" >&2
-  echo "    -h = Suppress the prefixing of filenames on output" >&2
-  echo "    -l = Prints only the filename" >&2
-  echo "    -n = Prefix each line of output with the line number" >&2
-  echo "    -v = Prints only lines that do not contain a match" >&2
-  exit 2
+    usage
+    exit 2
 fi
 
-if [ -z "$FIND_NAMES" ]; then
-  exec ${FIND} . ${FIND_OPTS} ${FIND_PRINT} |\
-    ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} "${PATTERN}" /dev/null
-else
-  exec ${FIND} . ${FIND_OPTS} \( $FIND_NAMES \) ${FIND_PRINT} |\
-    ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} "${PATTERN}" /dev/null
+if [ ! -z "$FIND_NAMES" ]; then
+    FIND_NAMES = "\( ${FIND_NAMES} \)"
 fi
+
+exec ${FIND} . ${FIND_OPTS} $FIND_NAMES ${FIND_PRINT} |\
+    ${XARGS} ${XARGS_OPTS} ${GREP} ${GREP_OPTS} "${PATTERN}" /dev/null
