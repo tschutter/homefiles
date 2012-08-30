@@ -1,0 +1,131 @@
+#!/usr/bin/env python
+#
+# Copyright (c) 2012-2012 Tom Schutter
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#    - Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    - Redistributions in binary form must reproduce the above
+#      copyright notice, this list of conditions and the following
+#      disclaimer in the documentation and/or other materials provided
+#      with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+"""
+Find files with non-ASCII characters.
+"""
+
+import fnmatch
+import optparse
+import os
+import re
+import sys
+
+
+def ignore_file(filename, globs):
+    """Determine if a file should be ignored."""
+
+    # Skip backup files.
+    if filename.endswith("~"):
+        return True
+
+    if len(globs) == 0:
+        return False
+
+    for glob in globs:
+        if fnmatch.fnmatch(filename, glob):
+            return False
+
+    return True
+
+
+def find_files(options, globs):
+    """Do the actual finding."""
+
+    binary_re = re.compile(r"[^\t\r\n\x20-\x7e]")
+
+    for dirpath, dirnames, filenames in os.walk("."):
+        # Skip git metadata directories.
+        # Skip Subversion metadata directories.
+        # Skip cvs metadata directories.
+        # Skip cmake generated directories.
+        for name in [".git", ".svn", "CVS", "CMakeFiles"]:
+            if name in dirnames:
+                dirnames.remove(name)
+
+        for filename in sorted(filenames):
+            if not ignore_file(filename, globs):
+                # Assemble the filename.
+                filename = os.path.join(dirpath, filename)
+                if filename.startswith("./"):
+                    filename = filename[2:]
+
+                with open(filename) as fil:
+                    if options.files_with_matches:
+                        contents = fil.read()
+                        if binary_re.search(contents):
+                            print filename
+                    else:
+                        for lineno, line in enumerate(fil.readlines()):
+                            if binary_re.search(line):
+                                line = line[:-1].encode("string_escape")
+                                if len(line) > 80:
+                                    line = line[:65] + " [...truncated]"
+                                if options.line_number:
+                                    print "%s:%i:%s" % (
+                                        filename,
+                                        lineno + 1,
+                                        line
+                                    )
+                                else:
+                                    print "%s:%s" % (filename, line)
+
+
+def main():
+    """main"""
+    option_parser = optparse.OptionParser(
+        usage="usage: %prog [options] [glob pattern...]\n" +
+            "  Find files with non-ASCII characters."
+    )
+    option_parser.add_option(
+        "-l",
+        "--files-with-matches",
+        action="store_true",
+        dest="files_with_matches",
+        default=False,
+        help="print only the filename"
+    )
+    option_parser.add_option(
+        "-n",
+        "--line-number",
+        action="store_true",
+        dest="line_number",
+        default=False,
+        help="prefix each line of output with the line number"
+    )
+
+    (options, args) = option_parser.parse_args()
+
+    find_files(options, args)
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
