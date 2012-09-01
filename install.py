@@ -15,11 +15,13 @@ import tempfile
 import time
 
 
-def run_command(args, stdinstr):
+def run_command(args, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
     if sys.version_info < (2, 4):
         print "WARNING: Not running %s" % " ".join(args)
     else:
+        if stdinstr == None:
+            stdinstr = ""
         process = subprocess.Popen(
             args,
             stdin=subprocess.PIPE,
@@ -233,7 +235,7 @@ def create_dotless(options, enabled):
             print "Running lesskey to create '%s'." % dotless_pathname
             if not options.dryrun:
                 outstr = run_command(
-                    ["lesskey", "-o", dotless_pathname, "-"],
+                    ["lesskey", "-o", dotless_pathname],
                     "\n".join(lesskey)
                 )
                 if len(outstr.rstrip()) > 0:
@@ -280,6 +282,25 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("python"), "pythonstartup")
     make_dot_link(options, file_in_path("screen"), "screenrc")
     make_sig_link(options)
+    if sys.platform.beginswith("openbsd"):
+        terminfo_dir = os.path.join(options.homefiles, ".terminfo")
+        terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
+        if not os.path.exists(terminfo_compiled):
+            terminfo_source = os.path.join(    
+                options.homefiles,
+                "rxvt-unicode.terminfo"
+            )
+            outstr = run_command(
+                [
+                    "tic",
+                    "-o",
+                    terminfo_dir,
+                    "-x",
+                    terminfo_source
+                ]
+            )
+            if len(outstr.rstrip()) > 0:
+                print outstr.rstrip()
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
     make_dot_link(options, file_in_path("urxvt"), "urxvt")
     make_dot_link(options, file_in_path("valgrind"), "valgrindrc")
