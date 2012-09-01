@@ -39,12 +39,52 @@ import re
 import sys
 
 
+# Extensions of known binaries.
+IGNORE_EXTENSIONS=[
+    ".a",
+    ".ai",
+    ".aps",
+    ".bmp",
+    ".book",
+    ".build",
+    ".csproj",
+    ".dbf",
+    ".dll",
+    ".doc",
+    ".dox",
+    ".eps",
+    ".exe",
+    ".fm",
+    ".fpt",
+    ".gdx",
+    ".gif",
+    ".ico",
+    ".jar",
+    ".jpeg",
+    ".jpg",
+    ".lib",
+    ".msi",
+    ".pdf",
+    ".pfx",
+    ".png",
+    ".rtx",
+    ".sbn",
+    ".sbx",
+    ".shp",
+    ".shx",
+    ".ttf",
+    ".zip",
+    "~"
+]
+
+
 def ignore_file(filename, globs):
     """Determine if a file should be ignored."""
 
-    # Skip backup files.
-    if filename.endswith("~"):
-        return True
+    # Skip known binaries.
+    for ext in IGNORE_EXTENSIONS:
+        if filename.endswith(ext):
+            return True
 
     if len(globs) == 0:
         return False
