@@ -3,7 +3,7 @@
 
 # Aliases.
 
-# lynx(1) writes to .lynxrc, so we use an aliases instead.
+# lynx(1) writes to .lynxrc, so we use an alias instead.
 if [ -x "/usr/bin/lynx" -o -x "/usr/local/bin/lynx" ]; then
     alias lynx="lynx -accept_all_cookies"
 fi
@@ -19,6 +19,22 @@ if [ "${_UNAME}" = "Cygwin" ]; then
     # -W: show windows as well as cygwin processes
     alias ps="ps -W"
 fi
+
+# Setup sensible-browser.
+for F in /usr/bin/chromium-browser; do
+    if [ -x "${F}" ]; then
+        export BROWSER=${F}
+        break
+    fi
+done
+
+# Setup sensible-editor.
+for F in /usr/bin/emacs /usr/bin/vi; do
+    if [ -x "${F}" ]; then
+        export VISUAL=${F}
+        break
+    fi
+done
 
 # Enable color support in various programs.
 if [ -x /usr/bin/dircolors ]; then
