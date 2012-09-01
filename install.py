@@ -282,25 +282,27 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("python"), "pythonstartup")
     make_dot_link(options, file_in_path("screen"), "screenrc")
     make_sig_link(options)
-    if sys.platform.beginswith("openbsd"):
-        terminfo_dir = os.path.join(options.homefiles, ".terminfo")
+    if sys.platform.startswith("openbsd"):
+        terminfo_dir = os.path.join(options.homedir, ".terminfo")
         terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
         if not os.path.exists(terminfo_compiled):
-            terminfo_source = os.path.join(    
-                options.homefiles,
-                "rxvt-unicode.terminfo"
-            )
-            outstr = run_command(
-                [
-                    "tic",
-                    "-o",
-                    terminfo_dir,
-                    "-x",
-                    terminfo_source
-                ]
-            )
-            if len(outstr.rstrip()) > 0:
-                print outstr.rstrip()
+            print "Running tic to create '%s'." % terminfo_compiled
+            if not options.dryrun:
+                terminfo_source = os.path.join(
+                    options.homefiles,
+                    "rxvt-unicode.terminfo"
+                )
+                outstr = run_command(
+                    [
+                        "tic",
+                        "-o",
+                        terminfo_dir,
+                        "-x",
+                        terminfo_source
+                    ]
+                )
+                if len(outstr.rstrip()) > 0:
+                    print outstr.rstrip()
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
     make_dot_link(options, file_in_path("urxvt"), "urxvt")
     make_dot_link(options, file_in_path("valgrind"), "valgrindrc")
