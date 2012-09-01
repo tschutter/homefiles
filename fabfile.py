@@ -24,7 +24,7 @@ DEPLOY_HOSTS = [
     "penguin",
     "pepsi",
     "shadow",
-    "tschutter@shadow:2222"
+    "tschutter@192.168.2.205"
 ]
 
 
