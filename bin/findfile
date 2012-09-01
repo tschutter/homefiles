@@ -49,19 +49,41 @@ locate_exe() {
 # Locate executables.
 locate_exe "find" FIND
 
-if [ $# -lt 1 ]; then
-  echo "Searches for a file in the current directory and all subdirectories." >&2
-  echo "" >&2
-  echo "USAGE:" >&2
-  echo "  $0 FILENAME" >&2
-  echo "" >&2
-  echo "EXAMPLES:" >&2
-  echo "  $0 foo.c" >&2
-  echo "  $0 '*.a'" >&2
-  exit 1
+usage() {
+    echo "Searches for a file in the current directory and all subdirectories." >&2
+    echo "" >&2
+    echo "USAGE:" >&2
+    echo "  $0 [options] FILENAME" >&2
+    echo "" >&2
+    echo "OPTIONS:" >&2
+    echo "  -i = ignore case" >&2
+    echo "" >&2
+    echo "EXAMPLES:" >&2
+    echo "  $0 foo.c" >&2
+    echo "  $0 '*.a'" >&2
+}
+
+ARGS=""
+FIND_NAME_OPTION="-name"
+for ARG in "$@"; do
+    case ${ARG} in
+    --help)
+        usage
+        exit 1
+        ;;
+    -i)
+        FIND_NAME_OPTION="-iname"
+        ;;
+    *)
+        ARGS="${ARGS} ${ARG}"
+        ;;
+    esac
+done
+if [ "${ARGS}" = "" ]; then
+    usage
+    exit 1
 fi
 
-while [ "$1" != "" ]; do
-  /usr/bin/find . -name .svn -prune -o -name .git -prune -o -name CVS -prune -o -name "$1" -print
-  shift
+for ARG in ${ARGS}; do
+    /usr/bin/find . -name .svn -prune -o -name .git -prune -o -name CVS -prune -o ${FIND_NAME_OPTION} "${ARG}" -print
 done
