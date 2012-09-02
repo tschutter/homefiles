@@ -69,13 +69,12 @@ def simplify_path(path):
     return path
 
 
-def create_vardir(options):
-    """Create ~/.var directory."""
-    if os.path.isdir(options.vardir):
-        return
-    print "Creating '%s' directory." % simplify_path(options.vardir)
-    if not options.dryrun:
-        os.mkdir(options.vardir, 0700)
+def mkdir(options, directory, mode):
+    """Create directory."""
+    if not os.path.isdir(directory):
+        print "Creating '%s' directory." % simplify_path(directory)
+        if not options.dryrun:
+            os.mkdir(directory, mode)
 
 
 def file_in_path(filename):
@@ -114,9 +113,11 @@ def clean_link(options, linkname, backup=True):
 
         # The destination exists as a file or dir.  Back it up.
         if backup:
-            print "Moving '%s' to '%s'." % (link_pathname, options.homefiles)
+            backup_dir = os.path.join(options.vardir, "homefiles_backup")
+            mkdir(options, backup_dir, 0700)
+            print "Moving '%s' to '%s'." % (link_pathname, backup_dir)
             if not options.dryrun:
-                shutil.move(link_pathname, options.homefiles)
+                shutil.move(link_pathname, backup_dir)
         else:
             print "Deleting file or directory '%s'." % link_pathname
             if not options.dryrun:
@@ -124,18 +125,30 @@ def clean_link(options, linkname, backup=True):
 
 
 def make_link(options, enabled, filename, linkname=None):
-    """If enabled is True, create a symbolic link from home/linkname to
-    homefiles/filename.
+    """If enabled is True, create a symbolic link from linkname to
+    filename.
 
-    If linkname is not specified, it is the same as filename.
+    If linkname is relative, prefix it with $HOME.  If filename is
+    relative, prefix it with $HOME/.homefiles.  If linkname is not
+    specified, it is the same as filename.
     """
 
     if linkname == None:
+        if os.path.isabs(filename):
+            raise ValueError(
+                "default linkname cannot be used with absolute filename"
+            )
         linkname = filename
 
     # Determine the source and destination pathnames.
-    file_pathname = os.path.join(options.homefiles, filename)
-    link_pathname = os.path.join(options.homedir, linkname)
+    if os.path.isabs(filename):
+        file_pathname = filename
+    else:
+        file_pathname = os.path.join(options.homefiles, filename)
+    if os.path.isabs(linkname):
+        link_pathname = linkname
+    else:
+        link_pathname = os.path.join(options.homedir, linkname)
 
     # The target filename should always exist.
     if not os.path.exists(file_pathname):
@@ -171,10 +184,10 @@ def make_link(options, enabled, filename, linkname=None):
     if sys.version_info < (2, 6):
         link_target = file_pathname
     else:
-        filedir = os.path.dirname(filename)
+        link_dir = os.path.dirname(link_pathname)
         link_target = os.path.relpath(
             file_pathname,
-            os.path.join(options.homedir, filedir)
+            link_dir
         )
 
     # Make the symbolic link from link_pathname to link_target.
@@ -247,6 +260,16 @@ def create_dotless(options, enabled):
 def link_dotfiles(options):
     """Create links in ~ to dotfiles."""
 
+    if file_in_path("abook"):
+        abook_dir = os.path.join(options.homedir, ".abook")
+        mkdir(options, abook_dir, 0777)
+        make_link(options, True, "abookrc", os.path.join(abook_dir, "abookrc"))
+        make_link(
+            options,
+            True,
+            os.path.join(options.homedir, "Ubuntu One", "addressbook"),
+            os.path.join(abook_dir, "addressbook")
+        )
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
@@ -323,10 +346,7 @@ def link_dotfiles(options):
 def link_binfiles(options):
     """Create links in ~/bin."""
     bindir = os.path.join(options.homedir, "bin")
-    if not os.path.isdir(bindir):
-        print "Creating dir '%s'." % bindir
-        if not options.dryrun:
-            os.mkdir(bindir)
+    mkdir(options, bindir, 0777)
     make_link(options, True, "bin/append-missing-newline")
     make_link(options, True, "bin/find-non-ascii")
     make_link(options, True, "bin/findfile")
@@ -461,7 +481,7 @@ def main():
 
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
-    create_vardir(options)
+    mkdir(options, options.vardir, 0700)
 
     link_dotfiles(options)
 

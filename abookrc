@@ -1,0 +1,11 @@
+# Style of address formatting to be used when exporting or printing.
+set address_style=us
+
+# Field to be used in the extra column
+set extra_column=custom1
+
+# Field to be used in the extra column if extra_column has no data.
+set extra_alternative=notes
+
+# Do not return all email addresses to a mutt query
+set mutt_return_all_emails=false
