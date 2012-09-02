@@ -113,7 +113,7 @@ def clean_link(options, linkname, backup=True):
 
         # The destination exists as a file or dir.  Back it up.
         if backup:
-            backup_dir = os.path.join(options.vardir, "homefiles_backup")
+            backup_dir = os.path.join(options.var_dir, "homefiles_backup")
             mkdir(options, backup_dir, 0700)
             print "Moving '%s' to '%s'." % (link_pathname, backup_dir)
             if not options.dryrun:
@@ -240,7 +240,7 @@ def create_dotless(options, enabled):
     dotless_pathname = os.path.join(options.homefiles, "less")
     lesskey = [
         "#env",
-        "LESSHISTFILE=%s" % os.path.join(options.vardir, "less_history")
+        "LESSHISTFILE=%s" % os.path.join(options.var_dir, "less_history")
     ]
 
     if enabled:
@@ -257,19 +257,48 @@ def create_dotless(options, enabled):
         clean_link(options, dotless_pathname)
 
 
+def process_abook(options):
+    """Process abook files."""
+    abook_dir = os.path.join(options.homedir, ".abook")
+    mkdir(options, abook_dir, 0777)
+    make_link(options, True, "abookrc", os.path.join(abook_dir, "abookrc"))
+    make_link(
+        options,
+        True,
+        os.path.join(options.private_dir, "addressbook"),
+        os.path.join(abook_dir, "addressbook")
+    )
+
+
+def process_terminfo(options):
+    """Process terminfo compilation."""
+    terminfo_dir = os.path.join(options.homedir, ".terminfo")
+    terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
+    if not os.path.exists(terminfo_compiled):
+        print "Running tic to create '%s'." % terminfo_compiled
+        if not options.dryrun:
+            terminfo_source = os.path.join(
+                options.homefiles,
+                "rxvt-unicode.terminfo"
+            )
+            outstr = run_command(
+                [
+                    "tic",
+                    "-o",
+                    terminfo_dir,
+                    "-x",
+                    terminfo_source
+                ]
+            )
+            if len(outstr.rstrip()) > 0:
+                print outstr.rstrip()
+
+
 def link_dotfiles(options):
     """Create links in ~ to dotfiles."""
 
     if file_in_path("abook"):
-        abook_dir = os.path.join(options.homedir, ".abook")
-        mkdir(options, abook_dir, 0777)
-        make_link(options, True, "abookrc", os.path.join(abook_dir, "abookrc"))
-        make_link(
-            options,
-            True,
-            os.path.join(options.homedir, "Ubuntu One", "addressbook"),
-            os.path.join(abook_dir, "addressbook")
-        )
+        process_abook(options)
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
@@ -306,26 +335,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("screen"), "screenrc")
     make_sig_link(options)
     if sys.platform.startswith("openbsd"):
-        terminfo_dir = os.path.join(options.homedir, ".terminfo")
-        terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
-        if not os.path.exists(terminfo_compiled):
-            print "Running tic to create '%s'." % terminfo_compiled
-            if not options.dryrun:
-                terminfo_source = os.path.join(
-                    options.homefiles,
-                    "rxvt-unicode.terminfo"
-                )
-                outstr = run_command(
-                    [
-                        "tic",
-                        "-o",
-                        terminfo_dir,
-                        "-x",
-                        terminfo_source
-                    ]
-                )
-                if len(outstr.rstrip()) > 0:
-                    print outstr.rstrip()
+        process_terminfo(options)
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
     make_dot_link(options, file_in_path("urxvt"), "urxvt")
     make_dot_link(options, file_in_path("valgrind"), "valgrindrc")
@@ -438,9 +448,17 @@ def main():
         help="specify directory to install to (default=%default)"
     )
     option_parser.add_option(
+        "--private",
+        action="store",
+        dest="private_dir",
+        metavar="DIR",
+        default=os.path.join("~", "private"),
+        help="specify private directory (default=%default)"
+    )
+    option_parser.add_option(
         "--var",
         action="store",
-        dest="vardir",
+        dest="var_dir",
         metavar="DIR",
         default=os.path.join("~", ".var"),
         help="specify var directory (default=%default)"
@@ -472,7 +490,8 @@ def main():
     if len(args) != 0:
         option_parser.error("invalid argument")
     options.homedir = os.path.expanduser(options.homedir)
-    options.vardir = os.path.expanduser(options.vardir)
+    options.private_dir = os.path.expanduser(options.private_dir)
+    options.var_dir = os.path.expanduser(options.var_dir)
 
     # Determine what platform we are on.
     options.is_cygwin = sys.platform == "cygwin"
@@ -481,7 +500,7 @@ def main():
 
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
-    mkdir(options, options.vardir, 0700)
+    mkdir(options, options.var_dir, 0700)
 
     link_dotfiles(options)
 
