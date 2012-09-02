@@ -8,6 +8,7 @@ ROOTDIR="${HOME}/.homefiles"
 if [ -x "/usr/bin/apt-get" ]; then
     # Debian derivatives.
     # ncurses-term adds /etc/terminfo for urxvt
+    # ubuntuone-control-panel for Ubuntu One
     PACKAGES="\
         abook\
         emacs23\
