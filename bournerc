@@ -3,6 +3,11 @@
 
 # Aliases.
 
+# abook(1) screws up symbolic links to addressbook, so we use an alias instead.
+if [ -x "/usr/bin/abook" -o -x "/usr/local/bin/abook" ]; then
+    alias abook="abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook"
+fi
+
 # lynx(1) writes to .lynxrc, so we use an alias instead.
 if [ -x "/usr/bin/lynx" -o -x "/usr/local/bin/lynx" ]; then
     alias lynx="lynx -accept_all_cookies"
@@ -20,22 +25,6 @@ if [ "${_UNAME}" = "Cygwin" ]; then
     alias ps="ps -W"
 fi
 
-# Setup sensible-browser.
-for F in /usr/bin/chromium-browser; do
-    if [ -x "${F}" ]; then
-        export BROWSER=${F}
-        break
-    fi
-done
-
-# Setup sensible-editor.
-for F in /usr/bin/emacs /usr/bin/vi; do
-    if [ -x "${F}" ]; then
-        export VISUAL=${F}
-        break
-    fi
-done
-
 # Enable color support in various programs.
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -52,6 +41,22 @@ fi
 
 # Terminal control.
 alias cls="reset; echo -n ''"
+
+# Setup sensible-browser.
+for F in /usr/bin/chromium-browser; do
+    if [ -x "${F}" ]; then
+        export BROWSER=${F}
+        break
+    fi
+done
+
+# Setup sensible-editor.
+for F in /usr/bin/emacs /usr/bin/vi; do
+    if [ -x "${F}" ]; then
+        export VISUAL=${F}
+        break
+    fi
+done
 
 # Directory navigation functions.
 _cdhelper() {

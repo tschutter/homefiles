@@ -257,19 +257,6 @@ def create_dotless(options, enabled):
         clean_link(options, dotless_pathname)
 
 
-def process_abook(options):
-    """Process abook files."""
-    abook_dir = os.path.join(options.homedir, ".abook")
-    mkdir(options, abook_dir, 0777)
-    make_link(options, True, "abookrc", os.path.join(abook_dir, "abookrc"))
-    make_link(
-        options,
-        True,
-        os.path.join(options.private_dir, "addressbook"),
-        os.path.join(abook_dir, "addressbook")
-    )
-
-
 def process_terminfo(options):
     """Process terminfo compilation."""
     terminfo_dir = os.path.join(options.homedir, ".terminfo")
@@ -297,8 +284,6 @@ def process_terminfo(options):
 def link_dotfiles(options):
     """Create links in ~ to dotfiles."""
 
-    if file_in_path("abook") and os.path.isdir(options.private_dir):
-        process_abook(options)
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
