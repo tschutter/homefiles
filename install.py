@@ -297,7 +297,7 @@ def process_terminfo(options):
 def link_dotfiles(options):
     """Create links in ~ to dotfiles."""
 
-    if file_in_path("abook"):
+    if file_in_path("abook") and os.path.isdir(options.private_dir):
         process_abook(options)
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
