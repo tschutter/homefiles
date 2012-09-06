@@ -30,11 +30,6 @@ shopt -s checkwinsize
 if [ "${_UNAME}" = "Cygwin" ]; then
     # Ignore case while completing
     set completion-ignore-case on
-
-    # Run a batch file.
-    launch() {
-        cygstart "$1"
-    }
 fi
 
 # Add an "alert" alias for long running commands.  Use like so:

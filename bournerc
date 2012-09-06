@@ -20,10 +20,18 @@ if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
     alias less="less --no-init --quit-at-eof --LONG-PROMPT"
 fi
 
-if [ "${_UNAME}" = "Cygwin" ]; then
-    # -W: show windows as well as cygwin processes
-    alias ps="ps -W"
-fi
+# Platform dependent aliases.
+case "${_UNAME}" in
+    Cygwin)
+        alias open="cygstart"
+        # -W: show windows as well as cygwin processes
+        alias ps="ps -W"
+        ;;
+    Linux)
+        # Use xdg-mime to set default application.
+        alias open="xdg-open"
+        ;;
+esac
 
 # Enable color support in various programs.
 if [ -x /usr/bin/dircolors ]; then
