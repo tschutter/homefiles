@@ -87,3 +87,16 @@ this: ::
 
 The echo is only executed if ssh is not called from within a pipe.
 The final ssh is always executed.
+
+$* vs. $@
+---------
+
+$* (star) and $@ (at) expand to a string containing all of the
+command-line arguments, as if you had used $1 $2 $3...
+
+The difference between $* and $@ lies in the way they behave when they
+occur inside double quotes: $* behaves in the normal way, whereas $@
+creates a separate double-quoted string for each command-line
+argument. That is, "$*" behaves as if you had written "$1 $2 $3",
+whereas "$@" behaves as if you had written "$1" "$2" "$3".  In most
+cases "$@" should be used because it preserves spaces in arguments.
