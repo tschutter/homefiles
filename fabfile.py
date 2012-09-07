@@ -50,6 +50,9 @@ def deploy():
     """Deploy .homefiles updates to known hosts."""
     if _is_host_up(fabric.api.env.host, int(fabric.api.env.port)):
         with fabric.api.cd("~/.homefiles"):
-            fabric.api.run("git pull")  # update .homefiles
-            fabric.api.run("git submodule update")  # update .homefiles/emacs.d
+            # Update .homefiles
+            fabric.api.run("git pull")
+            # Update .homefiles/emacs.d
+            fabric.api.run("git submodule update --init")
+            # Install
             fabric.api.run("python install.py")
