@@ -17,7 +17,7 @@ fabric.api.env.abort_on_prompts = True
 fabric.api.env.shell = "/bin/sh -l -c"
 
 DEPLOY_HOSTS = [
-#    "crookshanks",
+    "crookshanks",
     "deadeye",
     "missy",
     "molly",
