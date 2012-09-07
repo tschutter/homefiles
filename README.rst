@@ -3,11 +3,20 @@ Homefiles
 
 Usage
 -----
-::
+
+Initial checkout::
 
     git clone --recursive git://github.com/tschutter/homefiles.git $HOME/.homefiles
     $HOME/.homefiles/install.sh
-    $HOME/bin/install-essentials
+    install-essentials
+
+Update::
+
+    cd $HOME/.homefiles
+    git pull
+    git submodule update --init
+    ./install.sh
+    install-essentials
 
 ----------------------------------------------------------------------
 
