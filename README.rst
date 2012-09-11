@@ -14,7 +14,7 @@ Update::
 
     cd $HOME/.homefiles
     git pull
-    git submodule update --init
+    git submodule update --init --recursive
     ./install.sh
     install-essentials
 
