@@ -14,6 +14,12 @@
     # visual = graphical repository browser
     visual = !gitk
 
+    # smstat = submodule status
+    smstat = submodule status --recursive
+
+    # smup = submodule update
+    smup = submodule update --init --recursive
+
 [core]
     editor = mg
 
@@ -24,3 +30,7 @@
 [user]
     name = Tom Schutter
     email = t.schutter@comcast.net
+
+[color]
+    diff = auto
+    status = auto
