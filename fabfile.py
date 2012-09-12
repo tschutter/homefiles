@@ -53,6 +53,6 @@ def deploy():
             # Update .homefiles
             fabric.api.run("git pull")
             # Update .homefiles/emacs.d
-            fabric.api.run("git submodule update --init")
+            fabric.api.run("git submodule update --init --recursive")
             # Install
             fabric.api.run("python install.py")
