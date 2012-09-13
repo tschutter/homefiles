@@ -297,6 +297,7 @@ def link_dotfiles(options):
     clean_link(options, os.path.join(options.homedir, ".emacs"))
     make_dot_link(options, file_in_path("emacs"), "emacs.d")
     make_dot_link(options, file_in_path("vi"), "exrc")
+    make_dot_link(options, file_in_path("gdb"), "gdbinit")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(options, file_in_path("lbdbq"), "lbdbrc")
