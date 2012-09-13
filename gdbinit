@@ -16,7 +16,6 @@ set history save on
 set history expansion on
 
 define pl
-    info frame
     info args
     info locals
 end
