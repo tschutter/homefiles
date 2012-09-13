@@ -15,7 +15,15 @@ set history filename ~/.var/gdb_history
 set history save on
 set history expansion on
 
-# Clear screen function.
+define pl
+    info frame
+    info args
+    info locals
+end
+document pl
+Print locals (args and stack).
+end
+
 define cls
     shell clear
 end
