@@ -344,6 +344,7 @@ def link_binfiles(options):
     bindir = os.path.join(options.homedir, "bin")
     mkdir(options, bindir, 0777)
     make_link(options, True, "bin/append-missing-newline")
+    make_link(options, True, "bin/cmake-clean")
     make_link(options, True, "bin/find-non-ascii")
     make_link(options, True, "bin/findfile")
     make_link(options, True, "bin/install-essentials")
