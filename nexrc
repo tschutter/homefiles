@@ -1,0 +1,22 @@
+" nvi(1) config file
+
+" Use indents of 4 spaces, and have them copied down lines.
+set tabstop=4
+set shiftwidth=4
+
+" Although autoindent sounds nice, it totally screws up text pasted
+" from other apps.  And in vim, I paste more often than creating
+" original text.
+set noautoindent
+
+" Print the line number in front of each line.
+set number
+
+" Display line number and column number on right side of modeline.
+set ruler
+
+" Search for text as you enter it.
+set searchincr
+
+" Show matching brackets.
+set showmatch

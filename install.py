@@ -330,7 +330,13 @@ def link_dotfiles(options):
         os.path.join(options.homedir, ".viminfo"),
         backup=False
     )
-    make_dot_link(options, file_in_path("vi"), "vimrc")
+    if sys.platform.startswith("openbsd"):
+        make_dot_link(options, file_in_path("vi"), "nexrc")
+    make_dot_link(
+        options,
+        file_in_path("vim") or file_in_path("gvim"),
+        "vimrc"
+    )
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
     # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
