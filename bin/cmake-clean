@@ -92,10 +92,17 @@ def clean(
             shutil.rmtree(os.path.join(dirpath, "CMakeFiles"))
             dirnames.remove("CMakeFiles")
 
-    # Remove empty directories.
-    for dirpath, dirnames, filenames in os.walk(directory, topdown=False):
-        if len(dirnames) == 0 and len(filenames) == 0:
-            os.rmdir(dirpath)
+    # Remove empty directories.  The "repeat" construct is needed
+    # because the dirnames list for the parent is generated before the
+    # parent is processed.  When a directory is removed, there is no
+    # way to remove it from the parent's dirnames list.
+    repeat = True
+    while repeat:
+        repeat = False
+        for dirpath, dirnames, filenames in os.walk(directory, topdown=False):
+            if len(dirnames) == 0 and len(filenames) == 0:
+                os.rmdir(dirpath)
+                repeat = True
 
 
 def main():
