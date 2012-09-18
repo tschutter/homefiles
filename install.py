@@ -312,6 +312,8 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("mintty"), "minttyrc")
     make_dot_link(options, file_in_path("mutt"), "mutt")
     make_dot_link(options, file_in_path("muttprint"), "muttprintrc")
+    if sys.platform.startswith("openbsd"):
+        make_dot_link(options, file_in_path("vi"), "nexrc")
     make_dot_link(options, True, "profile")
     make_dot_link(options, file_in_path("pychecker"), "pycheckrc")
     make_dot_link(options, file_in_path("pdb"), "pdbrc")
@@ -330,11 +332,9 @@ def link_dotfiles(options):
         os.path.join(options.homedir, ".viminfo"),
         backup=False
     )
-    if sys.platform.startswith("openbsd"):
-        make_dot_link(options, file_in_path("vi"), "nexrc")
     make_dot_link(
         options,
-        file_in_path("vim") or file_in_path("gvim"),
+        any(file_in_path(vim) for vim in ["gvim", "vim", "vim.tiny"]),
         "vimrc"
     )
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
