@@ -4,13 +4,16 @@
 Installs files in tschutter/homefiles using symbolic links.
 """
 
+import sys
+if sys.version_info < (2, 4):
+    print "Python versions prior to 2.4 not supported."
+    sys.exit(1)
+
 import optparse
 import os
 import shutil
 import stat
-import sys
-if sys.version_info >= (2, 4):
-    import subprocess
+import subprocess
 import tempfile
 import time
 
@@ -284,6 +287,13 @@ def process_terminfo(options):
 def link_dotfiles(options):
     """Create links in ~ to dotfiles."""
 
+    # Determine if gvim or vim is installed.  Python 2.4 does not have any().
+    vim_installed = False
+    for exe in ["gvim", "vim", "vim.tiny"]:
+        vim_installed = file_in_path(exe)
+        if vim_installed:
+            break
+
     make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(options, True, "bournerc")
@@ -296,7 +306,8 @@ def link_dotfiles(options):
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
     clean_link(options, os.path.join(options.homedir, ".emacs"))
     make_dot_link(options, file_in_path("emacs"), "emacs.d")
-    make_dot_link(options, file_in_path("vi"), "exrc")
+    if not sys.platform.startswith("openbsd"):
+        make_dot_link(options, file_in_path("vi"), "exrc")
     make_dot_link(options, file_in_path("gdb"), "gdbinit")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
@@ -332,11 +343,7 @@ def link_dotfiles(options):
         os.path.join(options.homedir, ".viminfo"),
         backup=False
     )
-    make_dot_link(
-        options,
-        any(file_in_path(vim) for vim in ["gvim", "vim", "vim.tiny"]),
-        "vimrc"
-    )
+    make_dot_link(options, vim_installed, "vimrc")
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
     # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
