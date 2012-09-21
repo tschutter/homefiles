@@ -34,3 +34,4 @@
 [color]
     diff = auto
     status = auto
+    ui = true
