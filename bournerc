@@ -117,6 +117,16 @@ else
     _PS_DOLLAR="\\$"
 fi
 
+# Define a git helper function if not already defined.
+if ! type __git_ps1 | grep -q 'function$'; then
+    __git_ps1() {
+        local b="`git symbolic-ref HEAD 2>/dev/null`"
+        if [ -n "$b" ]; then
+            printf " (%s)" "${b##refs/heads/}";
+        fi
+    }
+fi
+
 # _PS1_PREFIX can be optionally set in .bashrc-local or .kshrc-local
 # to indicate the type of machine.  For example:
 #     case ${_HOSTNAME} in
@@ -136,7 +146,7 @@ fi
 ps1-default() {
     # Default prompt string.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w'${_PS_DOLLAR}' '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w'`__git_ps1`${_PS_DOLLAR}' '
     fi
 }
 ps1-time() {
