@@ -103,11 +103,13 @@ def clean(
     # Remove empty directories.  The "repeat" construct is needed
     # because the dirnames list for the parent is generated before the
     # parent is processed.  When a directory is removed, there is no
-    # way to remove it from the parent's dirnames list.
+    # way to remove it from the parent's dirnames list.  Note that
+    # setting topdown=False will not help here, and it complicates the
+    # pruning logic.
     repeat = True
     while repeat:
         repeat = False
-        for dirpath, dirnames, filenames in os.walk(directory, topdown=False):
+        for dirpath, dirnames, filenames in os.walk(directory):
             # We must check for emptiness before pruning.  Otherwise
             # we could try to remove a directory that contains only
             # prunable subdirs.
