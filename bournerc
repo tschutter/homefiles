@@ -96,6 +96,27 @@ uuu() {
 uuuu() {
     _cdhelper ../../../.. $*
 }
+# Define completion for directory navigation functions.
+if [ -n "$BASH_VERSION" ]; then
+    _basecd() {
+        local cur=${COMP_WORDS[COMP_CWORD]}
+        local base=$1
+        local len=$((${#base}+1))
+        COMPREPLY=( $( compgen -S/ -d ${base}${cur} | cut -b ${len}- ) )
+    }
+    _home() { _basecd ${HOME}/; }
+    complete -o nospace -F _home home
+    _src() { _basecd ${SRC:-${HOME}/src}/; }
+    complete -o nospace -F _src src
+    _u() { _basecd ../; }
+    complete -o nospace -F _u u
+    _uu() { _basecd ../../; }
+    complete -o nospace -F _uu uu
+    _uuu() { _basecd ../../../; }
+    complete -o nospace -F _uuu uuu
+    _uuuu() { _basecd ../../../../; }
+    complete -o nospace -F _uuuu uuuu
+fi
 
 # Prompt and window title.
 # Determine the hostname.
