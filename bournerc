@@ -117,15 +117,25 @@ else
     _PS_DOLLAR="\\$"
 fi
 
-# Define a git helper function if not already defined.
-if ! type __git_ps1 | grep -q 'function$'; then
-    __git_ps1() {
-        local b="`git symbolic-ref HEAD 2>/dev/null`"
-        if [ -n "$b" ]; then
-            printf " (%s)" "${b##refs/heads/}";
-        fi
-    }
-fi
+# Define git helper function.  Note that it will probably be
+# overridden by /etc/bash_completion if running bash.
+__git_ps1() {
+    local b="`git symbolic-ref HEAD 2>/dev/null`"
+    if [ -n "$b" ]; then
+        printf " (%s)" "${b##refs/heads/}";
+    fi
+}
+
+# The __gis_ps1() function defined by git-completion.bash has a number
+# of configuration settings.
+# Show unstaged (*) and staged (+) changes next to the branch name.
+GIT_PS1_SHOWDIRTYSTATE=t
+# Show stashed objects exist ($) next to the branch name.
+GIT_PS1_SHOWSTASHSTATE=t
+# Show untracked files exist (%) next to the branch name.
+GIT_PS1_SHOWUNTRACKEDFILES=t
+# Show the difference between HEAD and its upstream.
+GIT_PS1_SHOWUPSTREAM="auto"
 
 # _PS1_PREFIX can be optionally set in .bashrc-local or .kshrc-local
 # to indicate the type of machine.  For example:
@@ -146,20 +156,20 @@ fi
 ps1-default() {
     # Default prompt string.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w'`__git_ps1`${_PS_DOLLAR}' '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 ps1-time() {
     # Prompt string with timestamp.  Useful if you want to know when a
     # command was run.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_PREFIX}${_HOSTNAME}':\w'${_PS_DOLLAR}' '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 ps1-history() {
     # Prompt string with history numbers.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_PREFIX}${_HOSTNAME}':\w'${_PS_DOLLAR}' '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 
