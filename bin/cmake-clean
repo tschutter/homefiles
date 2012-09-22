@@ -38,6 +38,9 @@ import shutil
 import subprocess
 import sys
 
+# Do not cleanup anything in these subdirectories.
+PRUNE_DIRS = [".svn", ".git", "CVS"]
+
 
 def make_clean(directory):
     """Run 'make clean' in directory.
@@ -83,6 +86,11 @@ def clean(
 
     # CMakeFiles, Makefile, cmake_install.cmake.
     for dirpath, dirnames, filenames in os.walk(directory):
+        # Prune subdirs.
+        for dirname in dirnames:
+            if dirname in PRUNE_DIRS:
+                dirnames.remove(dirname)
+
         if "CMakeFiles" in dirnames:
             for filename in ["Makefile", "cmake_install.cmake"]:
                 if filename in filenames:
@@ -95,14 +103,24 @@ def clean(
     # Remove empty directories.  The "repeat" construct is needed
     # because the dirnames list for the parent is generated before the
     # parent is processed.  When a directory is removed, there is no
-    # way to remove it from the parent's dirnames list.
+    # way to remove it from the parent's dirnames list.  Note that
+    # setting topdown=False will not help here, and it complicates the
+    # pruning logic.
     repeat = True
     while repeat:
         repeat = False
-        for dirpath, dirnames, filenames in os.walk(directory, topdown=False):
+        for dirpath, dirnames, filenames in os.walk(directory):
+            # We must check for emptiness before pruning.  Otherwise
+            # we could try to remove a directory that contains only
+            # prunable subdirs.
             if len(dirnames) == 0 and len(filenames) == 0:
                 os.rmdir(dirpath)
                 repeat = True
+
+            # Prune subdirs.
+            for dirname in dirnames:
+                if dirname in PRUNE_DIRS:
+                    dirnames.remove(dirname)
 
 
 def main():
