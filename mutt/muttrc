@@ -82,8 +82,8 @@ folder-hook .*Templates 'bind index m resend-message'
 # Address book.
 set query_command="lbdbq %s"
 bind editor <tab> complete-query
-macro index a "|abook --add-email\n" 'add sender to abook'
-macro pager a "|abook --add-email\n" 'add sender to abook'
+macro index a "|abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook --add-email\n" 'add sender to abook'
+macro pager a "|abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook --add-email\n" 'add sender to abook'
 
 # Use GPG.
 source ~/.mutt/gpg.rc
