@@ -18,3 +18,11 @@ Binary(hex) editor - tweak
     than the size of the whole file, and only when saving the altered
     version will tweak have to read through the entire input file to
     write the output.
+
+Development Tools
+-----------------
+
+UML Modelling - BOUML
+    BOUML is an UML 2 tool box.  It creates reasonable sequence
+    diagrams.  BOUML went closed source in version 5.0, but versions
+    prior to that are free.
