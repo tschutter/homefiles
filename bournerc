@@ -96,27 +96,6 @@ uuu() {
 uuuu() {
     _cdhelper ../../../.. $*
 }
-# Define completion for directory navigation functions.
-if [ -n "$BASH_VERSION" ]; then
-    _basecd() {
-        local cur=${COMP_WORDS[COMP_CWORD]}
-        local base=$1
-        local len=$((${#base}+1))
-        COMPREPLY=( $( compgen -S/ -d ${base}${cur} | cut -b ${len}- ) )
-    }
-    _home() { _basecd ${HOME}/; }
-    complete -o nospace -F _home home
-    _src() { _basecd ${SRC:-${HOME}/src}/; }
-    complete -o nospace -F _src src
-    _u() { _basecd ../; }
-    complete -o nospace -F _u u
-    _uu() { _basecd ../../; }
-    complete -o nospace -F _uu uu
-    _uuu() { _basecd ../../../; }
-    complete -o nospace -F _uuu uuu
-    _uuuu() { _basecd ../../../../; }
-    complete -o nospace -F _uuuu uuuu
-fi
 
 # Prompt and window title.
 # Determine the hostname.
@@ -146,17 +125,6 @@ __git_ps1() {
         printf " (%s)" "${b##refs/heads/}";
     fi
 }
-
-# The __gis_ps1() function defined by git-completion.bash has a number
-# of configuration settings.
-# Show unstaged (*) and staged (+) changes next to the branch name.
-GIT_PS1_SHOWDIRTYSTATE=t
-# Show stashed objects exist ($) next to the branch name.
-GIT_PS1_SHOWSTASHSTATE=t
-# Show untracked files exist (%) next to the branch name.
-GIT_PS1_SHOWUNTRACKEDFILES=t
-# Show the difference between HEAD and its upstream.
-GIT_PS1_SHOWUPSTREAM="auto"
 
 # _PS1_PREFIX can be optionally set in .bashrc-local or .kshrc-local
 # to indicate the type of machine.  For example:

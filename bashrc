@@ -42,6 +42,37 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+# Define completion for directory navigation functions.
+_basecd() {
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    local base=$1
+    local len=$((${#base}+1))
+    COMPREPLY=( $( compgen -S/ -d ${base}${cur} | cut -b ${len}- ) )
+}
+_home() { _basecd ${HOME}/; }
+complete -o nospace -F _home home
+_src() { _basecd ${SRC:-${HOME}/src}/; }
+complete -o nospace -F _src src
+_u() { _basecd ../; }
+complete -o nospace -F _u u
+_uu() { _basecd ../../; }
+complete -o nospace -F _uu uu
+_uuu() { _basecd ../../../; }
+complete -o nospace -F _uuu uuu
+_uuuu() { _basecd ../../../../; }
+complete -o nospace -F _uuuu uuuu
+
+# The __gis_ps1() function defined by git-completion.bash has a number
+# of configuration settings.
+# Show unstaged (*) and staged (+) changes next to the branch name.
+GIT_PS1_SHOWDIRTYSTATE=t
+# Show stashed objects exist ($) next to the branch name.
+GIT_PS1_SHOWSTASHSTATE=t
+# Show untracked files exist (%) next to the branch name.
+GIT_PS1_SHOWUNTRACKEDFILES=t
+# Show the difference between HEAD and its upstream.
+GIT_PS1_SHOWUPSTREAM="auto"
+
 # Source local bashrc.
 if [ -f ~/.bashrc-local ]; then
     . ~/.bashrc-local
