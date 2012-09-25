@@ -11,6 +11,9 @@ fi
 # Emacs history editing.
 set -o emacs
 
+# Subset of csh(1)-style history editing using the `!' character.
+set -o csh-history
+
 # History navigation.
 bind '^XH'=beginning-of-line # home
 bind '^XF'=end-of-line # end
