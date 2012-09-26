@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# Strip UTF-8 BOM from beginning of file.
+#
+# From http://stackoverflow.com/questions/1068650/
+#
+
+usage() {
+    echo "Strip UTF-8 BOM." >&2
+    echo "" >&2
+    echo "USAGE: $0 FILE [...]" >&2
+}
+
+sed -i '1 s/^\xef\xbb\xbf//' "$@"

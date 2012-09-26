@@ -362,6 +362,7 @@ def link_binfiles(options):
     make_link(options, True, "bin/findfile")
     make_link(options, True, "bin/install-essentials")
     make_link(options, True, "bin/pycheck")
+    make_link(options, True, "bin/strip-bom")
     make_link(options, True, "bin/svn-ignore")
     make_link(options, True, "bin/tgrep")
     make_link(options, True, "bin/tm")
