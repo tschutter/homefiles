@@ -15,10 +15,10 @@ while [ "$1" != "" ]; do
             echo "" >&2
             echo "Options:" >&2
             echo "  -h, --help            show this help message and exit" >&2
-            echo "  --single              only run first checker found" >&2
+            echo "  -s, --single          only run first checker found" >&2
             exit 1
             ;;
-        --single)
+        -s|--single)
             SINGLE=true
             ;;
         -*)
