@@ -40,7 +40,7 @@ import sys
 
 
 # Extensions of known binaries.
-IGNORE_EXTENSIONS=[
+IGNORE_EXTENSIONS = [
     ".a",
     ".ai",
     ".aps",
