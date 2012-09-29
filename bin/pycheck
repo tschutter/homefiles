@@ -9,7 +9,7 @@ FILE=""
 FOUND=false
 while [ "$1" != "" ]; do
     case $1 in
-        -h|-?|--help)
+        -h|"-?"|--help)
             echo "Usage: `basename $0` [options] FILE" >&2
             echo "  Runs multiple Python static checkers." >&2
             echo "" >&2
