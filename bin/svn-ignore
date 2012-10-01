@@ -30,14 +30,22 @@ def main():
     """main"""
     option_parser = optparse.OptionParser(
         usage="usage: %prog FILE|DIR [FILE|DIR...]\n" +
-            "  Ignore subversion files and dirs."
+            "  Ignore (or unignore) subversion files and dirs."
+    )
+    option_parser.add_option(
+        "-u",
+        "--unignore",
+        action="store_true",
+        dest="unignore",
+        default=False,
+        help="unignore the file"
     )
     option_parser.add_option(
         "--no-sort",
         action="store_false",
         dest="sort",
         default=True,
-        help="do not sort property values, just append"
+        help="do not sort property values"
     )
 
     (options, args) = option_parser.parse_args()
@@ -46,13 +54,21 @@ def main():
 
     for path in args:
         dirpath, filename = os.path.split(path)
-        svnignore_data = svn_propget("svn:ignore", dirpath)
+        svnignore_data = svn_propget("svn:ignore", dirpath).split("\n")
 
-        if filename not in svnignore_data.split("\n"):
-            svnignore_data += "\n" + filename
-            if options.sort:
-                svnignore_data = "\n".join(sorted(svnignore_data.split("\n")))
-            svn_propset("svn:ignore", svnignore_data, dirpath)
+        if options.unignore:
+            if filename not in svnignore_data:
+                continue
+            svnignore_data.remove(filename)
+        else:
+            if filename in svnignore_data:
+                continue
+            svnignore_data.append(filename)
+
+        if options.sort:
+            svnignore_data = sorted(svnignore_data)
+
+        svn_propset("svn:ignore", "\n".join(svnignore_data), dirpath)
 
 if __name__ == "__main__":
     main()
