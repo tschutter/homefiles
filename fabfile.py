@@ -53,6 +53,15 @@ def deploy():
             # Update .homefiles
             fabric.api.run("git pull")
             # Update .homefiles/emacs.d
-            fabric.api.run("git submodule update --init --recursive")
+            # --init
+            #   Initialize all submodules for which "git submodule
+            #   init" has not been called so far before updating.
+            # --recursive
+            #   Traverse submodules recursively.
+            # --merge
+            #   Merge the commit recorded in the superproject into the
+            #   current branch of the submodule. Prevent the
+            #   submodule’s HEAD from detaching.
+            fabric.api.run("git submodule update --init --recursive --merge")
             # Install
             fabric.api.run("python install.py")
