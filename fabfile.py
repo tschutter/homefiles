@@ -61,7 +61,7 @@ def deploy():
             # --merge
             #   Merge the commit recorded in the superproject into the
             #   current branch of the submodule. Prevent the
-            #   submodule’s HEAD from detaching.
+            #   submodule's HEAD from detaching.
             fabric.api.run("git submodule update --init --recursive --merge")
             # Install
             fabric.api.run("python install.py")
