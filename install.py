@@ -356,6 +356,7 @@ def link_binfiles(options):
     """Create links in ~/bin."""
     bindir = os.path.join(options.homedir, "bin")
     mkdir(options, bindir, 0777)
+    make_link(options, True, "bin/abook-lookup")
     make_link(options, True, "bin/append-missing-newline")
     make_link(options, True, "bin/cmake-clean")
     make_link(options, True, "bin/find-non-ascii")

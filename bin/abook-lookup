@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+#
+# Copyright (c) 2012-2012 Tom Schutter
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#    - Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    - Redistributions in binary form must reproduce the above
+#      copyright notice, this list of conditions and the following
+#      disclaimer in the documentation and/or other materials provided
+#      with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+"""
+Lookup an entry in an abook(1) addressbook file.
+"""
+
+import itertools
+import optparse
+import re
+import sys
+
+
+def is_record_id(line):
+    """Return True if line is a record id line."""
+    return len(line) > 2 and line[0] == "[" and line[1] in "0123456789"
+
+
+def record_matches(record, patterns):
+    """Return True if record matches any pattern."""
+    for pattern in patterns:
+        for line in record:
+            if pattern.search(line):
+                return True
+    return False
+
+
+def main():
+    """main"""
+    option_parser = optparse.OptionParser(
+        usage="usage: %prog [options] PATTERN ...\n" +
+            "  Lookup an entry in an abook(1) addressbook file."
+    )
+    option_parser.add_option(
+        "-n",
+        "--line-number",
+        action="store_true",
+        dest="line_number",
+        default=False,
+        help="prefix each line of output with the line number"
+    )
+
+    # Parse command line.
+    (options, args) = option_parser.parse_args()
+    if len(args) == 0:
+        option_parser.error("No pattern specified.")
+
+    # Compile args to regular expressions.
+    patterns = [re.compile(arg, re.IGNORECASE) for arg in args]
+
+    # Process datafile.
+    first = True
+    with open("/home/tschutter/private/addressbook") as datafile:
+        for key, record in itertools.groupby(datafile, key=is_record_id):
+            if not key:
+                record = list(
+                    line.rstrip()
+                    for line in record
+                    if len(line) > 1
+                )
+                if record_matches(record, patterns):
+                    if first:
+                        first = False
+                    else:
+                        print ""
+                    for line in record:
+                        print line
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
