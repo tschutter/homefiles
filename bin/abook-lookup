@@ -34,6 +34,7 @@ Lookup an entry in an abook(1) addressbook file.
 
 import itertools
 import optparse
+import os
 import re
 import sys
 
@@ -59,25 +60,23 @@ def main():
             "  Lookup an entry in an abook(1) addressbook file."
     )
     option_parser.add_option(
-        "-n",
-        "--line-number",
-        action="store_true",
-        dest="line_number",
-        default=False,
-        help="prefix each line of output with the line number"
+        "--datafile",
+        default="$HOME/.abook/addressbook",
+        help="use an alternative addressbook file (default=%default)"
     )
 
     # Parse command line.
     (options, args) = option_parser.parse_args()
     if len(args) == 0:
         option_parser.error("No pattern specified.")
+    options.datafile = os.path.expandvars(options.datafile)
 
     # Compile args to regular expressions.
     patterns = [re.compile(arg, re.IGNORECASE) for arg in args]
 
     # Process datafile.
     first = True
-    with open("/home/tschutter/private/addressbook") as datafile:
+    with open(options.datafile) as datafile:
         for key, record in itertools.groupby(datafile, key=is_record_id):
             if not key:
                 record = list(
