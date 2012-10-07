@@ -517,6 +517,9 @@ def main():
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
     mkdir(options, options.var_dir, 0700)
+    if file_in_path("mutt"):
+        # Create ~/.var/mutt so mutt can store certs on first run.
+        mkdir(options, os.path.join(options.var_dir, "mutt"), 0700)
 
     link_dotfiles(options)
 
