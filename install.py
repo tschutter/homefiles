@@ -369,6 +369,20 @@ def link_binfiles(options):
     make_link(options, True, "bin/tm")
 
 
+def set_wm_keybindings(options):
+    """Setup window manager keybindings."""
+    if os.path.exists("/usr/bin/xfconf-query"):
+        # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
+        args = [
+            "/usr/bin/xfconf-query",
+            "--channel",
+            "xfce4-keyboard-shortcuts",
+            "--property"
+        ]
+        run_command(args + ["/xfwm4/custom/<Control>F3", "--reset"])
+        run_command(args + ["/xfwm4/custom/<Control>F4", "--reset"])
+
+
 def create_tmp_file(prefix, suffix, contents):
     """Create a temporary file containing contents."""
     handle, pathname = tempfile.mkstemp(prefix=prefix, suffix=suffix)
@@ -503,10 +517,15 @@ def main():
     options.homefiles = os.path.dirname(os.path.abspath(__file__))
 
     mkdir(options, options.var_dir, 0700)
+    if file_in_path("mutt"):
+        # Create ~/.var/mutt so mutt can store certs on first run.
+        mkdir(options, os.path.join(options.var_dir, "mutt"), 0700)
 
     link_dotfiles(options)
 
     link_binfiles(options)
+
+    set_wm_keybindings(options)
 
     install_fonts(options)
 
