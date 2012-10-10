@@ -18,7 +18,7 @@ import tempfile
 import time
 
 
-def run_command(args, stdinstr=None):
+def force_run_command(args, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
     if sys.version_info < (2, 4):
         print "WARNING: Not running %s" % " ".join(args)
@@ -33,6 +33,21 @@ def run_command(args, stdinstr=None):
         )
         stdoutdata, stderrdata = process.communicate(stdinstr)
         return stdoutdata + stderrdata
+
+
+def run_command(options, args, stdinstr=None):
+    """Run an external command, returning stdout and stderr as a string."""
+    if sys.version_info < (2, 4):
+        print "WARNING: Not running %s" % " ".join(args)
+        return
+
+    if options.verbose:
+        print "Running '%s'" % " ".join(args)
+    if not options.dryrun:
+        output = force_run_command(args, stdinstr)
+        output = output.rstrip()
+        if len(output) > 0:
+            print output
 
 
 def cygpath_w(pathname):
@@ -179,7 +194,7 @@ def make_link(options, enabled, filename, linkname=None):
 
     if not enabled:
         if options.verbose:
-            print "Not linking to '%s'." % filename
+            print "Not linking to '%s' (not enabled)." % filename
         return
 
     # Make the link target relative.  This usually makes the link
@@ -249,13 +264,11 @@ def create_dotless(options, enabled):
     if enabled:
         if options.force or not os.path.exists(dotless_pathname):
             print "Running lesskey to create '%s'." % dotless_pathname
-            if not options.dryrun:
-                outstr = run_command(
-                    ["lesskey", "-o", dotless_pathname],
-                    "\n".join(lesskey)
-                )
-                if len(outstr.rstrip()) > 0:
-                    print outstr.rstrip()
+            run_command(
+                options,
+                ["lesskey", "-o", dotless_pathname],
+                "\n".join(lesskey)
+            )
     else:
         clean_link(options, dotless_pathname)
 
@@ -266,22 +279,20 @@ def process_terminfo(options):
     terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
     if not os.path.exists(terminfo_compiled):
         print "Running tic to create '%s'." % terminfo_compiled
-        if not options.dryrun:
-            terminfo_source = os.path.join(
-                options.homefiles,
-                "rxvt-unicode.terminfo"
-            )
-            outstr = run_command(
-                [
-                    "tic",
-                    "-o",
-                    terminfo_dir,
-                    "-x",
-                    terminfo_source
-                ]
-            )
-            if len(outstr.rstrip()) > 0:
-                print outstr.rstrip()
+        terminfo_source = os.path.join(
+            options.homefiles,
+            "rxvt-unicode.terminfo"
+        )
+        run_command(
+            options,
+            [
+                "tic",
+                "-o",
+                terminfo_dir,
+                "-x",
+                terminfo_source
+            ]
+        )
 
 
 def link_dotfiles(options):
@@ -369,18 +380,29 @@ def link_binfiles(options):
     make_link(options, True, "bin/tm")
 
 
-def set_wm_keybindings(options):
-    """Setup window manager keybindings."""
+def xfwm4_remove_keybinding(options, binding):
+    """Remove a xfwm4 keybinding."""
     if os.path.exists("/usr/bin/xfconf-query"):
-        # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
         args = [
             "/usr/bin/xfconf-query",
             "--channel",
             "xfce4-keyboard-shortcuts",
             "--property"
         ]
-        run_command(args + ["/xfwm4/custom/<Control>F3", "--reset"])
-        run_command(args + ["/xfwm4/custom/<Control>F4", "--reset"])
+        output = force_run_command(args + [binding])
+        if output.find("does not exist on channel") != -1:
+            if options.verbose:
+                print "Keybinding '%s' already removed." % binding
+        else:
+            print "Removing keybinding '%s' from xfce4 config." % binding
+            run_command(options, args + [binding, "--reset"])
+
+
+def configure_wm_keybindings(options):
+    """Setup window manager keybindings."""
+    # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
+    xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F3")
+    xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F4")
 
 
 def create_tmp_file(prefix, suffix, contents):
@@ -425,7 +447,8 @@ def install_fonts(options):
                         "system32",
                         "cmd.exe"
                     )
-                    outstr = run_command(
+                    output = run_command(
+                        options,
                         [
                             cmd_exe,
                             "/c",
@@ -434,8 +457,9 @@ def install_fonts(options):
                         ],
                         None
                     )
-                    if len(outstr.rstrip()) > 0:
-                        print outstr.rstrip()
+                    output = output.rstrip()
+                    if len(output) > 0:
+                        print output
                     # We should give the "/wait" parameter to the
                     # start command above.  But that sometimes causes
                     # a hang.  Therefore we just sleep here.
@@ -525,7 +549,7 @@ def main():
 
     link_binfiles(options)
 
-    set_wm_keybindings(options)
+    configure_wm_keybindings(options)
 
     install_fonts(options)
 
