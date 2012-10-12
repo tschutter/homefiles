@@ -22,6 +22,7 @@ def force_run_command(args, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
     if sys.version_info < (2, 4):
         print "WARNING: Not running %s" % " ".join(args)
+        return ""
     else:
         if stdinstr == None:
             stdinstr = ""
@@ -36,7 +37,7 @@ def force_run_command(args, stdinstr=None):
 
 
 def run_command(options, args, stdinstr=None):
-    """Run an external command, returning stdout and stderr as a string."""
+    """Run an external command, printing stdout and stderr."""
     if sys.version_info < (2, 4):
         print "WARNING: Not running %s" % " ".join(args)
         return
@@ -447,7 +448,7 @@ def install_fonts(options):
                         "system32",
                         "cmd.exe"
                     )
-                    output = run_command(
+                    run_command(
                         options,
                         [
                             cmd_exe,
@@ -457,9 +458,6 @@ def install_fonts(options):
                         ],
                         None
                     )
-                    output = output.rstrip()
-                    if len(output) > 0:
-                        print output
                     # We should give the "/wait" parameter to the
                     # start command above.  But that sometimes causes
                     # a hang.  Therefore we just sleep here.
