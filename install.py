@@ -401,9 +401,12 @@ def xfwm4_remove_keybinding(options, binding):
 
 def configure_wm_keybindings(options):
     """Setup window manager keybindings."""
-    # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
-    xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F3")
-    xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F4")
+
+    # xfconf-query cannot run unless there is a valid DISPLAY.
+    if "DISPLAY" in os.environ:
+        # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
+        xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F3")
+        xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F4")
 
 
 def create_tmp_file(prefix, suffix, contents):
