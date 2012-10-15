@@ -267,7 +267,7 @@ def create_dotless(options, enabled):
             print "Running lesskey to create '%s'." % dotless_pathname
             run_command(
                 options,
-                ["lesskey", "-o", dotless_pathname],
+                ["lesskey", "-o", dotless_pathname, "-"],
                 "\n".join(lesskey)
             )
     else:
@@ -324,8 +324,12 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(options, file_in_path("lbdbq"), "lbdbrc")
-    create_dotless(options, file_in_path("lesskey"))
-    make_dot_link(options, file_in_path("less"), "less")
+    create_dotless(options, file_in_path("less") and file_in_path("lesskey"))
+    make_dot_link(
+        options,
+        file_in_path("less") and file_in_path("lesskey"),
+        "less"
+    )
     make_dot_link(
         options,
         file_in_path("mail") or file_in_path("mutt"),
