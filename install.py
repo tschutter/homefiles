@@ -324,7 +324,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(options, file_in_path("lbdbq"), "lbdbrc")
-    create_dotless(options, file_in_path("less"))
+    create_dotless(options, file_in_path("lesskey"))
     make_dot_link(options, file_in_path("less"), "less")
     make_dot_link(
         options,
