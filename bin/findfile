@@ -57,6 +57,7 @@ usage() {
     echo "" >&2
     echo "OPTIONS:" >&2
     echo "  -i = ignore case" >&2
+    echo "  -l = use a long listing format" >&2
     echo "" >&2
     echo "EXAMPLES:" >&2
     echo "  $0 foo.c" >&2
@@ -65,18 +66,22 @@ usage() {
 
 ARGS=""
 FIND_NAME_OPTION="-name"
+PRINT_OPTION="-print"
 for ARG in "$@"; do
     case ${ARG} in
-    --help)
-        usage
-        exit 1
-        ;;
-    -i)
-        FIND_NAME_OPTION="-iname"
-        ;;
-    *)
-        ARGS="${ARGS} ${ARG}"
-        ;;
+        --help)
+            usage
+            exit 1
+            ;;
+        -i)
+            FIND_NAME_OPTION="-iname"
+            ;;
+        -l)
+            PRINT_OPTION="-ls"
+            ;;
+        *)
+            ARGS="${ARGS} ${ARG}"
+            ;;
     esac
 done
 if [ "${ARGS}" = "" ]; then
@@ -85,5 +90,12 @@ if [ "${ARGS}" = "" ]; then
 fi
 
 for ARG in ${ARGS}; do
-    /usr/bin/find . -name .svn -prune -o -name .git -prune -o -name CVS -prune -o ${FIND_NAME_OPTION} "${ARG}" -print
+    /usr/bin/find\
+        .\
+        -name .svn -prune -o\
+        -name .git -prune -o\
+        -name CVS -prune -o\
+        ${FIND_NAME_OPTION}\
+        "${ARG}"\
+        ${PRINT_OPTION}
 done
