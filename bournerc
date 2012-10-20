@@ -62,8 +62,8 @@ for F in /usr/bin/chromium-browser; do
     fi
 done
 
-# Setup sensible-editor.
-for F in /usr/bin/emacs /usr/bin/vi; do
+# Setup sensible-editor.  Emacs is too slow to start for this role.
+for F in /usr/bin/mg /usr/bin/vi; do
     if [ -x "${F}" ]; then
         export VISUAL=${F}
         break
