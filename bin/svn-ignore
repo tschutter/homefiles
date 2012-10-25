@@ -54,8 +54,14 @@ def main():
 
     for path in args:
         dirpath, filename = os.path.split(path)
-        svnignore_data = svn_propget("svn:ignore", dirpath).split("\n")
 
+        # Get svn:ignore property, with standardized line endings.
+        svnignore_data = svn_propget("svn:ignore", dirpath).replace("\r", "")
+
+        # Transform to a list.
+        svnignore_data = svnignore_data.split("\n")
+
+        # Add or remove filename.
         if options.unignore:
             if filename not in svnignore_data:
                 continue
@@ -65,6 +71,7 @@ def main():
                 continue
             svnignore_data.append(filename)
 
+        # Optionally sort.
         if options.sort:
             svnignore_data = sorted(svnignore_data)
 
