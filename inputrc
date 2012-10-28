@@ -60,6 +60,7 @@ $endif
 # Filename completion/expansion
 set completion-ignore-case on
 set completion-map-case on
+set print-completions-horizontally on
 
 # Append "/" to all dirnames
 set mark-directories on
