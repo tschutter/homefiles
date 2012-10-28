@@ -361,6 +361,12 @@ def link_dotfiles(options):
         backup=False
     )
     make_dot_link(options, vim_installed, "vimrc")
+    make_link(
+        options,
+        file_in_path("xfce4-terminal"),
+        "terminalrc",
+        ".config/Terminal/terminalrc"
+    )
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
     # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
