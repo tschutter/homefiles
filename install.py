@@ -198,12 +198,16 @@ def make_link(options, enabled, filename, linkname=None):
             print "Not linking to '%s' (not enabled)." % filename
         return
 
+    # Ensure that the link_pathname directory exists.
+    link_dir = os.path.dirname(link_pathname)
+    if not os.path.isdir(link_dir):
+        mkdir(options, link_dir, 0766)
+
     # Make the link target relative.  This usually makes the link
     # shorter in ls output.
     if sys.version_info < (2, 6):
         link_target = file_pathname
     else:
-        link_dir = os.path.dirname(link_pathname)
         link_target = os.path.relpath(
             file_pathname,
             link_dir
