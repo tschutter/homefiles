@@ -255,9 +255,9 @@ def make_sig_link(options):
 
 def create_dotless(options, enabled):
     """
-    Create ~/.homefiles/.less file.
+    Create ~/.homefiles/less dotfile.
 
-    The lesskey program creates the .less file.
+    The lesskey program creates the less dotfile.
     """
 
     dotless_pathname = os.path.join(options.homefiles, "less")
@@ -329,12 +329,11 @@ def link_dotfiles(options):
     make_dot_link(options, True, "inputrc")
     make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(options, file_in_path("lbdbq"), "lbdbrc")
-    create_dotless(options, file_in_path("less") and file_in_path("lesskey"))
-    make_dot_link(
-        options,
-        file_in_path("less") and file_in_path("lesskey"),
-        "less"
-    )
+    if file_in_path("less") and file_in_path("lesskey"):
+        # Inside if, because make_dot_link complains if create_dotless is
+        # not run.
+        create_dotless(options, True)
+        make_dot_link(options, True, "less")
     make_dot_link(
         options,
         file_in_path("mail") or file_in_path("mutt"),
