@@ -8,6 +8,9 @@ if [ -f ~/.bournerc ]; then
     . ~/.bournerc
 fi
 
+# Save history files in ~/.var/.
+HISTFILE=${HOME}/.var/ksh_history
+
 # Emacs history editing.
 set -o emacs
 
