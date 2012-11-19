@@ -4,18 +4,14 @@
 # Aliases.
 
 # abook(1) screws up symbolic links to addressbook, so we use an alias instead.
-if [ -x "/usr/bin/abook" -o -x "/usr/local/bin/abook" ]; then
-    alias abook="abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook"
-    alias abook-lookup="abook-lookup --datafile ${HOME}/private/addressbook"
-fi
+alias abook="abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook"
+alias abook-lookup="abook-lookup --datafile ${HOME}/private/addressbook"
 
 # Suppress gdb(1) introductory and copyright messages.
 alias gdb="gdb -quiet"
 
 # lynx(1) writes to .lynxrc, so we use an alias instead.
-if [ -x "/usr/bin/lynx" -o -x "/usr/local/bin/lynx" ]; then
-    alias lynx="lynx -accept_all_cookies"
-fi
+alias lynx="lynx -accept_all_cookies"
 
 # We don't set the LESS environment variable, because that applies to
 # PAGER usage (think man).
@@ -23,6 +19,9 @@ if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
     alias more="less --no-init --quit-at-eof --LONG-PROMPT"
     alias less="less --no-init --quit-at-eof --LONG-PROMPT"
 fi
+
+# password-gorilla(1).
+alias gorilla="password-gorilla ~/private/password-gorilla.psafe3"
 
 # Platform dependent aliases.
 case "${_UNAME}" in
