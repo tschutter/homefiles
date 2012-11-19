@@ -345,6 +345,7 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("muttprint"), "muttprintrc")
     if sys.platform.startswith("openbsd"):
         make_dot_link(options, file_in_path("vi"), "nexrc")
+    make_dot_link(options, file_in_path("password-gorilla"), "gorillarc")
     make_dot_link(options, True, "profile")
     make_dot_link(options, file_in_path("pychecker"), "pycheckrc")
     make_dot_link(options, file_in_path("pdb"), "pdbrc")
