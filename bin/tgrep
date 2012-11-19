@@ -40,6 +40,7 @@ usage() {
     echo "  Where grep-options include:" >&2
     echo "    -i = Ignore case" >&2
     echo "    -h = Suppress the prefixing of filenames on output" >&2
+    echo "    -L = Prints only the filename if no match" >&2
     echo "    -l = Prints only the filename" >&2
     echo "    -n = Prefix each line of output with the line number" >&2
     echo "    -v = Prints only lines that do not contain a match" >&2
