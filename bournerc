@@ -23,6 +23,9 @@ fi
 # password-gorilla(1).
 alias gorilla="password-gorilla ~/private/password-gorilla.psafe3"
 
+# pgrep(1).
+alias pgrep="pgrep -f -l"
+
 # More secure defaults for pwgen(1).
 alias pwgen="pwgen --capitalize --numerals --symbols 12"
 
