@@ -82,6 +82,8 @@ foreach my $entry ( @{$calendar->{entries}} ) {
             next unless defined $properties->{$key};
 	    my $info = $properties->{$key};
 	    $info =~ s/mailto://i;
+	    $info =~ s/\s*$//;
+	    next unless length($info) > 0;
 	    my $timeentry = 0;
 	    my $k = $key;
 	    if ($key eq 'dtstart') {
