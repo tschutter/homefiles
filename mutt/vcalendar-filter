@@ -74,16 +74,19 @@ foreach my $entry ( @{$calendar->{entries}} ) {
 	if ($vevent++ > 0) {
         	print '-' x 72, "\n";
 	}
+	my $prevseen = 0;
         foreach my $key ( qw(summary BR description BR location organizer dtstart dtend) ) {
-            if ( $key eq 'BR' ) {
+            if ( $key eq 'BR' && $prevseen > 0) {
                 print "\n";
                 next;
             }
+	    $prevseen = 0;
             next unless defined $properties->{$key};
 	    my $info = $properties->{$key};
 	    $info =~ s/mailto://i;
 	    $info =~ s/\s*$//;
 	    next unless length($info) > 0;
+	    $prevseen = 1;
 	    my $timeentry = 0;
 	    my $k = $key;
 	    if ($key eq 'dtstart') {
