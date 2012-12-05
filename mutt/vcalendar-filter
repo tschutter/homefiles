@@ -27,6 +27,8 @@ use warnings;
 
 use Data::ICal;
 use Text::Autoformat;
+use Date::Manip::DM6;
+use Date::Manip::TZ;
 
 my $body = eval { local $/ = undef; <> };
 my $calendar = Data::ICal->new(data => $body);
@@ -41,6 +43,7 @@ unless ( $calendar ) {
     exit 1;
 }
 
+my $vevent = 0;
 foreach my $entry ( @{$calendar->{entries}} ) {
     my $properties;
 
@@ -55,32 +58,68 @@ foreach my $entry ( @{$calendar->{entries}} ) {
                 left => 15,
             };
             $properties->{$property} =~ s/^\s*// if defined $properties->{$property};
-        }
-        elsif ( $property =~ m{ \A dt (?: start | end ) \z }xms ) {
+        } elsif ( $property =~ m{ \A dt (?: start | end ) \z }xms ) {
             if ( $properties->{$property} =~ m{ (\d\d\d\d)(\d\d)(\d\d)T(\d\d)(\d\d)(\d\d) }xms ) {
-                $properties->{$property} = "$1-$2-$3 $4:$5";
+                $properties->{$property} = "$1-$2-$3 $4:$5:$6";
             }
-        }
+	}
     }
 
     if ( $entry->ical_entry_type eq 'VTIMEZONE' ) {
-        unless ( defined $properties->{tzid} and $properties->{tzid} =~ m{Pacific/Auckland} ) {
+        if ( defined $properties->{tzid} ) {
             print "Timezone    : ", $properties->{tzid}, "\n";
             print "\n";
         }
-    }
-    elsif ( $entry->ical_entry_type eq 'VEVENT' ) {
-        print '-' x 72, "\n";
+    } elsif ( $entry->ical_entry_type eq 'VEVENT' ) {
+	if ($vevent++ > 0) {
+        	print '-' x 72, "\n";
+	}
         foreach my $key ( qw(summary BR description BR location organizer dtstart dtend) ) {
             if ( $key eq 'BR' ) {
                 print "\n";
                 next;
             }
             next unless defined $properties->{$key};
-            printf "%-12s: %s\n", ucfirst $key, $properties->{$key};
+	    my $info = $properties->{$key};
+	    $info =~ s/mailto://i;
+	    my $timeentry = 0;
+	    my $k = $key;
+	    if ($key eq 'dtstart') {
+		$k = "starts";
+		$timeentry = 1;
+	    } elsif ($key eq 'dtend') {
+		$k = "ends";
+		$timeentry = 1;
+	    }
+	    if ($timeentry > 0) {
+		my ($loctz,$tz);
+		# check if ';TZID=<timezone>' was specified as a parameter
+		foreach my $param ( @{$entry->property($key)} ) {
+			foreach my $parm (keys %{$param->parameters} ) {
+				if ($parm eq "TZID") {
+					$tz = ${$param->parameters}{$parm};
+				}
+			}
+		}
+		# Default to 'GMT' if not specified anywhere else
+		if (!defined($tz)) {
+			if (!defined($properties->{tzid})) {
+				$tz = "GMT";
+			} else {
+				$tz = $properties->{tzid};
+			}
+		}
+		my $tzobj = new Date::Manip::TZ;
+		#$loctz = Date_TimeZone;
+		$loctz = $tzobj->curr_zone();
+		#my $offset = $tzobj->{offset};
+		$info = UnixDate( Date_ConvTZ( $info, $tz, $loctz ),
+		    "%Y-%m-%d %H:%M:%S $loctz" );
+	    }
+	    
+            printf "%-12s: %s\n", ucfirst $k, $info;
         }
-    }
-    else {
+    } else {
         print "WARNING: Unknown entry type: ", $entry->ical_entry_type, "\n";
     }
 }
