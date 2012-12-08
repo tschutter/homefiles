@@ -3,7 +3,7 @@
 # Load local config.  This *must* be first, because it will define
 # $folder, and the assignment to $folder must occur before "+" or "="
 # is referenced by any other variables.
-source ~/.muttrc-local
+source ~/private/muttrc-local
 
 # IMAP
 # http://mutt.sourceforge.net/imap/
