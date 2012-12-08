@@ -62,7 +62,7 @@ foreach my $entry ( @{$calendar->{entries}} ) {
             if ( $properties->{$property} =~ m{ (\d\d\d\d)(\d\d)(\d\d)T(\d\d)(\d\d)(\d\d) }xms ) {
                 $properties->{$property} = "$1-$2-$3 $4:$5:$6";
             }
-	}
+        }
     }
 
     if ( $entry->ical_entry_type eq 'VTIMEZONE' ) {
@@ -71,57 +71,57 @@ foreach my $entry ( @{$calendar->{entries}} ) {
             print "\n";
         }
     } elsif ( $entry->ical_entry_type eq 'VEVENT' ) {
-	if ($vevent++ > 0) {
-        	print '-' x 72, "\n";
-	}
-	my $prevseen = 0;
+        if ($vevent++ > 0) {
+            print '-' x 72, "\n";
+        }
+        my $prevseen = 0;
         foreach my $key ( qw(summary BR description BR location organizer dtstart dtend) ) {
             if ( $key eq 'BR' && $prevseen > 0) {
                 print "\n";
                 next;
             }
-	    $prevseen = 0;
+            $prevseen = 0;
             next unless defined $properties->{$key};
-	    my $info = $properties->{$key};
-	    $info =~ s/mailto://i;
-	    $info =~ s/\s*$//;
-	    next unless length($info) > 0;
-	    $prevseen = 1;
-	    my $timeentry = 0;
-	    my $k = $key;
-	    if ($key eq 'dtstart') {
-		$k = "starts";
-		$timeentry = 1;
-	    } elsif ($key eq 'dtend') {
-		$k = "ends";
-		$timeentry = 1;
-	    }
-	    if ($timeentry > 0) {
-		my ($loctz,$tz);
-		# check if ';TZID=<timezone>' was specified as a parameter
-		foreach my $param ( @{$entry->property($key)} ) {
-			foreach my $parm (keys %{$param->parameters} ) {
-				if ($parm eq "TZID") {
-					$tz = ${$param->parameters}{$parm};
-				}
-			}
-		}
-		# Default to 'GMT' if not specified anywhere else
-		if (!defined($tz)) {
-			if (!defined($properties->{tzid})) {
-				$tz = "GMT";
-			} else {
-				$tz = $properties->{tzid};
-			}
-		}
-		my $tzobj = new Date::Manip::TZ;
-		#$loctz = Date_TimeZone;
-		$loctz = $tzobj->curr_zone();
-		#my $offset = $tzobj->{offset};
-		$info = UnixDate( Date_ConvTZ( $info, $tz, $loctz ),
-		    "%Y-%m-%d %H:%M:%S $loctz" );
-	    }
-	    
+            my $info = $properties->{$key};
+            $info =~ s/mailto://i;
+            $info =~ s/\s*$//;
+            next unless length($info) > 0;
+            $prevseen = 1;
+            my $timeentry = 0;
+            my $k = $key;
+            if ($key eq 'dtstart') {
+                $k = "starts";
+                $timeentry = 1;
+            } elsif ($key eq 'dtend') {
+                $k = "ends";
+                $timeentry = 1;
+            }
+            if ($timeentry > 0) {
+                my ($loctz,$tz);
+                # check if ';TZID=<timezone>' was specified as a parameter
+                foreach my $param ( @{$entry->property($key)} ) {
+                    foreach my $parm (keys %{$param->parameters} ) {
+                        if ($parm eq "TZID") {
+                            $tz = ${$param->parameters}{$parm};
+                        }
+                    }
+                }
+                # Default to 'GMT' if not specified anywhere else
+                if (!defined($tz)) {
+                    if (!defined($properties->{tzid})) {
+                        $tz = "GMT";
+                    } else {
+                        $tz = $properties->{tzid};
+                    }
+                }
+                my $tzobj = new Date::Manip::TZ;
+                #$loctz = Date_TimeZone;
+                $loctz = $tzobj->curr_zone();
+                #my $offset = $tzobj->{offset};
+                $info = UnixDate( Date_ConvTZ( $info, $tz, $loctz ),
+                                  "%Y-%m-%d %H:%M:%S $loctz" );
+            }
+
             printf "%-12s: %s\n", ucfirst $k, $info;
         }
     } else {
