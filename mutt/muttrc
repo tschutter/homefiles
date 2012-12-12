@@ -47,12 +47,12 @@ set pager_index_lines=11
 
 # MIME autoview (uses ~/.mailcap).
 auto_view text/html text/calendar application/pdf application/postscript
-alternative_order text/plain text text/html application/postscript image/*
+alternative_order text/calendar text/plain text text/html application/postscript image/*
 
 # vcalendar support.
-# sudo apt-get install libdata-ical-perl libtext-autoformat-perl
+# sudo apt-get install libdata-ical-perl libtext-autoformat-perl libdate-manip-perl
 # Add this line to ~/.mailcap:
-#   text/calendar;clear\;~/.mutt/vcalendar-filter %s; needsterminal
+#   text/calendar; ~/.mutt/vcalendar-filter %s; copiousoutput
 # auto_view doesn't work
 #auto_view text/calendar
 
