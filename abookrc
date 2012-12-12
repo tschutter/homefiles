@@ -1,11 +1,8 @@
 # Style of address formatting to be used when exporting or printing.
 set address_style=us
 
-# Field to be used in the extra column
-set extra_column=custom1
-
-# Field to be used in the extra column if extra_column has no data.
-set extra_alternative=notes
+# Format of entries in main list.
+set index_format=" {name:22} {email:40} {phone:12|workphone|mobile} {notes:24|custom1}"
 
 # Do not return all email addresses to a mutt query
 set mutt_return_all_emails=false
