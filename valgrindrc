@@ -1,3 +1,5 @@
+--read-var-info=yes
 --memcheck:num-callers=20
 --memcheck:leak-check=full
 --memcheck:show-reachable=yes
+--memcheck:track-origins=yes
