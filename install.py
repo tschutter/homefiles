@@ -9,6 +9,7 @@ if sys.version_info < (2, 4):
     print "Python versions prior to 2.4 not supported."
     sys.exit(1)
 
+import glob
 import optparse
 import os
 import shutil
@@ -435,16 +436,18 @@ def create_tmp_file(prefix, suffix, contents):
 
 def install_fonts(options):
     """Install fonts."""
+
+    font_src_dir = os.path.join(options.homefiles, "fonts")
+
     # See http://blogs.technet.com/b/heyscriptingguy/archive/\
     # 2008/04/25/how-can-i-install-fonts-using-a-script.aspx
     if options.is_cygwin or options.is_windows:
-        src_dir = os.path.join(options.homefiles, "fonts")
         # Need to see what cygwin local and cygwin ssh do here...
         system_root = os.environ["SYSTEMROOT"]
         dst_dir = os.path.join(system_root, "Fonts")
-        for filename in os.listdir(src_dir):
+        for filename in os.listdir(font_src_dir):
             if filename.endswith(".ttf"):
-                src_pathname = os.path.join(src_dir, filename)
+                src_pathname = os.path.join(font_src_dir, filename)
                 dst_pathname = os.path.join(dst_dir, filename)
                 dst_pathname = cygpath_u(dst_pathname)
                 if not options.force and os.path.exists(dst_pathname):
@@ -487,6 +490,20 @@ def install_fonts(options):
             "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-R.ttf"
         )
         make_dot_link(options, not system_has_ubuntu_mono, "fonts")
+
+    # Install fonts in gimp(1).
+    font_glob = os.path.join(font_src_dir, "*.ttf")
+    gimp_font_dir_glob = os.path.join(options.homedir, ".gimp-*", "fonts")
+    for gimp_font_dir in glob.iglob(gimp_font_dir_glob):
+        for font_pathname in glob.iglob(font_glob):
+            font_filename = os.path.basename(font_pathname)
+            gimp_link = os.path.join(gimp_font_dir, font_filename)
+            make_link(
+                options,
+                True,
+                font_pathname,
+                gimp_link
+            )
 
 
 def main():
