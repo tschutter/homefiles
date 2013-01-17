@@ -97,8 +97,8 @@ foreach my $entry ( @{$calendar->{entries}} ) {
                 $timeentry = 1;
             }
             if ($timeentry > 0) {
-                my ($loctz,$tz);
-                # check if ';TZID=<timezone>' was specified as a parameter
+                # Check if 'TZID=<timezone>' was specified as a parameter.
+                my $tz;
                 foreach my $param ( @{$entry->property($key)} ) {
                     foreach my $parm (keys %{$param->parameters} ) {
                         if ($parm eq "TZID") {
@@ -106,6 +106,7 @@ foreach my $entry ( @{$calendar->{entries}} ) {
                         }
                     }
                 }
+
                 # Default to 'GMT' if not specified anywhere else
                 if (!defined($tz)) {
                     if (!defined($properties->{tzid})) {
@@ -114,16 +115,32 @@ foreach my $entry ( @{$calendar->{entries}} ) {
                         $tz = $properties->{tzid};
                     }
                 }
-                my $tzobj = new Date::Manip::TZ;
-                #$loctz = Date_TimeZone;
-                $loctz = $tzobj->curr_zone();
-                #my $offset = $tzobj->{offset};
-                $info = UnixDate( Date_ConvTZ( $info, $tz, $loctz ),
-                                  "%Y-%m-%d %H:%M:%S $loctz" );
-            }
 
+                # Convert to local timezone.
+                my $localinfo = Date_ConvTZ($info, $tz);
+                if (!defined($localinfo) || $localinfo eq '') {
+                    # Some vcalendar TZIDs have a non standard format
+                    # like '(UTC-06:00) Central Time (US & Canada)'.
+                    # Attempt to extract a useful timezone and try again.
+                    $tz =~ 'UTC([+-][0-2][0-9]:[0-6][0-9])';
+                    $tz = $1;
+                    $localinfo = Date_ConvTZ($info, $tz);
+                }
+
+                # Format result.
+                if (!defined($localinfo) || $localinfo eq '') {
+                    # Still couldn't convert to local timezone, so
+                    # report raw timestamp with original timezone.
+                    $info = "$info $tz";
+                } else {
+                    my $tzobj = new Date::Manip::TZ;
+                    my $loctz = $tzobj->curr_zone();
+                    $info = UnixDate($localinfo, "%Y-%m-%d %H:%M:%S $loctz");
+                }
+            }
             printf "%-12s: %s\n", ucfirst $k, $info;
         }
+
     } else {
         print "WARNING: Unknown entry type: ", $entry->ical_entry_type, "\n";
     }
