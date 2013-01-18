@@ -43,6 +43,7 @@ unless ( $calendar ) {
     exit 1;
 }
 
+my %values;
 my $vevent = 0;
 foreach my $entry ( @{$calendar->{entries}} ) {
     my $properties;
@@ -139,9 +140,55 @@ foreach my $entry ( @{$calendar->{entries}} ) {
                 }
             }
             printf "%-12s: %s\n", ucfirst $k, $info;
+
+            # Save processed value.
+            $values{$key} = $info;
         }
 
     } else {
         print "WARNING: Unknown entry type: ", $entry->ical_entry_type, "\n";
+    }
+
+    if (exists($values{'dtstart'})) {
+        printf "\n%-12s:\n", 'Emacs diary';
+        my @dtstart = split(' ', $values{'dtstart'});
+        my $dtstart_time;
+        if (@dtstart > 1) {
+            $dtstart_time = $dtstart[1];
+            $dtstart_time =~ s/:00$//;  # Strip silly seconds.
+        }
+        my $firstline = $dtstart[0];
+        if (defined($dtstart_time)) {
+            $firstline .= " " . $dtstart_time;
+        }
+        if (exists($values{'dtend'})) {
+            my @dtend = split(' ', $values{'dtend'});
+            my $dtend_time;
+            if (@dtend > 1) {
+                $dtend_time = $dtend[1];
+                $dtend_time =~ s/:00$//;  # Strip silly seconds.
+            }
+            if ($dtstart[0] eq $dtend[0]) {
+                # Ends the same day it starts.
+                if (defined($dtend_time)) {
+                    $firstline .= "-" . $dtend_time;
+                }
+            } else {
+                $firstline .= " - " . $dtend[0];
+                if (defined($dtend_time)) {
+                    $firstline .= " " . $dtend_time;
+                }
+            }
+        }
+        if (exists($values{'organizer'})) {
+            $firstline .= " " . $values{'organizer'};
+        }
+        if (exists($values{'summary'})) {
+            $firstline .= " " . $values{'summary'};
+        }
+        printf "%s\n", $firstline;
+        if (exists($values{'location'})) {
+            printf "    %s\n", $values{'location'};
+        }
     }
 }
