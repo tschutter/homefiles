@@ -1,0 +1,17 @@
+#!/bin/bash
+# u1sdtool wrapper for headless Ubuntu One
+
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    ENVVAR="DBUS_SESSION_BUS_ADDRESS"
+    eval $(ps xe | grep "[u]buntuone-syncdaemon.*$ENVVAR" | \
+           sed -E "s/.*($ENVVAR=[^ ]+).*/\1/g" )
+
+    if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+        # Ubuntu One is not running and we don't have a dbus daemon
+        eval `dbus-launch --sh-syntax`
+    fi
+
+    export DBUS_SESSION_BUS_ADDRESS
+fi
+
+exec /usr/bin/u1sdtool "$@"
