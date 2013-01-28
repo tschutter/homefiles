@@ -495,8 +495,8 @@ def install_fonts(options):
     # Install fonts in gimp(1).
     font_glob = os.path.join(font_src_dir, "*.ttf")
     gimp_font_dir_glob = os.path.join(options.homedir, ".gimp-*", "fonts")
-    for gimp_font_dir in glob.iglob(gimp_font_dir_glob):
-        for font_pathname in glob.iglob(font_glob):
+    for gimp_font_dir in glob.glob(gimp_font_dir_glob):
+        for font_pathname in glob.glob(font_glob):
             font_filename = os.path.basename(font_pathname)
             gimp_link = os.path.join(gimp_font_dir, font_filename)
             make_link(
