@@ -321,6 +321,7 @@ def link_dotfiles(options):
     )
     clean_link(options, os.path.join(options.homedir, ".bash_profile"))
     make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
+    make_dot_link(options, os.path.exists("/bin/bash"), "bash_logout")
     clean_link(options, os.path.join(options.homedir, ".emacs"))
     make_dot_link(options, file_in_path("emacs"), "emacs.d")
     if not sys.platform.startswith("openbsd"):
