@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Fix permissions of Windows user that the Cygwin sshd runs under.
+#
+
+editrights -u cyg_server -a SeAssignPrimaryTokenPrivilege
+editrights -u cyg_server -a SeCreateTokenPrivilege
+editrights -u cyg_server -a SeTcbPrivilege
+editrights -u cyg_server -a SeServiceLogonRight
+
+sc start sshd
