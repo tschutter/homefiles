@@ -3,7 +3,8 @@ Bourne Shell Programming
 ========================
 
 To remain portable, all of my shell scripting is done with POSIX
-``sh`` (Bourne shell) constructs, even when running under bash or ksh.
+``sh`` (Bourne shell) constructs, even when running under ``bash`` or
+``ksh``.
 
 Determining if a Program Exists
 -------------------------------
@@ -81,9 +82,10 @@ When should the new test command ``[[`` be used, and when the old one
 Determining if the Shell is Interactive
 ---------------------------------------
 
-If a Bourne-compliant shell is interactive, then ``PS1`` is set and $-
-includes i.  But nothing prevents a non-interactive shell from setting
-``PS1``, so the $- test is preferred: ::
+If a Bourne-compliant shell is interactive, then ``PS1`` is set and
+``$-`` includes the character "i".  But nothing prevents a
+non-interactive shell from setting ``PS1``, so the ``$-`` test is
+preferred: ::
 
     [[ $- != *i* ]] && return
 
@@ -93,16 +95,16 @@ be found in the parameter ``$-``.
 Determining if a Command is Part of a Pipe
 ------------------------------------------
 
-Use the [ -t 1 ] test to determine if stdout is connected to a
+Use the ``[ -t 1 ]`` test to determine if stdout is connected to a
 terminal.  If it is not, then the command is part of a pipe.
 
 For example, let's say that the window title is being set via the
-``PS1`` command.  If you ssh to a host where it's ``PS1`` does not set
-the window title, then the window title will be incorrect.  So we
-would like to create an alias for ssh that will set the window title
-to a default value before calling ssh.  If the target machine is
-configured correctly, it will immediately set the window title back to
-something useful.  But if the ssh is part of a pipe like
+``PS1`` environment variable.  If you ssh to a host where it's ``PS1``
+does not set the window title, then the window title will be
+incorrect.  So we would like to create an alias for ssh that will set
+the window title to a default value before calling ssh.  If the target
+machine is configured correctly, it will immediately set the window
+title back to something useful.  But if the ssh is part of a pipe like
 ``REMOTE_FILES=`ssh remote ls```, then you do not want to inject
 control characters into the output stream.  That can be handled like
 this: ::
@@ -115,12 +117,13 @@ The final ssh is always executed.
 $* vs. $@
 ---------
 
-$* (star) and $@ (at) expand to a string containing all of the
-command-line arguments, as if you had used $1 $2 $3...
+``$*`` (star) and ``$@`` (at) expand to a string containing all of the
+command-line arguments, as if you had used ``$1 $2 $3...``
 
-The difference between $* and $@ lies in the way they behave when they
-occur inside double quotes: $* behaves in the normal way, whereas $@
-creates a separate double-quoted string for each command-line
-argument. That is, "$*" behaves as if you had written "$1 $2 $3",
-whereas "$@" behaves as if you had written "$1" "$2" "$3".  In most
-cases "$@" should be used because it preserves spaces in arguments.
+The difference between ``$*`` and ``$@`` lies in the way they behave
+when they occur inside double quotes: ``$*`` behaves in the normal
+way, whereas ``$@`` creates a separate double-quoted string for each
+command-line argument. That is, ``"$*"`` behaves as if you had written
+``"$1 $2 $3"``, whereas ``"$@"`` behaves as if you had written ``"$1"
+"$2" "$3"``.  In most cases ``"$@"`` should be used because it
+preserves spaces in arguments.
