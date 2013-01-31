@@ -31,6 +31,30 @@ output or even hook into the package manager.  So, don't use
 
 The ``type -P`` command is available in ``bash``, but not in ``sh``.
 
+Boolean Variables
+-----------------
+
+Use the true and false programs::
+
+    IS_DOG=true
+    if $IS_DOG; then
+        # is a dog
+    else
+        # is not a dog
+    fi
+
+Absolute Pathnames For Commands
+-------------------------------
+
+Hardcoding paths, like /bin/true or /usr/bin/python, makes any
+shell-script much less portable, as the exact paths vary from Unix
+variant to Unix variant.  If you are attempting to provide security,
+setting PATH to a system-only path at the beginning of the script is a
+much better idea.
+
+See `openbsd-misc 2013-01: OT using absolute paths in scripts
+<http://archives.neohapsis.com/archives/openbsd/2013-01/0726.html>`_.
+
 [ vs. [[ Tests
 --------------
 
