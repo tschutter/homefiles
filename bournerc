@@ -57,7 +57,7 @@ else
 fi
 
 # Terminal control.
-alias cls="reset; echo -n ''"
+alias cls="setterm -reset"
 
 # Setup sensible-browser.
 for F in /usr/bin/chromium-browser; do
