@@ -32,11 +32,13 @@ alias pwgen="pwgen --capitalize --numerals --symbols 12"
 # Platform dependent aliases.
 case "${_UNAME}" in
     Cygwin)
+        alias cls="reset; echo -n ''"
         alias open="cygstart"
         # -W: show windows as well as cygwin processes
         alias ps="ps -W"
         ;;
     Linux)
+        alias cls="setterm -reset"
         # Use xdg-mime to set default application.
         alias open="xdg-open"
         ;;
@@ -55,9 +57,6 @@ else
         alias dir="/bin/ls -lb"  # -b = C-style escapes for nongraphic characters
     fi
 fi
-
-# Terminal control.
-alias cls="setterm -reset"
 
 # Setup sensible-browser.
 for F in /usr/bin/chromium-browser; do
