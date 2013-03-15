@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+"""
+Read Unicode text and encode it as plain ASCII.
+"""
+
+import unicodedata
+import sys
+
+# http://www.utf8-chartable.de/unicode-utf8-table.pl?start=8192&number=128
+XTABLE = {
+    0x2010: 0x2D,  # HYPHEN
+    0x2011: 0x2D,  # NON-BREAKING HYPHEN
+    0x2012: 0x2D,  # FIGURE DASH
+    0x2013: 0x2D,  # EN DASH
+    0x2014: 0x2D,  # EM DASH
+    0x2015: 0x2D,  # HORIZONTAL BAR
+    0x2018: 0x27,  # LEFT SINGLE QUOTATION MARK
+    0x2019: 0x27,  # RIGHT SINGLE QUOTATION MARK
+    0x201C: 0x22,  # LEFT DOUBLE QUOTATION MARK
+    0x201D: 0x22,  # RIGHT DOUBLE QUOTATION MARK
+    0x2024: u".",  # ONE DOT LEADER
+    0x2025: u"..",  # TWO DOT LEADER
+    0x2026: u"...",  # HORIZONTAL ELLIPSIS
+}
+
+text = sys.stdin.read()
+utext = text.decode("utf8")
+utext = unicodedata.normalize("NFKD", utext)
+utext = utext.translate(XTABLE)
+text = utext.encode("ascii", "ignore")
+sys.stdout.write(text)

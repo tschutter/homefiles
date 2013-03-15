@@ -399,6 +399,8 @@ def link_binfiles(options):
     make_link(options, True, "bin/tgrep")
     make_link(options, True, "bin/tm")
     make_link(options, os.path.exists("/usr/bin/u1sdtool"), "bin/u1sdtool")
+    make_link(options, True, "bin/unicode2ascii")
+
 
 def xfwm4_remove_keybinding(options, binding):
     """Remove a xfwm4 keybinding."""
