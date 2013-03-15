@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# Open a file or URL in the user's preferred application.
+#
+
+# Determine platform.
+_UNAME=$(uname)
+if [ "${_UNAME%%-*}" = "CYGWIN_NT" ]; then
+    OPEN=cygstart
+else
+    OPEN=xdg-open
+fi
+
+# Handle --query option.
+if [ "$1" = "--query" ]; then
+    shift
+    if [ "${OPEN}" = "cygstart" ]; then
+        ${OPEN} --find "$@"
+    else
+        FILE=$1
+        if [ ! -f "${FILE}" ]; then
+            echo "ERROR: File \"${FILE}\" not found"
+            exit 1
+        fi
+        MIME_TYPE=`xdg-mime query filetype "$1"`
+        DEFAULT=`xdg-mime query default "${MIME_TYPE}"`
+        echo "$1 -> ${MIME_TYPE} -> ${DEFAULT}"
+    fi
+    exit 0
+fi
+
+# Open the specified argument.
+${OPEN} "$@"

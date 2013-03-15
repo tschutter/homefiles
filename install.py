@@ -392,6 +392,7 @@ def link_binfiles(options):
     make_link(options, True, "bin/find-non-ascii")
     make_link(options, True, "bin/findfile")
     make_link(options, True, "bin/install-essentials")
+    make_link(options, True, "bin/open")
     make_link(options, True, "bin/pycheck")
     make_link(options, True, "bin/strip-bom")
     make_link(options, True, "bin/svn-ignore")
