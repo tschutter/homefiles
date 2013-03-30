@@ -60,11 +60,11 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         abook\
         git\
         mutt-1.5.21v0\
-        python-2.7*\
-        emacs-23.3--\
+        python-2.7.3--\
+        emacs-23.4--\
         emacs-python\
         lbdb--\
-        psutils--letter\
+        psutils--\
         py-pip\
         pylint\
         rxvt-unicode\
