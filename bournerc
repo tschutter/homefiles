@@ -21,7 +21,11 @@ if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
 fi
 
 # password-gorilla(1).
-alias gorilla="password-gorilla ~/private/password-gorilla.psafe3"
+if [ "${_UNAME}" = "OpenBSD" ]; then
+    alias gorilla="gorilla ~/private/password-gorilla.psafe3"
+else
+    alias gorilla="password-gorilla ~/private/password-gorilla.psafe3"
+fi
 
 # pgrep(1).
 alias pgrep="pgrep -f -l"
