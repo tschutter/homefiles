@@ -38,3 +38,4 @@ MiscTabPosition=GTK_POS_TOP
 MiscHighlightUrls=TRUE
 ScrollingLines=2000
 TabActivityColor=#262656568080
+CommandLoginShell=TRUE
