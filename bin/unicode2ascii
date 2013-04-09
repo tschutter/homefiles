@@ -45,7 +45,17 @@ def main():
         utext = text.decode("utf8")
         utext = unicodedata.normalize("NFKD", utext)
         utext = utext.translate(XTABLE)
-        text = utext.encode("ascii", "ignore")
+        try:
+            utext.encode("ascii", "strict")
+        except UnicodeEncodeError as err:
+            if arg == "-":
+                errfile = ""
+            else:
+                errfile = "In '%s', " % arg
+            sys.stderr.write(
+                "ERROR: %s%s\n" % (errfile, str(err))
+            )
+        text = utext.encode("ascii", "backslashreplace")
         sys.stdout.write(text)
 
 
