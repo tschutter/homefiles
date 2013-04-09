@@ -8,21 +8,45 @@ import optparse
 import sys
 import unicodedata
 
-# http://www.utf8-chartable.de/unicode-utf8-table.pl?start=8192&number=128
+# http://en.wikipedia.org/wiki/Mapping_of_Unicode_characters
+# http://www.utf8-chartable.de/unicode-utf8-table.pl
 XTABLE = {
-    0x2010: 0x2D,  # HYPHEN
-    0x2011: 0x2D,  # NON-BREAKING HYPHEN
-    0x2012: 0x2D,  # FIGURE DASH
-    0x2013: 0x2D,  # EN DASH
-    0x2014: 0x2D,  # EM DASH
-    0x2015: 0x2D,  # HORIZONTAL BAR
-    0x2018: 0x27,  # LEFT SINGLE QUOTATION MARK
-    0x2019: 0x27,  # RIGHT SINGLE QUOTATION MARK
-    0x201C: 0x22,  # LEFT DOUBLE QUOTATION MARK
-    0x201D: 0x22,  # RIGHT DOUBLE QUOTATION MARK
+    0x02D7: u"-",  # MODIFIER LETTER MINUS SIGN
+    0x2000: u" ",  # EN QUAD
+    0x2001: u" ",  # EM QUAD
+    0x2002: u" ",  # EN SPACE
+    0x2003: u" ",  # EM SPACE
+    0x2004: u" ",  # THREE-PER-EM SPACE
+    0x2005: u" ",  # FOUR-PER-EM SPACE
+    0x2006: u" ",  # SIX-PER-EM SPACE
+    0x2007: u" ",  # FIGURE SPACE
+    0x2008: u" ",  # PUNCTUATION SPACE
+    0x2009: u" ",  # THIN SPACE
+    0x200A: u" ",  # HAIR SPACE
+    0x200B: u" ",  # ZERO WIDTH SPACE
+    0x200C: u" ",  # ZERO WIDTH NON-JOINER
+    0x200D: u" ",  # ZERO WIDTH JOINER
+    0x200E: u" ",  # LEFT-TO-RIGHT MARK
+    0x200F: u" ",  # RIGHT-TO-LEFT MARK
+    0x2010: u"-",  # HYPHEN
+    0x2011: u"-",  # NON-BREAKING HYPHEN
+    0x2012: u"-",  # FIGURE DASH
+    0x2013: u"-",  # EN DASH
+    0x2014: u"-",  # EM DASH
+    0x2015: u"-",  # HORIZONTAL BAR
+    0x2018: u"'",  # LEFT SINGLE QUOTATION MARK
+    0x2019: u"'",  # RIGHT SINGLE QUOTATION MARK
+    0x201C: u'"',  # LEFT DOUBLE QUOTATION MARK
+    0x201D: u'"',  # RIGHT DOUBLE QUOTATION MARK
     0x2024: u".",  # ONE DOT LEADER
     0x2025: u"..",  # TWO DOT LEADER
     0x2026: u"...",  # HORIZONTAL ELLIPSIS
+    0x2028: u"\n",  # LINE SEPARATOR
+    0x2029: u"\n\n",  # PARAGRAPH SEPARATOR
+    0x202F: u" ",  # NARROW NO-BREAK SPACE
+    0x2043: u"-",  # HYPHEN BULLET
+    0x205F: u" ",  # MEDIUM MATHEMATICAL SPACE
+    0x2212: u"-",  # MINUS SIGN
 }
 
 def main():
