@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # uboat.py --- generate u-boat-death messages, patterned after Iron Coffins
 

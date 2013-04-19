@@ -20,7 +20,7 @@ set -o csh-history
 # History navigation.
 bind '^XH'=beginning-of-line # home
 bind '^XF'=end-of-line # end
-bind '^[[3'=prefix-2 # del
+bind '^[[3'=prefix-2 2>/dev/null # del prep on OpenBSD < 5.2
 bind '^[[3~'=delete-char-forward # del
 
 # Source local kshrc.
