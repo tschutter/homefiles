@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Create a persistent reverse ssh tunnel.
+#
+# https://github.com/mikeymckay/reverse_ssh_tunnel/blob/master/setup_reverse_tunnel.sh
+# From any ssh capable machine you just type ssh -p ${GATEWAY_LISTEN_PORT} ${USER_AT_GATEWAY}
+#
+
+if [ $# != 2 ]; then
+    echo "ERROR: Invalid # of parameters"
+    echo "USAGE: $0 user@gateway gateway_listen_port"
+    exit 1
+fi
+
+USER_AT_GATEWAY=$1
+GATEWAY_LISTEN_PORT=$2
+
+# -f = Requests ssh to go to background just before command execution.
+# -N = Do not execute a remote command.
+# -R = Specifies that the given port on the remote host is to be
+#      forwarded to the given host and port on the local side.
+autossh -f -N -R *:${GATEWAY_LISTEN_PORT}:localhost:22 ${USER_AT_GATEWAY}
+
+# Now that the reverse tunnel is up, you may want to setup a reverse
+# SOCKS tunnel to this machine.  On the other machine:
+#     ssh -N -D '*':1080 ${THIS_HOST}
