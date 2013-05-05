@@ -326,6 +326,12 @@ def link_dotfiles(options):
     make_dot_link(options, file_in_path("emacs"), "emacs.d")
     if not sys.platform.startswith("openbsd"):
         make_dot_link(options, file_in_path("vi"), "exrc")
+    make_link(
+        options,
+        True,
+        "image/ironcat-80.jpg",
+        ".face"
+    )
     make_dot_link(options, file_in_path("gdb"), "gdbinit")
     make_dot_link(options, file_in_path("git"), "gitconfig")
     make_dot_link(options, True, "inputrc")
