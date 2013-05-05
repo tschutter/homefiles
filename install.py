@@ -365,6 +365,12 @@ def link_dotfiles(options):
     if sys.platform.startswith("openbsd"):
         process_terminfo(options)
     make_dot_link(options, file_in_path("tmux"), "tmux.conf")
+    make_link(
+        options,
+        os.path.exists("/usr/bin/u1sdtool"),
+        os.path.join(options.private_dir, "syncdaemon.conf"),
+        ".config/ubuntuone/syncdaemon.conf"
+    )
     make_dot_link(options, file_in_path("urxvt"), "urxvt")
     make_dot_link(options, file_in_path("valgrind"), "valgrindrc")
     clean_link(
