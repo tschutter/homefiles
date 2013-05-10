@@ -62,7 +62,7 @@ complete -o nospace -F _uuu uuu
 _uuuu() { _basecd ../../../../; }
 complete -o nospace -F _uuuu uuuu
 
-# The __gis_ps1() function defined by git-completion.bash has a number
+# The __git_ps1() function defined by git-completion.bash has a number
 # of configuration settings.
 # Show unstaged (*) and staged (+) changes next to the branch name.
 GIT_PS1_SHOWDIRTYSTATE=t
