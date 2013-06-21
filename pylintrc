@@ -52,3 +52,9 @@ max-attributes=18
 # Maximum number of branch for function / method body (see R0912).
 # Default of 12 does not handle "switch/case" structures.
 max-branchs=20
+
+[BASIC]
+
+# Regular expression which should only match correct module names.
+# Allow "-" in module names.
+module-rgx=(([a-z_][-a-z0-9_]*)|([A-Z][-a-zA-Z0-9]+))$
