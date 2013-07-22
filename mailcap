@@ -11,7 +11,7 @@ text/html; w3m -T text/html %s
 #text/html; lynx %s; nametemplate=%s.html
 
 # HTML (autoview)
-text/html; w3m -T text/html -dump -cols 999 %s; copiousoutput
+text/html; w3m -T text/html -dump -cols 128 %s; copiousoutput
 #text/html; lynx -dump %s; copiousoutput; nametemplate=%s.html
 
 # Images
