@@ -9,6 +9,7 @@ Initial checkout::
     git clone --recursive git://github.com/tschutter/homefiles.git $HOME/.homefiles
     $HOME/.homefiles/install.py
     $HOME/bin/install-essentials
+    $HOME/.homefiles/install.py
 
 Update::
 
