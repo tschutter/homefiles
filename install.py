@@ -385,7 +385,7 @@ def link_dotfiles(options):
         options,
         file_in_path("xfce4-terminal"),
         "terminalrc",
-        ".config/Terminal/terminalrc"
+        ".config/xfce4/terminal/terminalrc"
     )
     make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
     make_dot_link(options, file_in_path("w3m"), "w3m")
