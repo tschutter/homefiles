@@ -1,0 +1,11 @@
+# orpie(1) config file
+
+# Include the orpierc file provided with Orpie.
+include "/etc/orpierc"
+
+# Full path of the Orpie data directory, which will contain the
+# calculator state save file, temporary buffers, etc.
+set datadir="~/.var/orpie"
+
+# Editor used for fullscreen viewing of stack elements.
+set editor="mg"
