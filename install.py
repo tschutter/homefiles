@@ -4,6 +4,11 @@
 Installs files in tschutter/homefiles using symbolic links.
 """
 
+# TODO:
+# Connect mailto-mutt:
+#   modify ~/.config/xfce4/helpers.rc
+#   create ~/.local/share/xfce4/helpers/custom-MailReader.desktop
+
 import sys
 if sys.version_info < (2, 4):
     print "Python versions prior to 2.4 not supported."
