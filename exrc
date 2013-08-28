@@ -7,10 +7,13 @@ set shiftwidth=4
 " Although autoindent sounds nice, it totally screws up text pasted
 " from other apps.  And in vi, I paste more often than creating
 " original text.
-set autoindent
+set noautoindent
 
 " Print the line number in front of each line.
 set number
+
+" Show matching brackets.
+set showmatch
 
 " Search for text as you enter it.  Only available if the extra_search
 " feature was specified at build time.  As of 2013-005-13, Cygwin
@@ -19,5 +22,7 @@ if has("searchincr")
     set searchincr
 endif
 
-" Show matching brackets.
-set showmatch
+" Enable syntax highlighting.
+if has("syntax")
+    syntax on
+endif
