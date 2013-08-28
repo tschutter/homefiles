@@ -1,6 +1,6 @@
 " vi config file (not for vim or gvim)
 
-" use indents of 4 spaces, and have them copied down lines
+" Use indents of 4 spaces, and have them copied down lines.
 set tabstop=4
 set shiftwidth=4
 
@@ -9,11 +9,15 @@ set shiftwidth=4
 " original text.
 set autoindent
 
-" print the line number in front of each line
+" Print the line number in front of each line.
 set number
 
-" search for text as you enter it
-set searchincr
+" Search for text as you enter it.  Only available if the extra_search
+" feature was specified at build time.  As of 2013-005-13, Cygwin
+" builds vi with extra_search disabled.
+if has("searchincr")
+    set searchincr
+endif
 
-" show matching brackets
+" Show matching brackets.
 set showmatch
