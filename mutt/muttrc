@@ -15,7 +15,7 @@ set timeout=15
 set header_cache=~/.var/mutt/headers
 set message_cachedir=~/.var/mutt
 
-# ?
+# Do not move read messages from your spool mailbox to the $mbox mailbox.
 set move=no
 
 # Index view.
@@ -60,6 +60,8 @@ alternative_order text/calendar text/plain text text/html application/postscript
 set use_from=yes
 set edit_headers=yes
 set editor="mg +8"
+set fast_reply=yes
+set include=yes
 
 # Forwarding.
 set mime_forward=ask-no
