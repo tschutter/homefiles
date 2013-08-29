@@ -22,6 +22,11 @@ if has("searchincr")
     set searchincr
 endif
 
+" Highlight text that matches the current search.
+if has("hlsearch")
+    set hlsearch
+endif
+
 " Enable syntax highlighting.
 if has("syntax")
     syntax on
