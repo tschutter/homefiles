@@ -37,4 +37,6 @@
     ui = true
 
 [push]
-    default = simple
+    # set default to push the current branch to a central branch of
+    # the same name
+    default = current
