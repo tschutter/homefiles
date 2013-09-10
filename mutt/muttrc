@@ -42,6 +42,7 @@ color index blue         black  "~T" # tagged
 ignore *
 unignore From Date To Cc Subject
 hdr_order From Date To Cc Subject
+set markers=no  # Do not add '+' to wrapped lines which screws up URLs.
 set pager_stop=yes
 set pager_index_lines=11
 
