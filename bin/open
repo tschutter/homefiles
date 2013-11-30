@@ -11,6 +11,17 @@ else
     OPEN=xdg-open
 fi
 
+# Render help.
+if [ "$1" = "--help" ]; then
+    echo "Usage: $0 [options] file [file...]"
+    echo "  Opens files with their preferred application."
+    echo ""
+    echo "Options:"
+    echo "  --help         show this help message and exit"
+    echo "  --query        print which application would be used to open file"
+    exit 0
+fi
+
 # Handle --query option.
 if [ "$1" = "--query" ]; then
     shift
