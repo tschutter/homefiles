@@ -1,16 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Sends a text message via a SMS gateway.
 """
 
+import argparse
+import os
 import re
 import smtplib
 import sys
 
 __version__ = re.search("[0-9]+", "$Revision: 8836 $").group()
-
-FROM_ADDRESS = "tschutter@corelogic.com"
 
 SERVER_NAME = "localhost"
 
@@ -29,35 +29,79 @@ QUICK_TEXT = {
 
 def main():
     """main"""
-    # Check arguments.
-    if len(sys.argv) < 3:
-        print "ERROR: Invalid number of arguments."
-        print "USAGE: %s user[,user...] message" % sys.argv[0]
-        return 1
+    # Determine the default "from" name.
+    default_from = "tschutter@corelogic.com"
+    for key in ["EMAIL", "DEBEMAIL"]:
+        if key in os.environ:
+            default_from = os.environ[key]
+            break
+
+    arg_parser = argparse.ArgumentParser(
+        usage="%(prog)s [-h] [--list] users message",
+        description="Sends a text message via a SMS gateway."
+    )
+    arg_parser.add_argument(
+        "--from",
+        dest="from_name",
+        metavar="NAME",
+        default=default_from,
+        help="from address (default=%(default)s)"
+    )
+    arg_parser.add_argument(
+        "--list",
+        action="store_true",
+        default=False,
+        help="print addressbook and quicktext"
+    )
+    arg_parser.add_argument(
+        "users",
+        nargs="?",
+        help="comma separated list of users from addressbook"
+    )
+    arg_parser.add_argument(
+        "message",
+        nargs="*",
+        help="message text"
+    )
+
+    # Parse command line.
+    args = arg_parser.parse_args()
+    if args.list:
+        print("Address Book")
+        for user, address in ADDRESS_BOOK.items():
+            print("%+8s: %s" % (user, address))
+        print("\nQuick Text")
+        for quick, text in QUICK_TEXT.items():
+            print("%+8s: %s" % (quick, text))
+        return 0
+    if args.users == None:
+        option_parser.error("users not specified.")
+    if len(args.message) == 0:
+        option_parser.error("message not specified.")
 
     # Get and validate user list.
-    users = sys.argv[1].split(",")
+    users = args.users.split(",")
     for user in users:
         if user not in ADDRESS_BOOK:
-            print "ERROR: user '%s' not in address book." % user
+            print("ERROR: user '%s' not in address book." % user)
             return 1
 
     # Assemble message from remaining arguments.
-    message = " ".join(sys.argv[2:])
+    message = " ".join(args.message)
 
     # Apply quick text replacement to message.
-    for key, value in QUICK_TEXT.iteritems():
+    for key, value in QUICK_TEXT.items():
         message = message.replace(key, value)
     idx = message.find("@")
     if idx >= 0:
         key = message[idx:].partition(" ")[0]
-        print "ERROR: unknown quick text '%s'." % key
+        print("ERROR: unknown quick text '%s'." % key)
         return 1
 
     # Send message to recipients.
     server = smtplib.SMTP(SERVER_NAME)
     recipients = [ADDRESS_BOOK[user] for user in users]
-    server.sendmail(FROM_ADDRESS, recipients, message)
+    server.sendmail(args.from_name, recipients, message)
     server.quit()
 
     return 0
