@@ -11,6 +11,11 @@ else
     OPEN=xdg-open
 fi
 
+if [ $# -lt 1 ]; then
+    echo "ERROR: No file specified."
+    exit 1
+fi
+
 # Render help.
 if [ "$1" = "--help" ]; then
     echo "Usage: $0 [options] file [file...]"
