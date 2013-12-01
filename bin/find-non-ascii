@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Find files with non-ASCII characters.
 """
 
+import argparse
 import fnmatch
-import optparse
 import os
 import re
 import sys
@@ -30,6 +30,7 @@ IGNORE_EXTENSIONS = [
     ".fpt",
     ".gdx",
     ".gif",
+    ".gz",
     ".ico",
     ".jar",
     ".jpeg",
@@ -44,6 +45,8 @@ IGNORE_EXTENSIONS = [
     ".sbx",
     ".shp",
     ".shx",
+    ".tar",
+    ".tgz",
     ".ttf",
     ".zip",
     "~"
@@ -68,10 +71,10 @@ def ignore_file(filename, globs):
     return True
 
 
-def find_files(options, globs):
+def find_files(args):
     """Do the actual finding."""
 
-    binary_re = re.compile(r"[^\t\r\n\x20-\x7e]")
+    binary_re = re.compile(rb"[^\t\r\n\x20-\x7e]")
 
     for dirpath, dirnames, filenames in os.walk("."):
         # Skip git metadata directories.
@@ -83,40 +86,51 @@ def find_files(options, globs):
                 dirnames.remove(name)
 
         for filename in sorted(filenames):
-            if not ignore_file(filename, globs):
+            if not ignore_file(filename, args.filespec):
                 # Assemble the filename.
                 filename = os.path.join(dirpath, filename)
                 if filename.startswith("./"):
                     filename = filename[2:]
 
-                with open(filename) as fil:
-                    if options.files_with_matches:
+                with open(filename, "rb") as fil:
+                    if args.files_with_matches:
                         contents = fil.read()
                         if binary_re.search(contents):
-                            print filename
+                            print(filename)
                     else:
+                        nlines = 0
                         for lineno, line in enumerate(fil.readlines()):
                             if binary_re.search(line):
-                                line = line[:-1].encode("string_escape")
+                                nlines += 1
+                                if nlines > args.max_lines:
+                                    print(
+                                        "%s:more than %i lines" % (
+                                            filename,
+                                            args.max_lines
+                                        )
+                                    )
+                                    break
+                                line = line[:-1].decode("ascii", errors="replace")
                                 if len(line) > 80:
                                     line = line[:65] + " [...truncated]"
-                                if options.line_number:
-                                    print "%s:%i:%s" % (
-                                        filename,
-                                        lineno + 1,
-                                        line
+                                if args.line_number:
+                                    print(
+                                        "%s:%i:%s" % (
+                                            filename,
+                                            lineno + 1,
+                                            line
+                                        )
                                     )
                                 else:
-                                    print "%s:%s" % (filename, line)
+                                    print("%s:%s" % (filename, line))
 
 
 def main():
     """main"""
-    option_parser = optparse.OptionParser(
-        usage="usage: %prog [options] [glob pattern...]\n" +
-            "  Find files with non-ASCII characters."
+    arg_parser = argparse.ArgumentParser(
+        description="Find files with non-ASCII characters."
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "-l",
         "--files-with-matches",
         action="store_true",
@@ -124,7 +138,7 @@ def main():
         default=False,
         help="print only the filename"
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "-n",
         "--line-number",
         action="store_true",
@@ -132,10 +146,21 @@ def main():
         default=False,
         help="prefix each line of output with the line number"
     )
+    arg_parser.add_argument(
+        "--max-lines",
+#        dest="max_lines",
+        metavar="N",
+        default=10,
+        help="max number of lines to print per file (default=%(default)i)"
+    )
+    arg_parser.add_argument(
+        "filespec",
+        nargs="*",
+        help="glob filespec (default is all files)"
+    )
+    args = arg_parser.parse_args()
 
-    (options, args) = option_parser.parse_args()
-
-    find_files(options, args)
+    find_files(args)
 
     return 0
 
