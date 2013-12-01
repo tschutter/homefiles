@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Installs files in tschutter/homefiles using symbolic links.
@@ -9,52 +9,40 @@ Installs files in tschutter/homefiles using symbolic links.
 #   modify ~/.config/xfce4/helpers.rc
 #   create ~/.local/share/xfce4/helpers/custom-MailReader.desktop
 
-import sys
-if sys.version_info < (2, 4):
-    print "Python versions prior to 2.4 not supported."
-    sys.exit(1)
-
+import argparse
 import glob
-import optparse
 import os
 import shutil
 import stat
 import subprocess
+import sys
 import tempfile
 import time
 
 
-def force_run_command(args, stdinstr=None):
+def force_run_command(cmdargs, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
-    if sys.version_info < (2, 4):
-        print "WARNING: Not running %s" % " ".join(args)
-        return ""
-    else:
-        if stdinstr == None:
-            stdinstr = ""
-        process = subprocess.Popen(
-            args,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        stdoutdata, stderrdata = process.communicate(stdinstr)
-        return stdoutdata + stderrdata
+    if stdinstr == None:
+        stdinstr = ""
+    process = subprocess.Popen(
+        cmdargs,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    stdoutdata, stderrdata = process.communicate(stdinstr)
+    return (stdoutdata + stderrdata).decode()
 
 
-def run_command(options, args, stdinstr=None):
+def run_command(args, cmdargs, stdinstr=None):
     """Run an external command, printing stdout and stderr."""
-    if sys.version_info < (2, 4):
-        print "WARNING: Not running %s" % " ".join(args)
-        return
-
-    if options.verbose:
-        print "Running '%s'" % " ".join(args)
-    if not options.dryrun:
-        output = force_run_command(args, stdinstr)
+    if args.verbose:
+        print("Running '%s'" % " ".join(cmdargs))
+    if not args.dryrun:
+        output = force_run_command(cmdargs, stdinstr)
         output = output.rstrip()
         if len(output) > 0:
-            print output
+            print(output)
 
 
 def cygpath_w(pathname):
@@ -94,11 +82,11 @@ def simplify_path(path):
     return path
 
 
-def mkdir(options, directory, mode):
+def mkdir(args, directory, mode):
     """Create directory."""
     if not os.path.isdir(directory):
-        print "Creating '%s' directory." % simplify_path(directory)
-        if not options.dryrun:
+        print("Creating '%s' directory." % simplify_path(directory))
+        if not args.dryrun:
             os.mkdir(directory, mode)
 
 
@@ -118,38 +106,38 @@ def file_in_path(filename):
     return False
 
 
-def clean_link(options, linkname, backup=True):
+def clean_link(args, linkname, backup=True):
     """Delete link or backup files and dirs."""
-    link_pathname = os.path.join(options.homedir, linkname)
+    link_pathname = os.path.join(args.homedir, linkname)
 
     if os.path.islink(link_pathname):
         # The destination exists as a symbolic link.
-        print "Deleting symbolic link '%s'." % link_pathname
-        if not options.dryrun:
+        print("Deleting symbolic link '%s'." % link_pathname)
+        if not args.dryrun:
             os.unlink(link_pathname)
 
     elif os.path.exists(link_pathname):
         if os.path.isdir(link_pathname):
             if len(os.listdir(link_pathname)) == 0:
-                print "Removing empty directory '%s'." % link_pathname
-                if not options.dryrun:
+                print("Removing empty directory '%s'." % link_pathname)
+                if not args.dryrun:
                     os.rmdir(link_pathname)
                     return
 
         # The destination exists as a file or dir.  Back it up.
         if backup:
-            backup_dir = os.path.join(options.var_dir, "homefiles_backup")
-            mkdir(options, backup_dir, 0700)
-            print "Moving '%s' to '%s'." % (link_pathname, backup_dir)
-            if not options.dryrun:
+            backup_dir = os.path.join(args.var_dir, "homefiles_backup")
+            mkdir(args, backup_dir, 0o700)
+            print("Moving '%s' to '%s'." % (link_pathname, backup_dir))
+            if not args.dryrun:
                 shutil.move(link_pathname, backup_dir)
         else:
-            print "Deleting file or directory '%s'." % link_pathname
-            if not options.dryrun:
+            print("Deleting file or directory '%s'." % link_pathname)
+            if not args.dryrun:
                 os.unlink(link_pathname)
 
 
-def make_link(options, enabled, filename, linkname=None):
+def make_link(args, enabled, filename, linkname=None):
     """If enabled is True, create a symbolic link from linkname to
     filename.
 
@@ -169,18 +157,18 @@ def make_link(options, enabled, filename, linkname=None):
     if os.path.isabs(filename):
         file_pathname = filename
     else:
-        file_pathname = os.path.join(options.homefiles, filename)
+        file_pathname = os.path.join(args.homefiles, filename)
     if os.path.isabs(linkname):
         link_pathname = linkname
     else:
-        link_pathname = os.path.join(options.homedir, linkname)
+        link_pathname = os.path.join(args.homedir, linkname)
 
     # The target filename should always exist.
     if not os.path.exists(file_pathname):
-        print "ERROR: File '%s' does not exist." % file_pathname
+        print("ERROR: File '%s' does not exist." % file_pathname)
         sys.exit(1)
 
-    if enabled and not options.force and os.path.islink(link_pathname):
+    if enabled and not args.force and os.path.islink(link_pathname):
         # The destination already exists as a symbolic link.  Delete it if
         # it points to the wrong place.
         try:
@@ -188,53 +176,53 @@ def make_link(options, enabled, filename, linkname=None):
         except OSError:
             samefile = False
         if not samefile:
-            clean_link(options, linkname)
+            clean_link(args, linkname)
         else:
-            if options.verbose:
-                print "Link already exists from '%s' to '%s'." % (
-                    link_pathname,
-                    file_pathname
+            if args.verbose:
+                print(
+                    "Link already exists from '%s' to '%s'." % (
+                        link_pathname,
+                        file_pathname
+                    )
                 )
             return
     else:
-        clean_link(options, linkname)
+        clean_link(args, linkname)
 
     if not enabled:
-        if options.verbose:
-            print "Not linking to '%s' (not enabled)." % filename
+        if args.verbose:
+            print("Not linking to '%s' (not enabled)." % filename)
         return
 
     # Ensure that the link_pathname directory exists.
     link_dir = os.path.dirname(link_pathname)
     if not os.path.isdir(link_dir):
-        mkdir(options, link_dir, 0766)
+        mkdir(args, link_dir, 0o766)
 
     # Make the link target relative.  This usually makes the link
     # shorter in ls output.
-    if sys.version_info < (2, 6):
-        link_target = file_pathname
-    else:
-        link_target = os.path.relpath(
-            file_pathname,
-            link_dir
-        )
+    link_target = os.path.relpath(
+        file_pathname,
+        link_dir
+    )
 
     # Make the symbolic link from link_pathname to link_target.
-    print "Creating symbolic link from '%s' to '%s'." % (
-        link_pathname,
-        link_target
+    print(
+        "Creating symbolic link from '%s' to '%s'." % (
+            link_pathname,
+            link_target
+        )
     )
-    if not options.dryrun:
+    if not args.dryrun:
         os.symlink(link_target, link_pathname)
 
 
-def make_dot_link(options, enabled, filename):
-    """Create a symbolic link from home/.filename to homefiles/filename.
-    """
-    return make_link(options, enabled, filename, "." + filename)
+def make_dot_link(args, enabled, filename):
+    """Create a symbolic link from home/.filename to homefiles/filename."""
+    return make_link(args, enabled, filename, "." + filename)
 
 
-def make_sig_link(options):
+def make_sig_link(args):
     """Create a link to the appropriate signature file."""
     # Determine the realm.
     computername = os.uname()[1].lower()
@@ -254,48 +242,48 @@ def make_sig_link(options):
 
     # Link the correct signature.
     if realm in ["ISC", "ISCP"]:
-        make_link(options, True, "signature-corelogic", ".signature")
+        make_link(args, True, "signature-corelogic", ".signature")
     else:
-        make_link(options, True, "signature-home", ".signature")
+        make_link(args, True, "signature-home", ".signature")
 
 
-def create_dotless(options, enabled):
+def create_dotless(args, enabled):
     """
     Create ~/.homefiles/less dotfile.
 
     The lesskey program creates the less dotfile.
     """
 
-    dotless_pathname = os.path.join(options.homefiles, "less")
+    dotless_pathname = os.path.join(args.homefiles, "less")
     lesskey = [
         "#env",
-        "LESSHISTFILE=%s" % os.path.join(options.var_dir, "less_history")
+        "LESSHISTFILE=%s" % os.path.join(args.var_dir, "less_history")
     ]
 
     if enabled:
-        if options.force or not os.path.exists(dotless_pathname):
-            print "Running lesskey to create '%s'." % dotless_pathname
+        if args.force or not os.path.exists(dotless_pathname):
+            print("Running lesskey to create '%s'." % dotless_pathname)
             run_command(
-                options,
+                args,
                 ["lesskey", "-o", dotless_pathname, "-"],
                 "\n".join(lesskey)
             )
     else:
-        clean_link(options, dotless_pathname)
+        clean_link(args, dotless_pathname)
 
 
-def process_terminfo(options):
+def process_terminfo(args):
     """Process terminfo compilation."""
-    terminfo_dir = os.path.join(options.homedir, ".terminfo")
+    terminfo_dir = os.path.join(args.homedir, ".terminfo")
     terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
     if not os.path.exists(terminfo_compiled):
-        print "Running tic to create '%s'." % terminfo_compiled
+        print("Running tic to create '%s'." % terminfo_compiled)
         terminfo_source = os.path.join(
-            options.homefiles,
+            args.homefiles,
             "rxvt-unicode.terminfo"
         )
         run_command(
-            options,
+            args,
             [
                 "tic",
                 "-o",
@@ -306,7 +294,7 @@ def process_terminfo(options):
         )
 
 
-def link_dotfiles(options):
+def link_dotfiles(args):
     """Create links in ~ to dotfiles."""
 
     # Determine if gvim or vim is installed.  Python 2.4 does not have any().
@@ -316,141 +304,124 @@ def link_dotfiles(options):
         if vim_installed:
             break
 
-    make_dot_link(options, file_in_path("aspell"), "aspell.en.prepl")
-    make_dot_link(options, file_in_path("aspell"), "aspell.en.pws")
-    make_dot_link(options, True, "bournerc")
-    clean_link(
-        options,
-        os.path.join(options.homedir, ".bash_history"),
-        backup=False
-    )
-    clean_link(options, os.path.join(options.homedir, ".bash_profile"))
-    make_dot_link(options, os.path.exists("/bin/bash"), "bashrc")
-    make_dot_link(options, os.path.exists("/bin/bash"), "bash_logout")
-    clean_link(options, os.path.join(options.homedir, ".emacs"))
-    make_dot_link(options, file_in_path("emacs"), "emacs.d")
+    make_dot_link(args, file_in_path("aspell"), "aspell.en.prepl")
+    make_dot_link(args, file_in_path("aspell"), "aspell.en.pws")
+    make_dot_link(args, True, "bournerc")
+    clean_link(args, os.path.join(args.homedir, ".bash_history"), backup=False)
+    clean_link(args, os.path.join(args.homedir, ".bash_profile"))
+    make_dot_link(args, os.path.exists("/bin/bash"), "bashrc")
+    make_dot_link(args, os.path.exists("/bin/bash"), "bash_logout")
+    clean_link(args, os.path.join(args.homedir, ".emacs"))
+    make_dot_link(args, file_in_path("emacs"), "emacs.d")
     if not sys.platform.startswith("openbsd"):
-        make_dot_link(options, file_in_path("vi"), "exrc")
-    make_link(
-        options,
-        True,
-        "image/ironcat-80.jpg",
-        ".face"
-    )
-    make_dot_link(options, file_in_path("gdb"), "gdbinit")
-    make_dot_link(options, file_in_path("git"), "gitconfig")
-    make_dot_link(options, True, "inputrc")
-    make_dot_link(options, os.path.exists("/bin/ksh"), "kshrc")
-    make_dot_link(options, file_in_path("lbdbq"), "lbdbrc")
+        make_dot_link(args, file_in_path("vi"), "exrc")
+    make_link(args, True, "image/ironcat-80.jpg", ".face")
+    make_dot_link(args, file_in_path("gdb"), "gdbinit")
+    make_dot_link(args, file_in_path("git"), "gitconfig")
+    make_dot_link(args, True, "inputrc")
+    make_dot_link(args, os.path.exists("/bin/ksh"), "kshrc")
+    make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
     if file_in_path("less") and file_in_path("lesskey"):
         # Inside if, because make_dot_link complains if create_dotless is
         # not run.
-        create_dotless(options, True)
-        make_dot_link(options, True, "less")
-    make_dot_link(
-        options,
-        file_in_path("mail") or file_in_path("mutt"),
-        "mailcap"
-    )
-    make_dot_link(options, file_in_path("mg"), "mg")
-    make_dot_link(options, file_in_path("mintty"), "minttyrc")
-    make_dot_link(options, file_in_path("mutt"), "mutt")
-    make_dot_link(options, file_in_path("muttprint"), "muttprintrc")
+        create_dotless(args, True)
+        make_dot_link(args, True, "less")
+    make_dot_link(args, file_in_path("mail") or file_in_path("mutt"), "mailcap")
+    make_dot_link(args, file_in_path("mg"), "mg")
+    make_dot_link(args, file_in_path("mintty"), "minttyrc")
+    make_dot_link(args, file_in_path("mutt"), "mutt")
+    make_dot_link(args, file_in_path("muttprint"), "muttprintrc")
     if sys.platform.startswith("openbsd"):
-        make_dot_link(options, file_in_path("vi"), "nexrc")
-    make_dot_link(options, file_in_path("orpie"), "orpierc")
-    make_dot_link(options, file_in_path("password-gorilla"), "gorillarc")
-    make_dot_link(options, True, "profile")
-    make_dot_link(options, file_in_path("pychecker"), "pycheckrc")
-    make_dot_link(options, file_in_path("pdb"), "pdbrc")
-    make_dot_link(options, file_in_path("pdb"), "pdbrc.py")
-    make_dot_link(options, file_in_path("pylint"), "pylintrc")
-    make_dot_link(options, file_in_path("python"), "pythonstartup")
-    make_dot_link(options, file_in_path("screen"), "screenrc")
-    make_sig_link(options)
+        make_dot_link(args, file_in_path("vi"), "nexrc")
+    make_dot_link(args, file_in_path("orpie"), "orpierc")
+    make_dot_link(args, file_in_path("password-gorilla"), "gorillarc")
+    make_dot_link(args, True, "profile")
+    make_dot_link(args, file_in_path("pychecker"), "pycheckrc")
+    make_dot_link(args, file_in_path("pdb"), "pdbrc")
+    make_dot_link(args, file_in_path("pdb"), "pdbrc.py")
+    make_dot_link(args, file_in_path("pylint"), "pylintrc")
+    make_dot_link(args, file_in_path("python"), "pythonstartup")
+    make_dot_link(args, file_in_path("screen"), "screenrc")
+    make_sig_link(args)
     if sys.platform.startswith("openbsd"):
-        process_terminfo(options)
-    make_dot_link(options, file_in_path("tmux"), "tmux.conf")
-    syncdaemon_conf = os.path.join(options.private_dir, "syncdaemon.conf")
+        process_terminfo(args)
+    make_dot_link(args, file_in_path("tmux"), "tmux.conf")
+    syncdaemon_conf = os.path.join(args.private_dir, "syncdaemon.conf")
     if os.path.exists(syncdaemon_conf):
         make_link(
-            options,
+            args,
             os.path.exists("/usr/bin/u1sdtool"),
             syncdaemon_conf,
             ".config/ubuntuone/syncdaemon.conf"
         )
-    make_dot_link(options, file_in_path("urxvt"), "urxvt")
-    make_dot_link(options, file_in_path("valgrind"), "valgrindrc")
-    clean_link(
-        options,
-        os.path.join(options.homedir, ".viminfo"),
-        backup=False
-    )
-    make_dot_link(options, vim_installed, "vimrc")
+    make_dot_link(args, file_in_path("urxvt"), "urxvt")
+    make_dot_link(args, file_in_path("valgrind"), "valgrindrc")
+    clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)
+    make_dot_link(args, vim_installed, "vimrc")
     make_link(
-        options,
+        args,
         file_in_path("xfce4-terminal"),
         "terminalrc",
         ".config/xfce4/terminal/terminalrc"
     )
-    make_dot_link(options, file_in_path("xzgv"), "xzgvrc")
-    make_dot_link(options, file_in_path("w3m"), "w3m")
+    make_dot_link(args, file_in_path("xzgv"), "xzgvrc")
+    make_dot_link(args, file_in_path("w3m"), "w3m")
     # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
-    clean_link(options, os.path.join(options.homedir, ".Xdefaults"))
-    clean_link(options, os.path.join(options.homedir, ".Xresources"))
-    make_dot_link(options, options.is_xwindows, "xsessionrc")
+    clean_link(args, os.path.join(args.homedir, ".Xdefaults"))
+    clean_link(args, os.path.join(args.homedir, ".Xresources"))
+    make_dot_link(args, args.is_xwindows, "xsessionrc")
 
 
-def link_binfiles(options):
+def link_binfiles(args):
     """Create links in ~/bin."""
-    bindir = os.path.join(options.homedir, "bin")
-    mkdir(options, bindir, 0777)
-    make_link(options, True, "bin/abook-lookup")
-    make_link(options, True, "bin/append-missing-newline")
-    make_link(options, options.is_cygwin, "bin/cygwin-fix-sshd")
-    make_link(options, True, "bin/cmake-clean")
-    make_link(options, True, "bin/find-non-ascii")
-    make_link(options, True, "bin/findfile")
-    make_link(options, True, "bin/install-essentials")
-    make_link(options, file_in_path("gnome-open"), "bin/mailto-gmail")
-    make_link(options, file_in_path("mutt"), "bin/mailto-mutt")
-    make_link(options, True, "bin/open")
-    make_link(options, True, "bin/pycheck")
-    make_link(options, True, "bin/strip-bom")
-    make_link(options, True, "bin/svn-ignore")
-    make_link(options, True, "bin/ssh-reverse-tunnel")
-    make_link(options, True, "bin/tgrep")
-    make_link(options, True, "bin/tm")
-    make_link(options, os.path.exists("/usr/bin/u1sdtool"), "bin/u1sdtool")
-    make_link(options, True, "bin/unicode2ascii")
+    bindir = os.path.join(args.homedir, "bin")
+    mkdir(args, bindir, 0o777)
+    make_link(args, True, "bin/abook-lookup")
+    make_link(args, True, "bin/append-missing-newline")
+    make_link(args, args.is_cygwin, "bin/cygwin-fix-sshd")
+    make_link(args, True, "bin/cmake-clean")
+    make_link(args, True, "bin/find-non-ascii")
+    make_link(args, True, "bin/findfile")
+    make_link(args, True, "bin/install-essentials")
+    make_link(args, file_in_path("gnome-open"), "bin/mailto-gmail")
+    make_link(args, file_in_path("mutt"), "bin/mailto-mutt")
+    make_link(args, True, "bin/open")
+    make_link(args, True, "bin/pycheck")
+    make_link(args, True, "bin/strip-bom")
+    make_link(args, True, "bin/svn-ignore")
+    make_link(args, True, "bin/ssh-reverse-tunnel")
+    make_link(args, True, "bin/tgrep")
+    make_link(args, True, "bin/tm")
+    make_link(args, os.path.exists("/usr/bin/u1sdtool"), "bin/u1sdtool")
+    make_link(args, True, "bin/unicode2ascii")
 
 
-def xfwm4_remove_keybinding(options, binding):
+def xfwm4_remove_keybinding(args, binding):
     """Remove a xfwm4 keybinding."""
     if os.path.exists("/usr/bin/xfconf-query"):
-        args = [
+        cmdargs = [
             "/usr/bin/xfconf-query",
             "--channel",
             "xfce4-keyboard-shortcuts",
             "--property"
         ]
-        output = force_run_command(args + [binding])
+        output = force_run_command(cmdargs + [binding])
         if output.find("does not exist on channel") != -1:
-            if options.verbose:
-                print "Keybinding '%s' already removed." % binding
+            if args.verbose:
+                print("Keybinding '%s' already removed." % binding)
         else:
-            print "Removing keybinding '%s' from xfce4 config." % binding
-            run_command(options, args + [binding, "--reset"])
+            print("Removing keybinding '%s' from xfce4 config." % binding)
+            run_command(args, cmdargs + [binding, "--reset"])
 
 
-def configure_wm_keybindings(options):
+def configure_wm_keybindings(args):
     """Setup window manager keybindings."""
 
     # xfconf-query cannot run unless there is a valid DISPLAY.
     if "DISPLAY" in os.environ:
         # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
-        xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F3")
-        xfwm4_remove_keybinding(options, "/xfwm4/custom/<Control>F4")
+        xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F3")
+        xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F4")
 
 
 def create_tmp_file(prefix, suffix, contents):
@@ -462,14 +433,14 @@ def create_tmp_file(prefix, suffix, contents):
     return pathname
 
 
-def install_fonts(options):
+def install_fonts(args):
     """Install fonts."""
 
-    font_src_dir = os.path.join(options.homefiles, "fonts")
+    font_src_dir = os.path.join(args.homefiles, "fonts")
 
     # See http://blogs.technet.com/b/heyscriptingguy/archive/\
     # 2008/04/25/how-can-i-install-fonts-using-a-script.aspx
-    if options.is_cygwin or options.is_windows:
+    if args.is_cygwin or args.is_windows:
         # Need to see what cygwin local and cygwin ssh do here...
         system_root = os.environ["SYSTEMROOT"]
         dst_dir = os.path.join(system_root, "Fonts")
@@ -478,10 +449,10 @@ def install_fonts(options):
                 src_pathname = os.path.join(font_src_dir, filename)
                 dst_pathname = os.path.join(dst_dir, filename)
                 dst_pathname = cygpath_u(dst_pathname)
-                if not options.force and os.path.exists(dst_pathname):
+                if not args.force and os.path.exists(dst_pathname):
                     continue
-                print "Installing font '%s'." % src_pathname
-                if not options.dryrun:
+                print("Installing font '%s'." % src_pathname)
+                if not args.dryrun:
                     vbs_text = (
                         'Set objShell = CreateObject("Shell.Application")\r\n'
                         'Set objFolder = objShell.Namespace(&H14&)\r\n'
@@ -498,7 +469,7 @@ def install_fonts(options):
                         "cmd.exe"
                     )
                     run_command(
-                        options,
+                        args,
                         [
                             cmd_exe,
                             "/c",
@@ -517,104 +488,98 @@ def install_fonts(options):
         system_has_ubuntu_mono = os.path.exists(
             "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-R.ttf"
         )
-        make_dot_link(options, not system_has_ubuntu_mono, "fonts")
+        make_dot_link(args, not system_has_ubuntu_mono, "fonts")
 
     # Install fonts in gimp(1).
     font_glob = os.path.join(font_src_dir, "*.ttf")
-    gimp_font_dir_glob = os.path.join(options.homedir, ".gimp-*", "fonts")
+    gimp_font_dir_glob = os.path.join(args.homedir, ".gimp-*", "fonts")
     for gimp_font_dir in glob.glob(gimp_font_dir_glob):
         for font_pathname in glob.glob(font_glob):
             font_filename = os.path.basename(font_pathname)
             gimp_link = os.path.join(gimp_font_dir, font_filename)
-            make_link(
-                options,
-                True,
-                font_pathname,
-                gimp_link
-            )
+            make_link(args, True, font_pathname, gimp_link)
 
 
 def main():
     """main"""
-    option_parser = optparse.OptionParser(
-        usage="usage: %prog [options]\n" +
-            "  Installs files in tschutter/homefiles using symbolic links."
+    arg_parser = argparse.ArgumentParser(
+        description="Install files in ~/.homefiles using symbolic links, "
+        "configure keybindings, and install fonts."
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "--home",
         action="store",
         dest="homedir",
         metavar="DIR",
         default="~",
-        help="specify directory to install to (default=%default)"
+        help="directory to install to (default=%(default)s)"
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "--private",
         action="store",
         dest="private_dir",
         metavar="DIR",
         default=os.path.join("~", "private"),
-        help="specify private directory (default=%default)"
+        help="private directory (default=%(default)s)"
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "--var",
         action="store",
         dest="var_dir",
         metavar="DIR",
         default=os.path.join("~", ".var"),
-        help="specify var directory (default=%default)"
+        help="var directory (default=%(default)s)"
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "--force",
         action="store_true",
         dest="force",
         default=False,
         help="replace existing files and symbolic links"
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "-n",
         "--dry-run",
         action="store_true",
         dest="dryrun",
         default=False,
-        help="print commands that would be executed, but do not execute them"
+        help="print commands, but do not execute them"
     )
-    option_parser.add_option(
+    arg_parser.add_argument(
         "--verbose",
         action="store_true",
         dest="verbose",
         default=False,
         help="produce more verbose output"
     )
+    args = arg_parser.parse_args()
 
-    (options, args) = option_parser.parse_args()
-    if len(args) != 0:
-        option_parser.error("invalid argument")
-    options.homedir = os.path.expanduser(options.homedir)
-    options.private_dir = os.path.expanduser(options.private_dir)
-    options.var_dir = os.path.expanduser(options.var_dir)
+    # Canonicalize directories.
+    args.homedir = os.path.expanduser(args.homedir)
+    args.private_dir = os.path.expanduser(args.private_dir)
+    args.var_dir = os.path.expanduser(args.var_dir)
+    args.homefiles = os.path.dirname(os.path.abspath(__file__))
 
     # Determine what platform we are on.
-    options.is_cygwin = sys.platform == "cygwin"
-    options.is_windows = sys.platform.startswith("win")
-    options.is_xwindows = not (options.is_cygwin or options.is_windows)
+    args.is_cygwin = sys.platform == "cygwin"
+    args.is_windows = sys.platform.startswith("win")
+    args.is_xwindows = not (args.is_cygwin or args.is_windows)
 
-    options.homefiles = os.path.dirname(os.path.abspath(__file__))
-
-    mkdir(options, options.var_dir, 0700)
+    mkdir(args, args.var_dir, 0o700)
     if file_in_path("mutt"):
         # Create ~/.var/mutt so mutt can store certs on first run.
-        mkdir(options, os.path.join(options.var_dir, "mutt"), 0700)
+        mkdir(args, os.path.join(args.var_dir, "mutt"), 0o700)
 
-    link_dotfiles(options)
+    link_dotfiles(args)
 
-    link_binfiles(options)
+    link_binfiles(args)
 
-    configure_wm_keybindings(options)
+    configure_wm_keybindings(args)
 
-    install_fonts(options)
+    install_fonts(args)
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
