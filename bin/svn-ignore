@@ -16,7 +16,8 @@ def svn_propget(svnprop, path):
         stdout=subprocess.PIPE
     )
     subproc.wait()
-    data = subproc.stdout.read().strip()
+    data = subproc.stdout.read().strip().decode()
+    print(data)
     return data
 
 
@@ -64,7 +65,7 @@ def main():
         svnignore_data = svnignore_data.split("\n")
 
         # Add or remove filename.
-        if options.unignore:
+        if args.unignore:
             if filename not in svnignore_data:
                 continue
             svnignore_data.remove(filename)
@@ -74,7 +75,7 @@ def main():
             svnignore_data.append(filename)
 
         # Optionally sort.
-        if options.sort:
+        if args.sort:
             svnignore_data = sorted(svnignore_data)
 
         svn_propset("svn:ignore", "\n".join(svnignore_data), dirpath)
