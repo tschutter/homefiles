@@ -29,7 +29,7 @@ Some configuration is difficult to do via scripts.
 XUbuntu / xfce
 ~~~~~~~~~~~~~~
 
-#. Settings -> Settings Manager -> Window Manager -> Keyboard
+#. Settings Manager -> Window Manager -> Keyboard
 
    * In the "Window operations menu" row, select "<Alt>space" and click on the "Clear" button.
 
