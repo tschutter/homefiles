@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Tools to aid in Python debugging.
@@ -21,7 +21,7 @@ def info(extype, value, tback):
         import traceback
         # We are not in interactive mode, print the exception.
         traceback.print_exception(extype, value, tback)
-        print
+        print()
         # Start the debugger in post-mortem mode.
         pdb.post_mortem(tback)
 
