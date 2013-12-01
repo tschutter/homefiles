@@ -4,8 +4,8 @@
 Lookup an entry in an abook(1) addressbook file.
 """
 
-import itertools
 import argparse
+import itertools
 import os
 import re
 import sys
