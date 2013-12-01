@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # uboat.py --- generate u-boat-death messages, patterned after Iron Coffins
 
@@ -167,4 +167,4 @@ class Uboat():
 
 
 if __name__ == '__main__':
-    print Uboat().death_message()
+    print(Uboat().death_message())
