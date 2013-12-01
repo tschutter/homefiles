@@ -7,16 +7,17 @@ Usage
 Initial checkout::
 
     git clone --recursive git://github.com/tschutter/homefiles.git $HOME/.homefiles
-    $HOME/.homefiles/install.py
-    $HOME/bin/install-essentials
-    $HOME/.homefiles/install.py
+    cd $HOME/.homefiles
+    ./install.py
+    bin/install-essentials
+    ./install.py
 
 Update::
 
     cd $HOME/.homefiles
     git pull
     git submodule update --init --recursive
-    ./install.sh
+    ./install.py
     install-essentials
 
 ----------------------------------------------------------------------
