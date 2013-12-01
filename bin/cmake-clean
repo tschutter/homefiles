@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Clean cmake generated files.
 """
 
-import optparse
+import argparse
 import os
 import shutil
 import subprocess
@@ -20,6 +20,7 @@ def make_clean(directory):
     Arguments:
     - `directory`: target directory
     """
+
     args = [
         "make",
         "--directory=%s" % directory,
@@ -30,9 +31,7 @@ def make_clean(directory):
     return process.wait()
 
 
-def clean(
-    directory
-    ):
+def clean(directory):
     """Clean cmake files.
 
     Arguments:
@@ -97,20 +96,25 @@ def clean(
 
 def main():
     """main"""
-    option_parser = optparse.OptionParser(
-        usage="usage: %prog [DIR...]\n" +
-            "  Clean cmake generated files."
+    arg_parser = argparse.ArgumentParser(
+        description="Clean cmake generated files."
     )
+    arg_parser.add_argument(
+        "dirs",
+        metavar="dir",
+        nargs="*",
+        help="cmake directory"
+    )
+    args = arg_parser.parse_args()
+    if len(args.dirs) == 0:
+        args.dirs.append(".")
 
-    (_, args) = option_parser.parse_args()
-    if len(args) == 0:
-        args.append(".")
-
-    for arg in args:
+    for arg in args.dirs:
         make_clean(arg)
         clean(arg)
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
