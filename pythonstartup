@@ -27,6 +27,6 @@ if os.path.exists(history_path):
 
 atexit.register(save_history)
 
-print "History saved to %s; use TAB for auto-completion." % history_path_
+print("History saved to %s; use TAB for auto-completion." % history_path_)
 
 del os, atexit, readline, rlcompleter, save_history, history_path_, history_path
