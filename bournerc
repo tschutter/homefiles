@@ -21,10 +21,13 @@ if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
 fi
 
 # password-gorilla(1).
+# Removal of .bak file needed because "Backup database on save"=0 is ignored.
+# No need for backup file because we store .psafe3 in git.
+# Extra shell (outside parens) is to prevent job control messages from being printed.
 if [ "${_UNAME}" = "OpenBSD" ]; then
-    alias gorilla="gorilla ~/private/password-gorilla.psafe3"
+    alias gorilla="((gorilla ~/private/password-gorilla.psafe3; rm ~/private/password-gorilla.bak 2>/dev/null) &)"
 else
-    alias gorilla="password-gorilla ~/private/password-gorilla.psafe3"
+    alias gorilla="((password-gorilla ~/private/password-gorilla.psafe3; rm ~/private/password-gorilla.bak 2>/dev/null) &)"
 fi
 
 # pgrep(1).
