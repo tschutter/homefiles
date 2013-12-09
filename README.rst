@@ -32,7 +32,7 @@ XUbuntu / xfce
 
 #. Settings Manager -> Window Manager -> Keyboard
 
-   * In the "Window operations menu" row, select "<Alt>space" and click on the "Clear" button.
+   * In the "Window operations menu" row, double click on "<Alt>space" and then click on the "Clear" button.
 
      Alt-space is reserved for just-one-space in Emacs.
 
