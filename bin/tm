@@ -75,9 +75,9 @@ def main():
             print("%+8s: %s" % (quick, text))
         return 0
     if args.users == None:
-        option_parser.error("users not specified.")
+        arg_parser.error("users not specified.")
     if len(args.message) == 0:
-        option_parser.error("message not specified.")
+        arg_parser.error("message not specified.")
 
     # Get and validate user list.
     users = args.users.split(",")
