@@ -30,6 +30,8 @@ def force_run_command(cmdargs, stdinstr=None):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
+    if stdinstr != None:
+        stdinstr = stdinstr.encode("ascii")
     stdoutdata, stderrdata = process.communicate(stdinstr)
     return (stdoutdata + stderrdata).decode()
 
@@ -255,18 +257,18 @@ def create_dotless(args, enabled):
     """
 
     dotless_pathname = os.path.join(args.homefiles, "less")
-    lesskey = [
-        "#env",
-        "LESSHISTFILE=%s" % os.path.join(args.var_dir, "less_history")
-    ]
 
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
             print("Running lesskey to create '%s'." % dotless_pathname)
+            lesskey = [
+                "#env",
+                "LESSHISTFILE=%s" % os.path.join(args.var_dir, "less_history")
+            ]
             run_command(
                 args,
                 ["lesskey", "-o", dotless_pathname, "-"],
-                "\n".join(lesskey)
+                "\n".join(lesskey) + "\n"
             )
     else:
         clean_link(args, dotless_pathname)
@@ -475,8 +477,7 @@ def install_fonts(args):
                             "/c",
                             "start",
                             cygpath_w(vbs_pathname)
-                        ],
-                        None
+                        ]
                     )
                     # We should give the "/wait" parameter to the
                     # start command above.  But that sometimes causes
