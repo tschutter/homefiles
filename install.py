@@ -263,9 +263,10 @@ def create_dotless(args, enabled):
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
             print("Running lesskey to create '%s'." % dotless_pathname)
+            # Use my standard of PROG_history instead of lesshist.
             lesskey =\
                 "#env\n"\
-                "LESSHISTFILE=%s\n" % os.path.join(args.var_dir, "lesshist")
+                "LESSHISTFILE=%s\n" % os.path.join(args.var_dir, "less_history")
             run_command(
                 args,
                 ["lesskey", "-o", dotless_pathname, "-"],
