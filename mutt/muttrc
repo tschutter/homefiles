@@ -48,7 +48,10 @@ set pager_index_lines=11
 
 # MIME autoview (uses ~/.mailcap).
 auto_view text/html text/calendar application/pdf application/postscript
-alternative_order text/calendar text/plain text text/html application/postscript image/*
+# Specifying text/plain before text/html sounds like a good idea, but
+# email systems that generate both usually do a worse job of
+# translating html to text than w3m does.
+alternative_order text/calendar text/html text text/plain application/postscript image/*
 
 # vcalendar support.
 # sudo apt-get install libdata-ical-perl libtext-autoformat-perl libdate-manip-perl
