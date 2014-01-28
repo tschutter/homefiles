@@ -30,6 +30,8 @@ def force_run_command(cmdargs, stdinstr=None):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
+    if stdinstr != None:
+        stdinstr = stdinstr.encode("ascii")
     stdoutdata, stderrdata = process.communicate(stdinstr)
     return (stdoutdata + stderrdata).decode()
 
@@ -157,7 +159,9 @@ def make_link(args, enabled, filename, linkname=None):
     if os.path.isabs(filename):
         file_pathname = filename
     else:
-        file_pathname = os.path.join(args.homefiles, filename)
+        file_pathname = os.path.normpath(
+            os.path.join(args.homefiles, filename)
+        )
     if os.path.isabs(linkname):
         link_pathname = linkname
     else:
@@ -254,19 +258,19 @@ def create_dotless(args, enabled):
     The lesskey program creates the less dotfile.
     """
 
-    dotless_pathname = os.path.join(args.homefiles, "less")
-    lesskey = [
-        "#env",
-        "LESSHISTFILE=%s" % os.path.join(args.var_dir, "less_history")
-    ]
+    dotless_pathname = os.path.join(args.var_dir, "less")
 
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
             print("Running lesskey to create '%s'." % dotless_pathname)
+            # Use my standard of PROG_history instead of lesshist.
+            lesskey =\
+                "#env\n"\
+                "LESSHISTFILE=%s\n" % os.path.join(args.var_dir, "less_history")
             run_command(
                 args,
                 ["lesskey", "-o", dotless_pathname, "-"],
-                "\n".join(lesskey)
+                lesskey
             )
     else:
         clean_link(args, dotless_pathname)
@@ -325,7 +329,7 @@ def link_dotfiles(args):
         # Inside if, because make_dot_link complains if create_dotless is
         # not run.
         create_dotless(args, True)
-        make_dot_link(args, True, "less")
+        make_link(args, True, os.path.join(args.var_dir, "less"), ".less")
     make_dot_link(args, file_in_path("mail") or file_in_path("mutt"), "mailcap")
     make_dot_link(args, file_in_path("mg"), "mg")
     make_dot_link(args, file_in_path("mintty"), "minttyrc")
@@ -475,8 +479,7 @@ def install_fonts(args):
                             "/c",
                             "start",
                             cygpath_w(vbs_pathname)
-                        ],
-                        None
+                        ]
                     )
                     # We should give the "/wait" parameter to the
                     # start command above.  But that sometimes causes
