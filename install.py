@@ -322,6 +322,13 @@ def link_dotfiles(args):
     make_link(args, True, "image/ironcat-80.jpg", ".face")
     make_dot_link(args, file_in_path("gdb"), "gdbinit")
     make_dot_link(args, file_in_path("git"), "gitconfig")
+    goobookrc = os.path.join(args.private_dir, "goobookrc")
+    make_link(
+        args,
+        os.path.exists(goobookrc) and file_in_path("goobook"),
+        goobookrc,
+        ".goobookrc"
+    )
     make_dot_link(args, True, "inputrc")
     make_dot_link(args, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
@@ -351,13 +358,12 @@ def link_dotfiles(args):
         process_terminfo(args)
     make_dot_link(args, file_in_path("tmux"), "tmux.conf")
     syncdaemon_conf = os.path.join(args.private_dir, "syncdaemon.conf")
-    if os.path.exists(syncdaemon_conf):
-        make_link(
-            args,
-            os.path.exists("/usr/bin/u1sdtool"),
-            syncdaemon_conf,
-            ".config/ubuntuone/syncdaemon.conf"
-        )
+    make_link(
+        args,
+        os.path.exists(syncdaemon_conf) and file_in_path("u1sdtool"),
+        syncdaemon_conf,
+        ".config/ubuntuone/syncdaemon.conf"
+    )
     make_dot_link(args, file_in_path("urxvt"), "urxvt")
     make_dot_link(args, file_in_path("valgrind"), "valgrindrc")
     clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)

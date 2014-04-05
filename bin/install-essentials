@@ -49,6 +49,7 @@ if [ -x "/usr/bin/apt-get" ]; then
     sudo update-alternatives --set x-terminal-emulator /usr/bin/urxvt
 
     PYPI_PACKAGES="\
+        goobook\
         line_profiler\
         pyprof2calltree\
     "

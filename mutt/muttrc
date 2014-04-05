@@ -85,11 +85,10 @@ macro attach s <save-entry><bol>~/tmp/
 folder-hook . 'bind index m mail' # set default for non-templates
 folder-hook .*Templates 'bind index m resend-message'
 
-# Address book.
-set query_command="lbdbq %s"
+# Address book (goobook).
+set query_command="goobook query '%s'"
 bind editor <tab> complete-query
-macro index a "|abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook --add-email\n" 'add sender to abook'
-macro pager a "|abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook --add-email\n" 'add sender to abook'
+macro index,pager a "<pipe-message>goobook add<return>" "add sender to Google contacts"
 
 # Use GPG.
 source ~/.mutt/gpg.rc
