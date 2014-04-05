@@ -358,12 +358,13 @@ def link_dotfiles(args):
         process_terminfo(args)
     make_dot_link(args, file_in_path("tmux"), "tmux.conf")
     syncdaemon_conf = os.path.join(args.private_dir, "syncdaemon.conf")
-    make_link(
-        args,
-        os.path.exists(syncdaemon_conf) and file_in_path("u1sdtool"),
-        syncdaemon_conf,
-        ".config/ubuntuone/syncdaemon.conf"
-    )
+    if os.path.exists(syncdaemon_conf):
+        make_link(
+            args,
+            file_in_path("u1sdtool"),
+            syncdaemon_conf,
+            ".config/ubuntuone/syncdaemon.conf"
+        )
     make_dot_link(args, file_in_path("urxvt"), "urxvt")
     make_dot_link(args, file_in_path("valgrind"), "valgrindrc")
     clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)
