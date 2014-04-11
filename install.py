@@ -357,14 +357,6 @@ def link_dotfiles(args):
     if sys.platform.startswith("openbsd"):
         process_terminfo(args)
     make_dot_link(args, file_in_path("tmux"), "tmux.conf")
-    syncdaemon_conf = os.path.join(args.private_dir, "syncdaemon.conf")
-    if os.path.exists(syncdaemon_conf):
-        make_link(
-            args,
-            file_in_path("u1sdtool"),
-            syncdaemon_conf,
-            ".config/ubuntuone/syncdaemon.conf"
-        )
     make_dot_link(args, file_in_path("urxvt"), "urxvt")
     make_dot_link(args, file_in_path("valgrind"), "valgrindrc")
     clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)
@@ -403,7 +395,6 @@ def link_binfiles(args):
     make_link(args, True, "bin/ssh-reverse-tunnel")
     make_link(args, True, "bin/tgrep")
     make_link(args, True, "bin/tm")
-    make_link(args, os.path.exists("/usr/bin/u1sdtool"), "bin/u1sdtool")
     make_link(args, True, "bin/unicode2ascii")
 
 
