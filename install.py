@@ -308,6 +308,8 @@ def link_dotfiles(args):
         if vim_installed:
             break
 
+    # All files in private_dir must be checked for existence before
+    # calling make_link in case private_dir does not exist.
     make_dot_link(args, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(args, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(args, True, "bournerc")
@@ -323,12 +325,8 @@ def link_dotfiles(args):
     make_dot_link(args, file_in_path("gdb"), "gdbinit")
     make_dot_link(args, file_in_path("git"), "gitconfig")
     goobookrc = os.path.join(args.private_dir, "goobookrc")
-    make_link(
-        args,
-        os.path.exists(goobookrc) and file_in_path("goobook"),
-        goobookrc,
-        ".goobookrc"
-    )
+    if os.path.exists(goobookrc):
+        make_link(args, file_in_path("goobook"), goobookrc, ".goobookrc")
     make_dot_link(args, True, "inputrc")
     make_dot_link(args, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
