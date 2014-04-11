@@ -424,12 +424,12 @@ def configure_wm_keybindings(args):
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F4")
 
 
-def create_tmp_file(prefix, suffix, contents):
+def create_tmp_file(prefix, suffix, contentBytes):
     """Create a temporary file containing contents."""
     handle, pathname = tempfile.mkstemp(prefix=prefix, suffix=suffix)
     os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
     tmp_file = os.fdopen(handle, "wb")
-    tmp_file.write(contents)
+    tmp_file.write(contentBytes)
     return pathname
 
 
@@ -452,36 +452,38 @@ def install_fonts(args):
                 if not args.force and os.path.exists(dst_pathname):
                     continue
                 print("Installing font '%s'." % src_pathname)
-                if not args.dryrun:
-                    vbs_text = (
-                        'Set objShell = CreateObject("Shell.Application")\r\n'
-                        'Set objFolder = objShell.Namespace(&H14&)\r\n'
-                        'objFolder.CopyHere "%s"\r\n' % cygpath_w(src_pathname)
-                    )
-                    vbs_pathname = create_tmp_file(
-                        "install-font",
-                        ".vbs",
-                        vbs_text
-                    )
-                    cmd_exe = os.path.join(
-                        cygpath_u(system_root),
-                        "system32",
-                        "cmd.exe"
-                    )
-                    run_command(
-                        args,
-                        [
-                            cmd_exe,
-                            "/c",
-                            "start",
-                            cygpath_w(vbs_pathname)
-                        ]
-                    )
-                    # We should give the "/wait" parameter to the
-                    # start command above.  But that sometimes causes
-                    # a hang.  Therefore we just sleep here.
-                    time.sleep(5)
-                    os.unlink(vbs_pathname)
+                vbs_text = bytes(
+                    'Set objShell = CreateObject("Shell.Application")\r\n' +
+                    'Set objFolder = objShell.Namespace(&H14&)\r\n' +
+                    'objFolder.CopyHere "{}"\r\n'.format(
+                        cygpath_w(src_pathname)
+                    ),
+                    'UTF-8'
+                )
+                vbs_pathname = create_tmp_file(
+                    "install-font",
+                    ".vbs",
+                    vbs_text
+                )
+                cmd_exe = os.path.join(
+                    cygpath_u(system_root),
+                    "system32",
+                    "cmd.exe"
+                )
+                run_command(
+                    args,
+                    [
+                        cmd_exe,
+                        "/c",
+                        "start",
+                        cygpath_w(vbs_pathname)
+                    ]
+                )
+                # We should give the "/wait" parameter to the
+                # start command above.  But that sometimes causes
+                # a hang.  Therefore we just sleep here.
+                time.sleep(5)
+                os.unlink(vbs_pathname)
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
         system_has_ubuntu_mono = os.path.exists(
