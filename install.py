@@ -308,6 +308,8 @@ def link_dotfiles(args):
         if vim_installed:
             break
 
+    # All files in private_dir must be checked for existence before
+    # calling make_link in case private_dir does not exist.
     make_dot_link(args, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(args, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(args, True, "bournerc")
@@ -323,12 +325,8 @@ def link_dotfiles(args):
     make_dot_link(args, file_in_path("gdb"), "gdbinit")
     make_dot_link(args, file_in_path("git"), "gitconfig")
     goobookrc = os.path.join(args.private_dir, "goobookrc")
-    make_link(
-        args,
-        os.path.exists(goobookrc) and file_in_path("goobook"),
-        goobookrc,
-        ".goobookrc"
-    )
+    if os.path.exists(goobookrc):
+        make_link(args, file_in_path("goobook"), goobookrc, ".goobookrc")
     make_dot_link(args, True, "inputrc")
     make_dot_link(args, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
@@ -357,14 +355,6 @@ def link_dotfiles(args):
     if sys.platform.startswith("openbsd"):
         process_terminfo(args)
     make_dot_link(args, file_in_path("tmux"), "tmux.conf")
-    syncdaemon_conf = os.path.join(args.private_dir, "syncdaemon.conf")
-    if os.path.exists(syncdaemon_conf):
-        make_link(
-            args,
-            file_in_path("u1sdtool"),
-            syncdaemon_conf,
-            ".config/ubuntuone/syncdaemon.conf"
-        )
     make_dot_link(args, file_in_path("urxvt"), "urxvt")
     make_dot_link(args, file_in_path("valgrind"), "valgrindrc")
     clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)
@@ -403,7 +393,6 @@ def link_binfiles(args):
     make_link(args, True, "bin/ssh-reverse-tunnel")
     make_link(args, True, "bin/tgrep")
     make_link(args, True, "bin/tm")
-    make_link(args, os.path.exists("/usr/bin/u1sdtool"), "bin/u1sdtool")
     make_link(args, True, "bin/unicode2ascii")
 
 
@@ -435,12 +424,12 @@ def configure_wm_keybindings(args):
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F4")
 
 
-def create_tmp_file(prefix, suffix, contents):
+def create_tmp_file(prefix, suffix, contentBytes):
     """Create a temporary file containing contents."""
     handle, pathname = tempfile.mkstemp(prefix=prefix, suffix=suffix)
     os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
     tmp_file = os.fdopen(handle, "wb")
-    tmp_file.write(contents)
+    tmp_file.write(contentBytes)
     return pathname
 
 
@@ -463,36 +452,38 @@ def install_fonts(args):
                 if not args.force and os.path.exists(dst_pathname):
                     continue
                 print("Installing font '%s'." % src_pathname)
-                if not args.dryrun:
-                    vbs_text = (
-                        'Set objShell = CreateObject("Shell.Application")\r\n'
-                        'Set objFolder = objShell.Namespace(&H14&)\r\n'
-                        'objFolder.CopyHere "%s"\r\n' % cygpath_w(src_pathname)
-                    )
-                    vbs_pathname = create_tmp_file(
-                        "install-font",
-                        ".vbs",
-                        vbs_text
-                    )
-                    cmd_exe = os.path.join(
-                        cygpath_u(system_root),
-                        "system32",
-                        "cmd.exe"
-                    )
-                    run_command(
-                        args,
-                        [
-                            cmd_exe,
-                            "/c",
-                            "start",
-                            cygpath_w(vbs_pathname)
-                        ]
-                    )
-                    # We should give the "/wait" parameter to the
-                    # start command above.  But that sometimes causes
-                    # a hang.  Therefore we just sleep here.
-                    time.sleep(5)
-                    os.unlink(vbs_pathname)
+                vbs_text = bytes(
+                    'Set objShell = CreateObject("Shell.Application")\r\n' +
+                    'Set objFolder = objShell.Namespace(&H14&)\r\n' +
+                    'objFolder.CopyHere "{}"\r\n'.format(
+                        cygpath_w(src_pathname)
+                    ),
+                    'UTF-8'
+                )
+                vbs_pathname = create_tmp_file(
+                    "install-font",
+                    ".vbs",
+                    vbs_text
+                )
+                cmd_exe = os.path.join(
+                    cygpath_u(system_root),
+                    "system32",
+                    "cmd.exe"
+                )
+                run_command(
+                    args,
+                    [
+                        cmd_exe,
+                        "/c",
+                        "start",
+                        cygpath_w(vbs_pathname)
+                    ]
+                )
+                # We should give the "/wait" parameter to the
+                # start command above.  But that sometimes causes
+                # a hang.  Therefore we just sleep here.
+                time.sleep(5)
+                os.unlink(vbs_pathname)
     else:
         # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
         system_has_ubuntu_mono = os.path.exists(
