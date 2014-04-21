@@ -389,6 +389,7 @@ def link_binfiles(args):
     make_link(args, True, "bin/open")
     make_link(args, True, "bin/pycheck")
     make_link(args, True, "bin/strip-bom")
+    make_link(args, True, "bin/svn-clean")
     make_link(args, True, "bin/svn-ignore")
     make_link(args, True, "bin/ssh-reverse-tunnel")
     make_link(args, True, "bin/tgrep")
