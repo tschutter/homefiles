@@ -38,6 +38,12 @@ XUbuntu / xfce
 
    * Uncheck "Show icon on system tray".  Why show an icon that only lets you select English?
 
+#. Right click on the clock in the top panel and select Properties.
+
+   * Set the Format to "Custom Format".
+
+   * Set the custom format string to "%a, %Y-%m-%d %H:%M".
+
 Linux Mint
 ~~~~~~~~~~
 
