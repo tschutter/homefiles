@@ -44,10 +44,3 @@ Linux Mint
    * In the "Activate the window menu" row, select "Alt+Space" and press backspace.
 
      Alt-space is reserved for just-one-space in Emacs.
-
-TO DO
------
-
-* Win7 do not merge toolbar icons.
-
-* Windows do not hide unused tooltray icons.
