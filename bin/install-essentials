@@ -47,9 +47,10 @@ if [ -x "/usr/bin/apt-get" ]; then
     # Set the executable from rxvt-unicode as the default xterm.
     sudo update-alternatives --set x-terminal-emulator /usr/bin/urxvt
 
+    # Including line_profiler results in the error:
+    #   Could not find a version that satisfies the requirement line-profiler (from versions: 1.0b1, 1.0b2, 1.0b3)
     PYPI_PACKAGES="\
         goobook\
-        line_profiler\
         pyprof2calltree\
     "
 

@@ -389,6 +389,7 @@ def link_binfiles(args):
     make_link(args, True, "bin/open")
     make_link(args, True, "bin/pycheck")
     make_link(args, True, "bin/strip-bom")
+    make_link(args, True, "bin/svn-clean")
     make_link(args, True, "bin/svn-ignore")
     make_link(args, True, "bin/ssh-reverse-tunnel")
     make_link(args, True, "bin/tgrep")
@@ -485,20 +486,15 @@ def install_fonts(args):
                 time.sleep(5)
                 os.unlink(vbs_pathname)
     else:
-        # Note that ttf-ubuntu-font-family 0.71 did not include UbuntuMono.
-        system_has_ubuntu_mono = os.path.exists(
-            "/usr/share/fonts/truetype/ubuntu-font-family/UbuntuMono-R.ttf"
-        )
-        make_dot_link(args, not system_has_ubuntu_mono, "fonts")
-
-    # Install fonts in gimp(1).
-    font_glob = os.path.join(font_src_dir, "*.ttf")
-    gimp_font_dir_glob = os.path.join(args.homedir, ".gimp-*", "fonts")
-    for gimp_font_dir in glob.glob(gimp_font_dir_glob):
+        # Install for any program that uses the Fontconfig library,
+        # which includes gimp and OpenOffice among others.
+        fontconfig_dir = os.path.join(args.homedir, ".fonts")
+        mkdir(args, fontconfig_dir, 0o755)
+        font_glob = os.path.join(font_src_dir, "*.ttf")
         for font_pathname in glob.glob(font_glob):
             font_filename = os.path.basename(font_pathname)
-            gimp_link = os.path.join(gimp_font_dir, font_filename)
-            make_link(args, True, font_pathname, gimp_link)
+            fontconfig_link = os.path.join(fontconfig_dir, font_filename)
+            make_link(args, True, font_pathname, fontconfig_link)
 
 
 def main():

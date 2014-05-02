@@ -1,0 +1,43 @@
+#!/bin/sh
+
+usage() {
+    echo "Delete all unversioned or ignored files and folders." >&2
+    echo "" >&2
+    echo "USAGE:" >&2
+    echo "  $0 [options]" >&2
+    echo "" >&2
+    echo "OPTIONS:" >&2
+    echo "  -n, --dry-run = perform a trial run with no changes made" >&2
+}
+
+CMD="rm -rf"
+for ARG in "$@"; do
+    case ${ARG} in
+        --help)
+            usage
+            exit 1
+            ;;
+        -n|--dry-run)
+            CMD="echo removing "
+            ;;
+        *)
+            echo "ERROR: Unknown parameter '${ARG}'" >&2
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+#
+# http://stackoverflow.com/questions/2803823/how-can-i-delete-all-unversioned-ignored-files-folders-in-my-working-copy
+#
+# * Both ignored and untracked files are deleted.
+# * It works even if a file name contains whitespace (except for
+#   newline, but there's not much that can be done about that other
+#   than use the --xml option and parse the resulting xml output).
+# * It works even if svn status prints other status characters before
+#   the file name (which it shouldn't because the files are not
+#   tracked, but just in case...).
+# * It should work on any POSIX-compliant system.
+#
+svn status --no-ignore | grep '^[I?]' | cut -c 9- | while IFS= read -r f; do ${CMD} "$f"; done
