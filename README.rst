@@ -30,11 +30,13 @@ Some configuration is difficult to do via scripts.
 XUbuntu / xfce
 ~~~~~~~~~~~~~~
 
-#. Settings Manager -> Window Manager -> Keyboard
+#. Settings Manager -> Other -> Keyboard Input Methods
 
-   * In the "Window operations menu" row, double click on "<Alt>space" and then click on the "Clear" button.
+   * In the "Next input method" row, click on the "..." button and select "Delete".
 
-     Alt-space is reserved for just-one-space in Emacs.
+     Alt-space is reserved for set-mark-command in Emacs.
+
+   * Uncheck "Show icon on system tray".  Why show an icon that only lets you select English?
 
 Linux Mint
 ~~~~~~~~~~
