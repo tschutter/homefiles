@@ -55,7 +55,7 @@ def cygpath_w(pathname):
             stdout=subprocess.PIPE
         ).stdout
         for line in pipe:
-            pathname = line.strip()
+            pathname = line.strip().decode("ascii")
         pipe.close()
 
     return pathname
@@ -69,7 +69,7 @@ def cygpath_u(pathname):
             stdout=subprocess.PIPE
         ).stdout
         for line in pipe:
-            pathname = line.strip()
+            pathname = line.strip().decode("ascii")
         pipe.close()
 
     return pathname
