@@ -46,6 +46,9 @@ case "${_UNAME}" in
     Linux)
         alias cls="setterm -reset"
         ;;
+    OpenBSD)
+        alias cls="tput clear"
+        ;;
 esac
 
 # Enable color support in various programs.
