@@ -11,6 +11,9 @@ fi
 # Save history files in ~/.var/.
 HISTFILE=${HOME}/.var/ksh_history
 
+# Display more than the default 16 last commands.
+alias history="fc -l -r -1 -1024"
+
 # Emacs history editing.
 set -o emacs
 
