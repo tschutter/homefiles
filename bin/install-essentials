@@ -7,11 +7,13 @@ ROOTDIR="${HOME}/.homefiles"
 
 if [ -x "/usr/bin/apt-get" ]; then
     # Debian derivatives.
+    # http://packages.ubuntu.com/
+    # sudo apt-cache search REGEX
     # ncurses-term adds /etc/terminfo for urxvt
     PACKAGES="\
         abook\
-        emacs23\
-        emacs23-el\
+        emacs24\
+        emacs24-el\
         git\
         git-doc\
         git-man\
@@ -58,12 +60,13 @@ if [ -x "/usr/bin/apt-get" ]; then
 
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
+    # http://ftp3.usa.openbsd.org/pub/OpenBSD/<VERSION>/packages/amd64/
     PACKAGES="\
         abook\
         git\
         mutt-1.5.21v0\
         python-2.7.3--\
-        emacs-23.4--\
+        emacs-24.3p4--\
         emacs-python\
         lbdb--\
         psutils--\
@@ -80,8 +83,10 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
 
 elif [ -x "/usr/bin/zypper" ]; then
     # OpenSUSE.
+    # https://software.opensuse.org/search
+    # zypper search
     PACKAGES="\
-        emacs-23.3\
+        emacs-24.3\
         git\
         lynx\
         mutt\
@@ -96,6 +101,8 @@ elif [ -x "/usr/bin/zypper" ]; then
 
 elif [ -x "/usr/bin/yum" ]; then
     # Red Hat, CentOS.
+    # http://mirror.centos.org/centos/6/os/x86_64/Packages/
+    # sudo yum list
     PACKAGES="\
         emacs-23*\
         git\
