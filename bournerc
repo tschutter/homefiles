@@ -47,7 +47,7 @@ case "${_UNAME}" in
         alias cls="setterm -reset"
         ;;
     OpenBSD)
-        alias cls="tput clear"
+        alias cls="tput reset"
         ;;
 esac
 
