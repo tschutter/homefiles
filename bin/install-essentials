@@ -60,13 +60,16 @@ if [ -x "/usr/bin/apt-get" ]; then
 
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
+    # pkg_add supports `stems with flavors', that is, a stem separated
+    # from flavors with a double dash.  "screen--" matches only the
+    # normal flavor, "screen--static" matches only the static flavor.
     # http://ftp3.usa.openbsd.org/pub/OpenBSD/<VERSION>/packages/amd64/
     PACKAGES="\
         abook\
         git\
-        mutt-1.5.21v0\
-        python-2.7.3--\
-        emacs-24.3p4--\
+        mutt\
+        python\
+        emacs--no_x11\
         emacs-python\
         lbdb--\
         psutils--\
