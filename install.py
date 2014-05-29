@@ -22,7 +22,7 @@ import time
 
 def force_run_command(cmdargs, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
-    if stdinstr == None:
+    if stdinstr is None:
         stdinstr = ""
     process = subprocess.Popen(
         cmdargs,
@@ -30,7 +30,7 @@ def force_run_command(cmdargs, stdinstr=None):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
-    if stdinstr != None:
+    if stdinstr is not None:
         stdinstr = stdinstr.encode("ascii")
     stdoutdata, stderrdata = process.communicate(stdinstr)
     return (stdoutdata + stderrdata).decode()
@@ -148,7 +148,7 @@ def make_link(args, enabled, filename, linkname=None):
     specified, it is the same as filename.
     """
 
-    if linkname == None:
+    if linkname is None:
         if os.path.isabs(filename):
             raise ValueError(
                 "default linkname cannot be used with absolute filename"
@@ -264,9 +264,10 @@ def create_dotless(args, enabled):
         if args.force or not os.path.exists(dotless_pathname):
             print("Running lesskey to create '%s'." % dotless_pathname)
             # Use my standard of PROG_history instead of lesshist.
-            lesskey =\
-                "#env\n"\
-                "LESSHISTFILE=%s\n" % os.path.join(args.var_dir, "less_history")
+            lesskey = "#env\nLESSHISTFILE=%s\n" % os.path.join(
+                args.var_dir,
+                "less_history"
+            )
             run_command(
                 args,
                 ["lesskey", "-o", dotless_pathname, "-"],
@@ -335,7 +336,11 @@ def link_dotfiles(args):
         # not run.
         create_dotless(args, True)
         make_link(args, True, os.path.join(args.var_dir, "less"), ".less")
-    make_dot_link(args, file_in_path("mail") or file_in_path("mutt"), "mailcap")
+    make_dot_link(
+        args,
+        file_in_path("mail") or file_in_path("mutt"),
+        "mailcap"
+    )
     make_dot_link(args, file_in_path("mg"), "mg")
     make_dot_link(args, file_in_path("mintty"), "minttyrc")
     make_dot_link(args, file_in_path("mutt"), "mutt")

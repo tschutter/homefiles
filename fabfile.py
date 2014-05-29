@@ -44,7 +44,7 @@ def _is_host_up(host, port):
     return host_status
 
 
-#@fabric.api.parallel # broken?
+# @fabric.api.parallel # broken?
 @fabric.api.hosts(DEPLOY_HOSTS)
 def deploy():
     """Deploy .homefiles updates to known hosts."""

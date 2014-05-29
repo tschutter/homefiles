@@ -1,7 +1,9 @@
 # Loaded by ~/.pdbrc, because .pdbrc can only contain pdb commands.
 
 # Command line history.
-import atexit, os, readline
+import atexit
+import os
+import readline
 histfile = os.path.expanduser("~/.var/pdb_history")
 try:
     readline.read_history_file(histfile)
