@@ -1,21 +1,11 @@
 # inputrc for libreadline
 # See readline(3) and `info rluserman' for more information.
+# Use "bind -p" to see current bindings.
+# Use "C-x C-r" to reread this file.
 
 # Be 8 bit clean.
 set input-meta on
 set output-meta on
-
-# To allow the use of 8bit-characters like the german umlauts, uncomment
-# the line below. However this makes the meta key not work as a meta key,
-# which is annoying to those which don't need to type in 8-bit characters.
-
-# set convert-meta off
-
-# try to enable the application keypad when it is called.  Some systems
-# need this to enable the arrow keys.
-# set enable-keypad on
-
-# see /usr/share/doc/bash/inputrc.arrows for other codes of arrow keys
 
 # allow the use of the Home/End keys
 "\e[1~": beginning-of-line
@@ -25,17 +15,20 @@ set output-meta on
 "\e[3~": delete-char
 "\e[2~": quoted-insert
 
-# mappings for "Ctrl-up-arrow" and "Ctrl-down-arrow" to search the history
-"\e[1;5A": history-search-backward
-"\e[1;5B": history-search-forward
-
-# mappings for Ctrl-left-arrow and Ctrl-right-arrow for word moving
+# Ctrl-left-arrow and Ctrl-right-arrow for word moving
 "\e[1;5C": forward-word
 "\e[1;5D": backward-word
 "\e[5C": forward-word
 "\e[5D": backward-word
 "\e\e[C": forward-word
 "\e\e[D": backward-word
+
+# Emacs-like copy and paste
+#Meta-w: copy-region-as-kill  # xfce4-terminal may be interfering
+
+# Ctrl-up-arrow and Ctrl-down-arrow to search the history
+"\e[1;5A": history-search-backward
+"\e[1;5B": history-search-forward
 
 $if term=rxvt
 "\e[7~": beginning-of-line
