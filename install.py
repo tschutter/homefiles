@@ -48,7 +48,7 @@ def run_command(args, cmdargs, stdinstr=None):
 
 
 def cygpath_w(pathname):
-    """Converts a pathname to Windows style X:\dir\file."""
+    """Converts a pathname to Windows style X:\foo\bar."""
     if sys.platform == "cygwin":
         pipe = subprocess.Popen(
             ["cygpath", "--windows", pathname],
@@ -62,7 +62,7 @@ def cygpath_w(pathname):
 
 
 def cygpath_u(pathname):
-    """Converts a pathname to Cygwin style /cygpath/X/dir/file."""
+    """Converts a pathname to Cygwin style /cygpath/X/foo/bar."""
     if sys.platform == "cygwin":
         pipe = subprocess.Popen(
             ["cygpath", "--unix", pathname],
@@ -348,7 +348,6 @@ def link_dotfiles(args):
     if sys.platform.startswith("openbsd"):
         make_dot_link(args, file_in_path("vi"), "nexrc")
     make_dot_link(args, file_in_path("orpie"), "orpierc")
-    make_dot_link(args, file_in_path("password-gorilla"), "gorillarc")
     make_dot_link(args, True, "profile")
     make_dot_link(args, file_in_path("pychecker"), "pycheckrc")
     make_dot_link(args, file_in_path("pdb"), "pdbrc")

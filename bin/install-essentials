@@ -25,7 +25,6 @@ if [ -x "/usr/bin/apt-get" ]; then
         mutt\
         muttprint\
         ncurses-term\
-        password-gorilla\
         psutils\
         pychecker\
         pyflakes\
