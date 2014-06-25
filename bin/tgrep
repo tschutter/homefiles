@@ -2,6 +2,18 @@
 #
 # Directory tree grep
 #
+# What is the point of tgrep?  Why not just use find and grep?  The
+# advantages of tgrep are:
+#   tgrep can constrain the search to filename wildcards like "*.h".
+#   tgrep has much simpler help (--help) for useful options.
+#   You don't need to remember the find and grep options.
+#   tgrep skips binary files.
+#   tgrep skips Subversion, and git metadata files.
+#   tgrep skips cmake generated files.
+#   tgrep skips backup files.
+#   tgrep is consistent over multiple platforms including Windows
+#     (see AppData/bin/tgrep.bat).
+#
 
 # Disable file name generation (globbing).
 set -f
