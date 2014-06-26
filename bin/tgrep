@@ -28,6 +28,7 @@ usage() {
     echo "    -L = Prints only the filename if no match" >&2
     echo "    -l = Prints only the filename" >&2
     echo "    -n = Prefix each line of output with the line number" >&2
+    echo "    -o = Print only the matched parts of a matching line" >&2
     echo "    -v = Prints only lines that do not contain a match" >&2
 }
 
