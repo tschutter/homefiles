@@ -69,6 +69,13 @@ fi
 # Make less more friendly for non-text input files, see lesspipe(1).
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
+# Prevent "Couldn't connect to accessibility bus" warnings when
+# starting some apps such as evince.  See:
+# http://askubuntu.com/questions/227515/terminal-warning-when-opening-a-file-in-gedit
+# https://bugzilla.redhat.com/show_bug.cgi?id=889690
+# https://mail.gnome.org/archives/gnome-accessibility-devel/2011-June/msg00006.html
+export NO_AT_BRIDGE=1
+
 # Include .profile-local if it exists.
 if [ -r "$HOME/.profile-local" ]; then
     . "$HOME/.profile-local"
