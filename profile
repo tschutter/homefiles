@@ -5,7 +5,7 @@
 # Environment variables that begin with an underscore are intended
 # only for use by .profile and .${SHELL}rc
 
-# Determine the OS.  [Linux, Cygwin, OpenBSD, SunOS]
+# Determine the OS.  [Linux, Cygwin, Darwin, OpenBSD, SunOS]
 _UNAME=$(uname)
 if [ "${_UNAME%%-*}" = "CYGWIN_NT" ]; then
     _WINVER=${_UNAME#*-}  # Strip prefix

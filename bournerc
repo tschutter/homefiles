@@ -33,6 +33,9 @@ case "${_UNAME}" in
         # -W: show windows as well as cygwin processes
         alias ps="ps -W"
         ;;
+    Darwin)
+        alias cls="tput reset"
+        ;;
     Linux)
         alias cls="setterm -reset"
         ;;
@@ -50,6 +53,8 @@ if [ -x /usr/bin/dircolors ]; then
 else
     if [ "${_UNAME}" = "OpenBSD" ]; then
         alias dir="/bin/ls -l"
+    elif [ "${_UNAME}" = "Darwin" ]; then
+        alias dir="/bin/ls -G -l"
     else
         alias dir="/bin/ls --escape -l"
     fi
