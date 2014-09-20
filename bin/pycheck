@@ -57,13 +57,17 @@ if checkpath pylint; then
     if ! ${SINGLE}; then
         echo "## pylint"
     fi
-    pylint\
+    # pylint 1.1.0 has a bug where it emits to stderr this message:
+    #   UserWarning: parseable output format is deprecated
+    # but there is no way to suppress it.
+    ( pylint\
         --profile=no\
         --persistent=no\
         --output-format=parseable\
-        --include-ids=yes\
         --reports=no\
-        ${FILE}
+        ${FILE}\
+        2>&1
+    ) | grep -v -E '^\*\*\*|--msg-template'
     if ${SINGLE}; then
         exit
     fi
