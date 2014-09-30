@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Like head(1), but displays one full terminal window instead of 10 lines.
+#
+
+# How many lines does this terminal have?
+LINES=`tput lines`
+
+# Subtract one for the original command, and one for the final prompt.
+LINES=`expr $LINES - 2`
+
+# Do the work.
+head --lines=${LINES} "$@"

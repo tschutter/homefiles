@@ -387,6 +387,7 @@ def link_binfiles(args):
     make_link(args, True, "bin/cmake-clean")
     make_link(args, True, "bin/find-non-ascii")
     make_link(args, True, "bin/findfile")
+    make_link(args, True, "bin/hed")
     make_link(args, True, "bin/install-essentials")
     make_link(args, file_in_path("gnome-open"), "bin/mailto-gmail")
     make_link(args, file_in_path("mutt"), "bin/mailto-mutt")
