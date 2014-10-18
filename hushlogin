@@ -1,0 +1,6 @@
+Existence of ~/.hushlogin suppresses printing of system messages
+including the contents of /etc/motd and last login messages.
+
+If motd is still not suppressed, it probably is being emitted by pam
+or by the "Banner" keyword in /etc/sshd_config.  Use "LogLevel quiet"
+in ~/.ssh/config to suppress it in either case.

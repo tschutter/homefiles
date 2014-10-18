@@ -328,6 +328,7 @@ def link_dotfiles(args):
     goobookrc = os.path.join(args.private_dir, "goobookrc")
     if os.path.exists(goobookrc):
         make_link(args, file_in_path("goobook"), goobookrc, ".goobookrc")
+    make_dot_link(args, True, "hushlogin")
     make_dot_link(args, True, "inputrc")
     make_dot_link(args, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
