@@ -319,7 +319,6 @@ def link_dotfiles(args):
     make_dot_link(args, os.path.exists("/bin/bash"), "bashrc")
     make_dot_link(args, os.path.exists("/bin/bash"), "bash_logout")
     clean_link(args, os.path.join(args.homedir, ".emacs"))
-    make_dot_link(args, file_in_path("emacs"), "emacs.d")
     if not sys.platform.startswith("openbsd"):
         make_dot_link(args, file_in_path("vi"), "exrc")
     make_link(args, True, "image/ironcat-80.jpg", ".face")
@@ -426,7 +425,7 @@ def configure_wm_keybindings(args):
 
     # xfconf-query cannot run unless there is a valid DISPLAY.
     if "DISPLAY" in os.environ:
-        # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
+        # C-F3,C-F4 are set in .emacs.d/init.el so we take them away from xfwm4.
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F3")
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F4")
 
