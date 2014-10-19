@@ -48,7 +48,7 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls="ls --color=auto"
-    alias dir="dir --color=auto --escape -l"
+    alias dir="dir --color=auto --escape --time-style=long-iso -l"
     alias grep="grep --color=auto"
 else
     if [ "${_UNAME}" = "OpenBSD" ]; then
