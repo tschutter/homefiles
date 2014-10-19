@@ -319,7 +319,6 @@ def link_dotfiles(args):
     make_dot_link(args, os.path.exists("/bin/bash"), "bashrc")
     make_dot_link(args, os.path.exists("/bin/bash"), "bash_logout")
     clean_link(args, os.path.join(args.homedir, ".emacs"))
-    make_dot_link(args, file_in_path("emacs"), "emacs.d")
     if not sys.platform.startswith("openbsd"):
         make_dot_link(args, file_in_path("vi"), "exrc")
     make_link(args, True, "image/ironcat-80.jpg", ".face")
@@ -328,6 +327,7 @@ def link_dotfiles(args):
     goobookrc = os.path.join(args.private_dir, "goobookrc")
     if os.path.exists(goobookrc):
         make_link(args, file_in_path("goobook"), goobookrc, ".goobookrc")
+    make_dot_link(args, True, "hushlogin")
     make_dot_link(args, True, "inputrc")
     make_dot_link(args, os.path.exists("/bin/ksh"), "kshrc")
     make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
@@ -387,6 +387,7 @@ def link_binfiles(args):
     make_link(args, True, "bin/cmake-clean")
     make_link(args, True, "bin/find-non-ascii")
     make_link(args, True, "bin/findfile")
+    make_link(args, True, "bin/hed")
     make_link(args, True, "bin/install-essentials")
     make_link(args, file_in_path("gnome-open"), "bin/mailto-gmail")
     make_link(args, file_in_path("mutt"), "bin/mailto-mutt")
@@ -424,7 +425,7 @@ def configure_wm_keybindings(args):
 
     # xfconf-query cannot run unless there is a valid DISPLAY.
     if "DISPLAY" in os.environ:
-        # C-F3,C-F4 are set in emacs.d/init.el so we take them away from xfwm4.
+        # C-F3,C-F4 are set in .emacs.d/init.el so we take them away from xfwm4.
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F3")
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F4")
 

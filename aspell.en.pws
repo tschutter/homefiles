@@ -1,5 +1,6 @@
-personal_ws-1.1 en 38 
+personal_ws-1.1 en 41 
 degreaser
+stdout
 bashrc
 Skylar
 httpd
@@ -9,6 +10,7 @@ SiteScope
 OpenBSD
 Bourne
 chile
+Chipotle
 Greenberg
 PTFE
 OpenGL
@@ -34,6 +36,7 @@ Bugzilla
 boolean
 FireStationDrivingDistance
 GISPortal
+Dropbox
 POSIX
 chiles
 PxPoint

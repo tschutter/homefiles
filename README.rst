@@ -36,13 +36,24 @@ XUbuntu / xfce
 
      Alt-space is reserved for set-mark-command in Emacs.
 
-   * Uncheck "Show icon on system tray".  Why show an icon that only lets you select English?
+   * Uncheck "Show icon on system tray".
+
+     Why show an icon that only lets you select English?
+
+#. Settings Manager -> Personal -> Window Manager Tweaks -> Accessibility
+
+   * Uncheck "Automatically tile windows when moving toward the screen
+     edge".
+
+     Why should a window resize when you move it?  Especially to some
+     odd half-screen size?
 
 #. Right click on the clock in the top panel and select Properties.
 
-   * Set the Format to "Custom Format".
+   * Set the Format to "Custom Format" and set the custom format
+     string to "%a, %Y-%m-%d %H:%M".
 
-   * Set the custom format string to "%a, %Y-%m-%d %H:%M".
+     See `ISO 8601 <http://xkcd.com/1179/>`_ for the reason why.
 
 Linux Mint
 ~~~~~~~~~~
