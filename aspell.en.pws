@@ -1,4 +1,5 @@
-personal_ws-1.1 en 40 
+personal_ws-1.1 en 43 
+PxPointJSON
 degreaser
 stdout
 bashrc
@@ -13,6 +14,7 @@ chile
 Chipotle
 Greenberg
 PTFE
+Navteq
 OpenGL
 tschutter
 GSERT
@@ -24,6 +26,7 @@ Schutter
 config
 kshrc
 MySQL
+FloodMap
 CoreLogic
 DNS
 DevTimeTracker
