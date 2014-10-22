@@ -36,12 +36,12 @@ usage() {
 # The first parameter is the executable filename.
 # The second parameter is a variable that will hold the absolute pathname.
 locate_exe() {
-    if [ -x /usr/bin/$1 ]; then
+    if [ -x /usr/local/bin/$1 ]; then
+        eval "$2=/usr/local/bin/$1"
+    elif [ -x /usr/bin/$1 ]; then
         eval "$2=/usr/bin/$1"
     elif [ -x /bin/$1 ]; then
         eval "$2=/bin/$1"
-    elif [ -x /usr/local/bin/$1 ]; then
-        eval "$2=/usr/local/bin/$1"
     else
         echo "ERROR: Unable to locate the '$1' program."
         exit 2
