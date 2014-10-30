@@ -27,23 +27,45 @@ if [ "$1" = "--help" ]; then
     exit 0
 fi
 
-# Handle --query option.
+# Check for --query option.
+QUERY=
 if [ "$1" = "--query" ]; then
+    QUERY=1
     shift
+fi
+
+# Transform requested file.
+FILE="$1"
+TMPFILE=
+case "${FILE}" in
+    *\.rst)
+        # reStructuredText files to .html.
+        TMPFILE=`mktemp --suffix=.html`
+        rst2html "${FILE}" ${TMPFILE}
+        FILE=${TMPFILE}
+        ;;
+esac
+
+# Handle --query option.
+if [ "${QUERY}" ]; then
     if [ "${OPEN}" = "cygstart" ]; then
-        ${OPEN} --find "$@"
+        ${OPEN} --find "${FILE}"
     else
-        FILE=$1
         if [ ! -f "${FILE}" ]; then
             echo "ERROR: File \"${FILE}\" not found"
             exit 1
         fi
-        MIME_TYPE=`xdg-mime query filetype "$1"`
+        MIME_TYPE=`xdg-mime query filetype "${FILE}"`
         DEFAULT=`xdg-mime query default "${MIME_TYPE}"`
-        echo "$1 -> ${MIME_TYPE} -> ${DEFAULT}"
+        echo "${FILE} -> ${MIME_TYPE} -> ${DEFAULT}"
     fi
-    exit 0
-fi
 
-# Open the specified argument.
-${OPEN} "$@"
+    # Cleanup temporary file.
+    if [ "${TMPFILE}" ]; then
+        rm -f "${FILE}"
+    fi
+else
+    # Open the specified argument.
+    ${OPEN} "${FILE}"
+    # Deleting temporary file doesn't work because OPEN returns immediately.
+fi
