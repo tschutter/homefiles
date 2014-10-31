@@ -1,4 +1,4 @@
-personal_ws-1.1 en 44 
+personal_ws-1.1 en 45 
 PxPointJSON
 degreaser
 stdout
@@ -40,6 +40,7 @@ boolean
 FireStationDrivingDistance
 GISPortal
 Dropbox
+schemas
 POSIX
 chiles
 PxPoint
