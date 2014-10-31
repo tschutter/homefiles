@@ -38,7 +38,7 @@ fi
 FILE="$1"
 TMPFILE=
 case "${FILE}" in
-    *\.rst)
+    *\.rst|*\.txt)
         # reStructuredText files to .html.
         TMPFILE=`mktemp --suffix=.html`
         rst2html "${FILE}" ${TMPFILE}
