@@ -16,7 +16,7 @@
 # CUPS: Either "CUPS" or an arbitrary command which
 # contains $CUPS_OPTIONS which is replaced by the
 # options used for CUPS
-PRINT_COMMAND="lpr -P $PRINTER"
+PRINT_COMMAND="lp -d $PRINTER"
 
 #
 # Here you can set the path to the penguin image
