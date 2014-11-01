@@ -16,7 +16,6 @@ Update::
 
     cd $HOME/.homefiles
     git pull
-    git submodule update --init --recursive
     ./install.py
     install-essentials
 
