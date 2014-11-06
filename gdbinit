@@ -1,3 +1,6 @@
+# Tell 'list' command to show 50 lines.
+set listsize 50
+
 # Pretty print arrays.
 set print array on
 
@@ -14,6 +17,12 @@ set print symbol-filename on
 set history filename ~/.var/gdb_history
 set history save on
 set history expansion on
+define history
+    show commands
+end
+document history
+Print list of recent commands.
+end
 
 define pl
     info args
