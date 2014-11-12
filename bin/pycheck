@@ -41,6 +41,10 @@ if [ "${FILE}" = "" ]; then
     echo "ERROR: FILE not specified" >&2
     exit 1
 fi
+if [ ! -f "${FILE}" ]; then
+    echo "ERROR: ${FILE} not found" >&2
+    exit 1
+fi
 
 checkpath() {
     # Return True if $1 is in ${PATH}.
