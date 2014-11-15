@@ -56,6 +56,7 @@ accept_encoding gzip, compress, bzip, bzip2, deflate
 accept_language en;q=1.0
 no_referer 0
 user_agent 
+siteconf_file ~/.w3m/siteconf
 pre_form_file ~/.w3m/pre_form
 ftppass_hostnamegen 0
 ftppasswd anonymous@
@@ -119,7 +120,7 @@ fold_line 0
 image_map_list 1
 imgdisplay w3mimgdisplay
 image_scale 100
-ext_image_viewer 1
+ext_image_viewer 0
 max_load_image 4
 auto_image 1
 pseudo_inlines 1
@@ -143,7 +144,7 @@ open_tab_dl_list 0
 open_tab_blank 0
 target_self 0
 frame 1
-pixel_per_line 14
-pixel_per_char 7
+pixel_per_line 17
+pixel_per_char 8
 indent_incr 4
 tabstop 8
