@@ -4,7 +4,7 @@
 " want to do is specify the location of the viminfo file, but to do
 " so we must also specify the !, ', and % options as well.
 " http://vimdoc.sourceforge.net/htmldoc/options.html#'viminfo'
-set viminfo=!,%,'20,n~/.var/viminfo
+set viminfo=!,%,'20,n~/.cache/vim/viminfo
 
 " Use indents of 4 spaces, and have them copied down lines.
 set tabstop=4

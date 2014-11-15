@@ -84,12 +84,15 @@ def simplify_path(path):
     return path
 
 
-def mkdir(args, directory, mode):
+def mkdir(args, enabled, directory, mode):
     """Create directory."""
-    if not os.path.isdir(directory):
-        print("Creating '%s' directory." % simplify_path(directory))
-        if not args.dryrun:
-            os.mkdir(directory, mode)
+    if enabled:
+        if not os.path.isdir(directory):
+            print("Creating '%s' directory." % simplify_path(directory))
+            if not args.dryrun:
+                os.mkdir(directory, mode)
+    else:
+        clean_link(args, directory, False)
 
 
 def file_in_path(filename):
@@ -128,8 +131,8 @@ def clean_link(args, linkname, backup=True):
 
         # The destination exists as a file or dir.  Back it up.
         if backup:
-            backup_dir = os.path.join(args.var_dir, "homefiles_backup")
-            mkdir(args, backup_dir, 0o700)
+            backup_dir = os.path.join(args.cache_dir, "homefiles_backup")
+            mkdir(args, True, backup_dir, 0o700)
             print("Moving '%s' to '%s'." % (link_pathname, backup_dir))
             if not args.dryrun:
                 shutil.move(link_pathname, backup_dir)
@@ -201,7 +204,7 @@ def make_link(args, enabled, filename, linkname=None):
     # Ensure that the link_pathname directory exists.
     link_dir = os.path.dirname(link_pathname)
     if not os.path.isdir(link_dir):
-        mkdir(args, link_dir, 0o766)
+        mkdir(args, True, link_dir, 0o766)
 
     # Make the link target relative.  This usually makes the link
     # shorter in ls output.
@@ -251,23 +254,23 @@ def make_sig_link(args):
         make_link(args, True, "signature-home", ".signature")
 
 
-def create_dotless(args, enabled):
+def create_dotless(args):
     """
-    Create ~/.homefiles/less dotfile.
+    Create less dotfile.
 
-    The lesskey program creates the less dotfile.
+    The lesskey program creates the less dotfile in cache_dir/less.
     """
 
-    dotless_pathname = os.path.join(args.var_dir, "less")
+    dotless_dir = os.path.join(args.cache_dir, "less")
+    dotless_pathname = os.path.join(dotless_dir, "less")
+    history_pathname = os.path.join(dotless_dir, "history")
 
+    enabled = file_in_path("less") and file_in_path("lesskey")
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
+            mkdir(args, True, dotless_dir, 0o700)
             print("Running lesskey to create '%s'." % dotless_pathname)
-            # Use my standard of PROG_history instead of lesshist.
-            lesskey = "#env\nLESSHISTFILE=%s\n" % os.path.join(
-                args.var_dir,
-                "less_history"
-            )
+            lesskey = "#env\nLESSHISTFILE={}\n".format(history_pathname)
             run_command(
                 args,
                 ["lesskey", "-o", dotless_pathname, "-"],
@@ -275,6 +278,11 @@ def create_dotless(args, enabled):
             )
     else:
         clean_link(args, dotless_pathname)
+        clean_link(args, history_pathname)
+        clean_link(args, dotless_dir)
+
+    if not args.dryrun:
+        make_link(args, enabled, dotless_pathname, ".less")
 
 
 def process_terminfo(args):
@@ -299,8 +307,11 @@ def process_terminfo(args):
         )
 
 
-def link_dotfiles(args):
+def link_dotfiles(args, explicit_cache_dir):
     """Create links in ~ to dotfiles."""
+
+    # Files and dirs in that have explicit references to ~/.cache must
+    # use explicit_cache_dir instead of args.cache_dir.
 
     # Determine if gvim or vim is installed.  Python 2.4 does not have any().
     vim_installed = False
@@ -314,73 +325,127 @@ def link_dotfiles(args):
     make_dot_link(args, file_in_path("aspell"), "aspell.en.prepl")
     make_dot_link(args, file_in_path("aspell"), "aspell.en.pws")
     make_dot_link(args, True, "bournerc")
+
+    enabled = os.path.exists("/bin/bash")
     clean_link(args, os.path.join(args.homedir, ".bash_history"), backup=False)
     clean_link(args, os.path.join(args.homedir, ".bash_profile"))
-    make_dot_link(args, os.path.exists("/bin/bash"), "bashrc")
-    make_dot_link(args, os.path.exists("/bin/bash"), "bash_logout")
+    make_dot_link(args, enabled, "bashrc")
+    make_dot_link(args, enabled, "bash_logout")
+    mkdir(args, enabled, os.path.join(args.cache_dir, "bash"), 0o700)
+
     clean_link(args, os.path.join(args.homedir, ".emacs"))
+    enabled = file_in_path("emacs")
+    mkdir(args, enabled, os.path.join(args.cache_dir, "emacs"), 0o700)
+
     if not sys.platform.startswith("openbsd"):
         make_dot_link(args, file_in_path("vi"), "exrc")
+
     make_link(args, True, "image/ironcat-80.jpg", ".face")
-    make_dot_link(args, file_in_path("gdb"), "gdbinit")
+
+    enabled = file_in_path("gdb")
+    make_dot_link(args, enabled, "gdbinit")
+    mkdir(args, enabled, os.path.join(explicit_cache_dir, "gdb"), 0o700)
+
     make_dot_link(args, file_in_path("git"), "gitconfig")
+
     goobookrc = os.path.join(args.private_dir, "goobookrc")
     if os.path.exists(goobookrc):
         make_link(args, file_in_path("goobook"), goobookrc, ".goobookrc")
+
     make_dot_link(args, True, "hushlogin")
+
     make_dot_link(args, True, "inputrc")
-    make_dot_link(args, os.path.exists("/bin/ksh"), "kshrc")
+
+    enabled = os.path.exists("/bin/ksh")
+    make_dot_link(args, enabled, "kshrc")
+    if enabled:
+        mkdir(args, enabled, os.path.join(args.cache_dir, "ksh"), 0o700)
+
     make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
-    if file_in_path("less") and file_in_path("lesskey"):
-        # Inside if, because make_dot_link complains if create_dotless is
-        # not run.
-        create_dotless(args, True)
-        make_link(args, True, os.path.join(args.var_dir, "less"), ".less")
+
+    create_dotless(args)
+
     make_dot_link(
         args,
         file_in_path("mail") or file_in_path("mutt"),
         "mailcap"
     )
+
     make_dot_link(args, file_in_path("mg"), "mg")
+
     make_dot_link(args, file_in_path("mintty"), "minttyrc")
-    make_dot_link(args, file_in_path("mutt"), "mutt")
+
+    enabled = file_in_path("mutt")
+    make_dot_link(args, enabled, "mutt")
+    # Create ~/.cache/mutt so mutt can store certs on first run.
+    mkdir(args, enabled, os.path.join(explicit_cache_dir, "mutt"), 0o700)
+
     make_dot_link(args, file_in_path("muttprint"), "muttprintrc")
+
+    enabled = file_in_path("mysql")
+    mkdir(args, enabled, os.path.join(args.cache_dir, "mysql"), 0o700)
+
     if sys.platform.startswith("openbsd"):
         make_dot_link(args, file_in_path("vi"), "nexrc")
-    make_dot_link(args, file_in_path("orpie"), "orpierc")
+
+    enabled = file_in_path("orpie")
+    make_dot_link(args, enabled, "orpierc")
+    mkdir(args, enabled, os.path.join(args.cache_dir, "orpie"), 0o700)
+
     make_dot_link(args, True, "profile")
+
     make_dot_link(args, file_in_path("pychecker"), "pycheckrc")
-    make_dot_link(args, file_in_path("pdb"), "pdbrc")
-    make_dot_link(args, file_in_path("pdb"), "pdbrc.py")
+
+    enabled = file_in_path("pdb")
+    make_dot_link(args, enabled, "pdbrc")
+    make_dot_link(args, enabled, "pdbrc.py")
+    mkdir(args, enabled, os.path.join(args.cache_dir, "pdb"), 0o700)
+
     make_dot_link(args, file_in_path("pylint"), "pylintrc")
-    make_dot_link(args, file_in_path("python"), "pythonstartup")
+
+    enabled = file_in_path("python")
+    make_dot_link(args, enabled, "pythonstartup")
+    mkdir(args, enabled, os.path.join(args.cache_dir, "python"), 0o700)
+
     make_dot_link(args, file_in_path("screen"), "screenrc")
+
     make_sig_link(args)
+
     if sys.platform.startswith("openbsd"):
         process_terminfo(args)
+
     make_dot_link(args, file_in_path("tmux"), "tmux.conf")
+
     make_dot_link(args, file_in_path("urxvt"), "urxvt")
+
     make_dot_link(args, file_in_path("valgrind"), "valgrindrc")
+
     clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)
     make_dot_link(args, vim_installed, "vimrc")
+    mkdir(args, vim_installed, os.path.join(explicit_cache_dir, "vim"), 0o700)
+
     make_link(
         args,
         file_in_path("xfce4-terminal"),
         "terminalrc",
         ".config/xfce4/terminal/terminalrc"
     )
+
     make_dot_link(args, file_in_path("xzgv"), "xzgvrc")
+
     make_dot_link(args, file_in_path("w3m"), "w3m")
+
     # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
     clean_link(args, os.path.join(args.homedir, ".Xdefaults"))
     clean_link(args, os.path.join(args.homedir, ".Xresources"))
+
     make_dot_link(args, args.is_xwindows, "xsessionrc")
 
 
 def link_binfiles(args):
     """Create links in ~/bin."""
     bindir = os.path.join(args.homedir, "bin")
-    mkdir(args, bindir, 0o777)
+    mkdir(args, True, bindir, 0o777)
     make_link(args, True, "bin/abook-lookup")
     make_link(args, True, "bin/append-missing-newline")
     make_link(args, args.is_cygwin, "bin/cygwin-fix-sshd")
@@ -494,7 +559,7 @@ def install_fonts(args):
         # Install for any program that uses the Fontconfig library,
         # which includes gimp and OpenOffice among others.
         fontconfig_dir = os.path.join(args.homedir, ".fonts")
-        mkdir(args, fontconfig_dir, 0o755)
+        mkdir(args, True, fontconfig_dir, 0o755)
         font_glob = os.path.join(font_src_dir, "*.ttf")
         for font_pathname in glob.glob(font_glob):
             font_filename = os.path.basename(font_pathname)
@@ -504,6 +569,14 @@ def install_fonts(args):
 
 def main():
     """main"""
+    # http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+    if "XDG_CACHE_DIR" in os.environ:
+        default_cache_dir = os.environ["XDG_CACHE_DIR"]
+    elif "HOME" in os.environ:
+        default_cache_dir = os.path.join(os.environ["HOME"], ".cache")
+    else:
+        default_cache_dir = os.path.join("~", ".cache"),
+
     arg_parser = argparse.ArgumentParser(
         description="Install files in ~/.homefiles using symbolic links, "
         "configure keybindings, and install fonts."
@@ -525,12 +598,12 @@ def main():
         help="private directory (default=%(default)s)"
     )
     arg_parser.add_argument(
-        "--var",
+        "--cache",
         action="store",
-        dest="var_dir",
+        dest="cache_dir",
         metavar="DIR",
-        default=os.path.join("~", ".var"),
-        help="var directory (default=%(default)s)"
+        default=default_cache_dir,
+        help="cache directory (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--force",
@@ -559,20 +632,22 @@ def main():
     # Canonicalize directories.
     args.homedir = os.path.expanduser(args.homedir)
     args.private_dir = os.path.expanduser(args.private_dir)
-    args.var_dir = os.path.expanduser(args.var_dir)
     args.homefiles = os.path.dirname(os.path.abspath(__file__))
+
+    # Files and dirs in that have explicit references to ~/.cache must
+    # use explicit_cache_dir instead of args.cache_dir.
+    explicit_cache_dir = os.path.expanduser(os.path.join("~", ".cache"))
 
     # Determine what platform we are on.
     args.is_cygwin = sys.platform == "cygwin"
     args.is_windows = sys.platform.startswith("win")
     args.is_xwindows = not (args.is_cygwin or args.is_windows)
 
-    mkdir(args, args.var_dir, 0o700)
-    if file_in_path("mutt"):
-        # Create ~/.var/mutt so mutt can store certs on first run.
-        mkdir(args, os.path.join(args.var_dir, "mutt"), 0o700)
+    # Ensure that directories exist.
+    mkdir(args, True, args.cache_dir, 0o700)
+    mkdir(args, True, explicit_cache_dir, 0o700)
 
-    link_dotfiles(args)
+    link_dotfiles(args, explicit_cache_dir)
 
     link_binfiles(args)
 

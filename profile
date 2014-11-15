@@ -48,7 +48,7 @@ fi
 path_prepend ${HOME}/bin
 
 # MySQL history.
-MYSQL_HISTFILE=${HOME}/.var/mysql_history; export MYSQL_HISTFILE
+MYSQL_HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/mysql/history"; export MYSQL_HISTFILE
 
 # Config for Python interactive sessions.
 PYTHONSTARTUP=${HOME}/.pythonstartup; export PYTHONSTARTUP

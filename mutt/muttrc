@@ -7,13 +7,13 @@ source ~/private/muttrc-local
 
 # IMAP
 # http://mutt.sourceforge.net/imap/
-set certificate_file=~/.var/mutt/certificates
+set certificate_file=~/.cache/mutt/certificates
 set mail_check=60
 set timeout=15
 
 # Caching.
-set header_cache=~/.var/mutt/headers
-set message_cachedir=~/.var/mutt
+set header_cache=~/.cache/mutt/headers
+set message_cachedir=~/.cache/mutt
 
 # Do not move read messages from your spool mailbox to the $mbox mailbox.
 set move=no
@@ -31,7 +31,7 @@ folder-hook . 'set index_format="%4C %Z %D %-20.20L %X (%4c) %s"'
 macro index .c "T.\n;WN^T.\n" "Mark all messages as read"
 
 # Highlight some messages in the index (last match wins).
-# Must remove ~/.var/mutt/headers for changes here to take effect.
+# Must remove ~/.cache/mutt/headers for changes here to take effect.
 color index white        blue   "~U" # unread
 color index brightgreen  black  "(~f linda.schutter | ~f deraadt)"
 color index brightgreen  blue   "(~f linda.schutter | ~f deraadt) ~U"

@@ -14,7 +14,7 @@ set print object on
 set print symbol-filename on
 
 # History.
-set history filename ~/.var/gdb_history
+set history filename ~/.cache/gdb/history
 set history save on
 set history expansion on
 define history

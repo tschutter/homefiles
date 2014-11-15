@@ -14,9 +14,16 @@ import rlcompleter
 # Enable auto-completion with the tab key.
 readline.parse_and_bind('tab: complete')
 
+# Locate cache dir.
+if "XDG_CACHE_DIR" in os.environ:
+    cache_dir = os.environ["XDG_CACHE_DIR"]
+elif "HOME" in os.environ:
+    cache_dir = os.path.join(os.environ["HOME"], ".cache")
+else:
+    cache_dir = os.path.expanduser(os.path.join("~", ".cache"))
+
 # Store command history.
-history_path_ = "~/.var/python_history"
-history_path = os.path.expanduser(history_path_)
+history_path_ = os.path.join(cache_dir, "python", "history")
 
 def save_history(history_path=history_path):
     import readline
@@ -29,4 +36,5 @@ atexit.register(save_history)
 
 print("History saved to %s; use TAB for auto-completion." % history_path_)
 
-del os, atexit, readline, rlcompleter, save_history, history_path_, history_path
+del os, atexit, readline, rlcompleter
+del cache_dir, save_history, history_path_, history_path

@@ -8,8 +8,8 @@ if [ -f ~/.bournerc ]; then
     . ~/.bournerc
 fi
 
-# Save history files in ~/.var/.
-HISTFILE=${HOME}/.var/ksh_history
+# Save history files in ~/.cache/ksh/history.
+HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/ksh/history"
 
 # Display more than the default 16 last commands.
 alias history="fc -l -r -1 -1024"

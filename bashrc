@@ -16,8 +16,8 @@ PROMPT_DIRTRIM=4
 # Do save lines that begin with a space; I sometimes accidently do that.
 HISTCONTROL=ignoredups
 
-# Save history files in ~/.var/.
-HISTFILE=${HOME}/.var/bash_history
+# Save history files in ~/.cache/bash/history.
+HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/bash/history"
 
 # Append to the history file, don't overwrite it.
 shopt -s histappend
