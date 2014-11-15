@@ -18,6 +18,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import xdg.BaseDirectory
 
 
 def force_run_command(cmdargs, stdinstr=None):
@@ -568,13 +569,6 @@ def install_fonts(args):
 
 def main():
     """main"""
-    # http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
-    if "XDG_CACHE_DIR" in os.environ:
-        default_cache_dir = os.environ["XDG_CACHE_DIR"]
-    elif "HOME" in os.environ:
-        default_cache_dir = os.path.join(os.environ["HOME"], ".cache")
-    else:
-        default_cache_dir = os.path.join("~", ".cache"),
 
     arg_parser = argparse.ArgumentParser(
         description="Install files in ~/.homefiles using symbolic links, "
@@ -585,7 +579,7 @@ def main():
         action="store",
         dest="homedir",
         metavar="DIR",
-        default="~",
+        default=os.path.expanduser("~"),
         help="directory to install to (default=%(default)s)"
     )
     arg_parser.add_argument(
@@ -593,7 +587,7 @@ def main():
         action="store",
         dest="private_dir",
         metavar="DIR",
-        default=os.path.join("~", "private"),
+        default=os.path.expanduser(os.path.join("~", "private")),
         help="private directory (default=%(default)s)"
     )
     arg_parser.add_argument(
@@ -601,7 +595,7 @@ def main():
         action="store",
         dest="cache_dir",
         metavar="DIR",
-        default=default_cache_dir,
+        default=xdg.BaseDirectory.xdg_cache_home,
         help="cache directory (default=%(default)s)"
     )
     arg_parser.add_argument(
