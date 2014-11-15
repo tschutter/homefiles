@@ -334,8 +334,7 @@ def link_dotfiles(args, explicit_cache_dir):
     mkdir(args, enabled, os.path.join(args.cache_dir, "bash"), 0o700)
 
     clean_link(args, os.path.join(args.homedir, ".emacs"))
-    enabled = file_in_path("emacs")
-    mkdir(args, enabled, os.path.join(args.cache_dir, "emacs"), 0o700)
+    # ~/.cache/emacs is created by ~/.emacs.d/init.el
 
     if not sys.platform.startswith("openbsd"):
         make_dot_link(args, file_in_path("vi"), "exrc")
