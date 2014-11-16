@@ -51,7 +51,7 @@ path_prepend ${HOME}/bin
 MYSQL_HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/mysql/history"; export MYSQL_HISTFILE
 
 # Config for Python interactive sessions.
-PYTHONSTARTUP=${HOME}/.pythonstartup; export PYTHONSTARTUP
+PYTHONSTARTUP=${HOME}/.homefiles/pythonstartup.py; export PYTHONSTARTUP
 
 # Directory for Python utility functions.
 PYTHONPATH=${HOME}/.homefiles/lib/python; export PYTHONPATH

@@ -404,7 +404,11 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, file_in_path("pylint"), "pylintrc")
 
     enabled = file_in_path("python")
-    make_dot_link(args, enabled, "pythonstartup")
+    clean_link(
+        args,
+        os.path.join(args.homedir, ".pythonstartup"),
+        backup=False
+    )
     mkdir(args, enabled, os.path.join(args.cache_dir, "python"), 0o700)
 
     make_dot_link(args, file_in_path("screen"), "screenrc")
