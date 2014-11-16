@@ -44,10 +44,7 @@ def _load_history():
     history_pathname = _history_pathname()
     if os.path.exists(history_pathname):
         readline.read_history_file(history_pathname)
-        print(
-            "History loaded from {}; use TAB for auto-completion.".format(
-                history_pathname
-            )
-        )
+        print("Use TAB for auto-completion.")
+        print("History loaded from {}.".format(history_pathname))
 
 _load_history()
