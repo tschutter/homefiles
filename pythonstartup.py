@@ -1,40 +1,53 @@
-# Loaded by interactive Python sessions via PYTHONSTARTUP environment
-# variable.
-#
-# For occasional use.  If you are looking in here, you probably should
-# be using ipython instead.
-#
-# See http://docs.python.org/tutorial/interactive.html
+"""
+Loaded by interactive Python sessions via PYTHONSTARTUP environment
+variable.
+
+For occasional use.  If you are looking in here, you probably should
+be using ipython instead.
+
+See http://docs.python.org/tutorial/interactive.html
+"""
 
 import atexit
-import os
+import os.path
 import readline
 import rlcompleter
+import xdg.BaseDirectory
+
+# Including rlcompleter is required for auto-completion.  The assert
+# exists to prevent unused import warnings.
+assert rlcompleter
 
 # Enable auto-completion with the tab key.
 readline.parse_and_bind('tab: complete')
 
-# Locate cache dir.
-if "XDG_CACHE_DIR" in os.environ:
-    cache_dir = os.environ["XDG_CACHE_DIR"]
-elif "HOME" in os.environ:
-    cache_dir = os.path.join(os.environ["HOME"], ".cache")
-else:
-    cache_dir = os.path.expanduser(os.path.join("~", ".cache"))
 
-# Store command history.
-history_path_ = os.path.join(cache_dir, "python", "history")
+def _history_pathname():
+    """Determine pathname of where history is stored."""
+    pathname = os.path.join(
+        xdg.BaseDirectory.xdg_cache_home,
+        "python",
+        "history"
+    )
+    return pathname
 
-def save_history(history_path=history_path):
-    import readline
-    readline.write_history_file(history_path)
 
-if os.path.exists(history_path):
-    readline.read_history_file(history_path)
+def _save_history():
+    """Save history to file."""
+    readline.write_history_file(_history_pathname())
 
-atexit.register(save_history)
+atexit.register(_save_history)
 
-print("History saved to %s; use TAB for auto-completion." % history_path_)
 
-del os, atexit, readline, rlcompleter
-del cache_dir, save_history, history_path_, history_path
+def _load_history():
+    """Load history from file."""
+    history_pathname = _history_pathname()
+    if os.path.exists(history_pathname):
+        readline.read_history_file(history_pathname)
+        print(
+            "History loaded from {}; use TAB for auto-completion.".format(
+                history_pathname
+            )
+        )
+
+_load_history()
