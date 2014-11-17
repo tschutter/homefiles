@@ -8,6 +8,7 @@ be using ipython instead.
 See http://docs.python.org/tutorial/interactive.html
 """
 
+from __future__ import print_function
 import atexit
 import os.path
 import readline
@@ -20,6 +21,7 @@ assert rlcompleter
 
 # Enable auto-completion with the tab key.
 readline.parse_and_bind('tab: complete')
+print("Use TAB for auto-completion.")
 
 
 def _history_pathname():
@@ -44,7 +46,6 @@ def _load_history():
     history_pathname = _history_pathname()
     if os.path.exists(history_pathname):
         readline.read_history_file(history_pathname)
-        print("Use TAB for auto-completion.")
         print("History loaded from {}.".format(history_pathname))
 
 _load_history()
