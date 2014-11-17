@@ -13,7 +13,12 @@ import atexit
 import os.path
 import readline
 import rlcompleter
-import xdg.BaseDirectory
+try:
+    from xdg.BaseDirectory import xdg_cache_home
+except ImportError:
+    # xdg not available on all platforms
+    # pylint: disable=C0103
+    xdg_cache_home = os.path.expanduser("~/.cache")
 
 # Including rlcompleter is required for auto-completion.  The assert
 # exists to prevent unused import warnings.
@@ -26,11 +31,7 @@ print("Use TAB for auto-completion.")
 
 def _history_pathname():
     """Determine pathname of where history is stored."""
-    pathname = os.path.join(
-        xdg.BaseDirectory.xdg_cache_home,
-        "python",
-        "history"
-    )
+    pathname = os.path.join(xdg_cache_home, "python", "history")
     return pathname
 
 
