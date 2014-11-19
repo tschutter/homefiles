@@ -18,8 +18,12 @@ import subprocess
 import sys
 import tempfile
 import time
-import xdg.BaseDirectory
-
+try:
+    from xdg.BaseDirectory import xdg_cache_home
+except ImportError:
+    # xdg not available on all platforms
+    # pylint: disable=C0103
+    xdg_cache_home = os.path.expanduser("~/.cache")
 
 def force_run_command(cmdargs, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
@@ -599,7 +603,7 @@ def main():
         action="store",
         dest="cache_dir",
         metavar="DIR",
-        default=xdg.BaseDirectory.xdg_cache_home,
+        default=xdg_cache_home,
         help="cache directory (default=%(default)s)"
     )
     arg_parser.add_argument(

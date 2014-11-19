@@ -8,11 +8,17 @@ be using ipython instead.
 See http://docs.python.org/tutorial/interactive.html
 """
 
+from __future__ import print_function
 import atexit
 import os.path
 import readline
 import rlcompleter
-import xdg.BaseDirectory
+try:
+    from xdg.BaseDirectory import xdg_cache_home
+except ImportError:
+    # xdg not available on all platforms
+    # pylint: disable=C0103
+    xdg_cache_home = os.path.expanduser("~/.cache")
 
 # Including rlcompleter is required for auto-completion.  The assert
 # exists to prevent unused import warnings.
@@ -20,15 +26,12 @@ assert rlcompleter
 
 # Enable auto-completion with the tab key.
 readline.parse_and_bind('tab: complete')
+print("Use TAB for auto-completion.")
 
 
 def _history_pathname():
     """Determine pathname of where history is stored."""
-    pathname = os.path.join(
-        xdg.BaseDirectory.xdg_cache_home,
-        "python",
-        "history"
-    )
+    pathname = os.path.join(xdg_cache_home, "python", "history")
     return pathname
 
 
@@ -44,7 +47,6 @@ def _load_history():
     history_pathname = _history_pathname()
     if os.path.exists(history_pathname):
         readline.read_history_file(history_pathname)
-        print("Use TAB for auto-completion.")
         print("History loaded from {}.".format(history_pathname))
 
 _load_history()
