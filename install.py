@@ -361,7 +361,7 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, True, "inputrc")
 
     enabled = os.path.exists("/bin/ksh")
-    make_dot_link(args, enabled, "kshrc")
+    clean_link(args, os.path.join(args.homedir, ".kshrc"))
     if enabled:
         mkdir(args, enabled, os.path.join(args.cache_dir, "ksh"), 0o700)
 

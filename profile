@@ -34,6 +34,7 @@ path_prepend() {
 
 # Set initial path.
 if [ "${_UNAME}" = "OpenBSD" ]; then
+    # From /etc/skel/.profile
     PATH=$HOME/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin:/usr/games:.
     export PATH HOME TERM
 fi
@@ -81,14 +82,14 @@ if [ -r "$HOME/.profile-local" ]; then
     . "$HOME/.profile-local"
 fi
 
-# If running bash, include .bashrc if it exists.
-if [ -n "$BASH_VERSION" ]; then
-    if [ -r "$HOME/.bashrc" ]; then
-        . "$HOME/.bashrc"
-    fi
-fi
-
-# If running ksh, include .kshrc if it exists.
-if [ -n "$KSH_VERSION" ]; then
-    export ENV="$HOME/.kshrc"
-fi
+# Include ${SHELL}rc file.
+case "$SHELL" in
+    */bash)
+        if [ -r "$HOME/.bashrc" ]; then
+            . "$HOME/.bashrc"
+        fi
+        ;;
+    */ksh)
+        export ENV="$HOME/.homefiles/kshrc"
+        ;;
+esac
