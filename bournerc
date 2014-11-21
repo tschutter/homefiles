@@ -129,11 +129,12 @@ esac
 
 # Define fallback git prompt helper function.  Note that when running
 # a modern bash, it will be overridden by a much more feature-laden
-# version in /etc/bash_completion.
+# version in /etc/bash_completion.  The question marks in this prompt
+# indicate that we don't know the modified/push state.
 __git_ps1() {
     local b="`git symbolic-ref HEAD 2>/dev/null`"
     if [ -n "$b" ]; then
-        printf " (%s)" "${b##refs/heads/}";
+        printf " (%s ??)" "${b##refs/heads/}";
     fi
 }
 
