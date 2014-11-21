@@ -19,11 +19,13 @@ import sys
 import tempfile
 import time
 try:
+    # pylint: disable=F0401
     from xdg.BaseDirectory import xdg_cache_home
 except ImportError:
     # xdg not available on all platforms
     # pylint: disable=C0103
     xdg_cache_home = os.path.expanduser("~/.cache")
+
 
 def force_run_command(cmdargs, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
@@ -314,6 +316,7 @@ def process_terminfo(args):
 
 def link_dotfiles(args, explicit_cache_dir):
     """Create links in ~ to dotfiles."""
+    # pylint: disable=R0915
 
     # Files and dirs in that have explicit references to ~/.cache must
     # use explicit_cache_dir instead of args.cache_dir.
@@ -498,17 +501,18 @@ def configure_wm_keybindings(args):
 
     # xfconf-query cannot run unless there is a valid DISPLAY.
     if "DISPLAY" in os.environ:
-        # C-F3,C-F4 are set in .emacs.d/init.el so we take them away from xfwm4.
+        # C-F3,C-F4 are set in .emacs.d/init.el so we take them away from
+        # xfwm4.
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F3")
         xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F4")
 
 
-def create_tmp_file(prefix, suffix, contentBytes):
+def create_tmp_file(prefix, suffix, content_bytes):
     """Create a temporary file containing contents."""
     handle, pathname = tempfile.mkstemp(prefix=prefix, suffix=suffix)
     os.fchmod(handle, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
     tmp_file = os.fdopen(handle, "wb")
-    tmp_file.write(contentBytes)
+    tmp_file.write(content_bytes)
     return pathname
 
 
