@@ -6,7 +6,6 @@
 # Process command line.
 SINGLE=false
 FILES=""
-FOUND=false
 while [ "$1" != "" ]; do
     case $1 in
         -h|"-?"|--help)
@@ -52,10 +51,36 @@ checkpath() {
     return 1
 }
 
+# Determine which checkers are installed.
+if checkpath pylint; then
+    USE_PYLINT=true
+else
+    USE_PYLINT=false
+    echo "## pylint not installed"
+fi
+if checkpath pychecker; then
+    USE_PYCHECKER=true
+else
+    USE_PYCHECKER=false
+    echo "## pychecker not installed"
+fi
+if checkpath pyflakes; then
+    USE_PYFLAKES=true
+else
+    USE_PYFLAKES=false
+    echo "## pyflakes not installed"
+fi
+if checkpath pep8; then
+    USE_PEP8=true
+else
+    USE_PEP8=false
+    echo "## pep8 not installed"
+fi
+
 checkfile() {
     FILE="$1"
 
-    if checkpath pylint; then
+    if [ "${USE_PYLINT}" = true ]; then
         if ! ${SINGLE}; then
             echo "## pylint"
         fi
@@ -73,12 +98,9 @@ checkfile() {
         if ${SINGLE}; then
             exit
         fi
-        FOUND=true
-    elif ! ${SINGLE}; then
-        echo "## pylint not installed"
     fi
 
-    if checkpath pychecker; then
+    if [ "${USE_PYCHECKER}" = true ]; then
         # pychecker raises an ImportError if the file does not end in ".py".
         if [ ${FILE%.py} != ${FILE} ]; then
             if ! ${SINGLE}; then
@@ -93,15 +115,12 @@ checkfile() {
             if ${SINGLE}; then
                 exit
             fi
-            FOUND=true
         else
             echo "## pychecker not run because input file does not have .py suffix."
         fi
-    elif ! ${SINGLE}; then
-        echo "## pychecker not installed"
     fi
 
-    if checkpath pyflakes; then
+    if [ "${USE_PYFLAKES}" = true ]; then
         if ! ${SINGLE}; then
             echo "## pyflakes"
         fi
@@ -109,12 +128,9 @@ checkfile() {
         if ${SINGLE}; then
             exit
         fi
-        FOUND=true
-    elif ! ${SINGLE}; then
-        echo "## pyflakes not installed"
     fi
 
-    if checkpath pep8; then
+    if [ "${USE_PEP8}" = true ]; then
         if ! ${SINGLE}; then
             echo "## pep8"
         fi
@@ -123,14 +139,6 @@ checkfile() {
         if ${SINGLE}; then
             exit
         fi
-        FOUND=true
-    elif ! ${SINGLE}; then
-        echo "## pep8 not installed"
-    fi
-
-    if ! ${FOUND}; then
-        echo "ERROR: No Python static checker found." >&2
-        exit 1
     fi
 }
 
