@@ -16,7 +16,9 @@
 # Script to monitor a wireless interface and try different nwids, along
 # with using an activation script when we bind to a network. useful
 # on OpenBSD 5.3 or later.
-#
+
+# Fetched from http://foad2.obtuse.com/beck/wifinwid
+# See http://undeadly.org/cgi?action=article&sid=20130208141628 for doc.
 
 # To use, first decide where you will put the config files, and set
 # the variable below:
@@ -68,26 +70,25 @@ DELAY=6
 ## Don't fiddle below here there be dragons.
 progname=`basename $0`
 while :; do
-(ifconfig $1 | grep 'status: active' > /dev/null)
-if [ $? -ne 0 ]; then
-    logger -p daemon.debug -t $progname "interface $1 appears inactive"
-    cat $CONFDIR/nwids.$1 | while read LINE
-    do
-      logger -p daemon.debug -t $progname "trying ifconfig $1 $LINE"
-      ifconfig $1 $LINE
-      sleep $DELAY
-      (ifconfig $1 | grep 'status: active' > /dev/null)
-      if [ $? -eq 0 ]; then
-	  nwid=`ifconfig $1 | grep nwid | sed 's/.*nwid //' | sed 's/ chan.*$//'`
-	  logger -p daemon.info -t $progname "attached to network $nwid on interface $1"
-	  sleep $DELAY
-	  if [ -x $CONFDIR/activate.$nwid ]; then
-	      $CONFDIR/activate.$nwid
-	   fi
-	  break
-       fi
-    done
-else
-    sleep 2
-fi
+    (ifconfig $1 | grep 'status: active' > /dev/null)
+    if [ $? -ne 0 ]; then
+        logger -p daemon.debug -t $progname "interface $1 appears inactive"
+        cat $CONFDIR/nwids.$1 | while read LINE; do
+            logger -p daemon.debug -t $progname "trying ifconfig $1 $LINE"
+            ifconfig $1 $LINE
+            sleep $DELAY
+            (ifconfig $1 | grep 'status: active' > /dev/null)
+            if [ $? -eq 0 ]; then
+                nwid=`ifconfig $1 | grep nwid | sed 's/.*nwid //' | sed 's/ chan.*$//'`
+                logger -p daemon.info -t $progname "attached to network $nwid on interface $1"
+                sleep $DELAY
+                if [ -x $CONFDIR/activate.$nwid ]; then
+                    $CONFDIR/activate.$nwid
+                fi
+                break
+            fi
+        done
+    else
+        sleep 2
+    fi
 done
