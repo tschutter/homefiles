@@ -450,6 +450,8 @@ def link_dotfiles(args, explicit_cache_dir):
     clean_link(args, os.path.join(args.homedir, ".Xdefaults"))
     clean_link(args, os.path.join(args.homedir, ".Xresources"))
 
+    # xxxterm is previous name for xombrero.
+    make_link(args, file_in_path("xxxterm"), "xombrero.conf", ".xxxterm.conf")
     make_dot_link(args, file_in_path("xombrero"), "xombrero.conf")
 
     make_dot_link(args, args.is_xwindows, "xsessionrc")
