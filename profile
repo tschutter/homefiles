@@ -82,14 +82,14 @@ if [ -r "$HOME/.profile-local" ]; then
     . "$HOME/.profile-local"
 fi
 
-# Include ${SHELL}rc file.
-case "$SHELL" in
-    */bash)
-        if [ -r "$HOME/.bashrc" ]; then
-            . "$HOME/.bashrc"
-        fi
-        ;;
-    */ksh)
-        export ENV="$HOME/.homefiles/kshrc"
-        ;;
-esac
+# Include shell rc file.
+#
+# Note that using ${SHELL} here doesn't seem to work. homefiles rev
+# 4a64d5 broke logins on XUbuntu.
+if [ -n "$BASH_VERSION" ]; then
+    if [ -r "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+elif [ -n "$KSH_VERSION" ]; then
+    export ENV="$HOME/.kshrc"
+fi
