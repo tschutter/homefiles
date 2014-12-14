@@ -62,3 +62,15 @@ Linux Mint
    * In the "Activate the window menu" row, select "Alt+Space" and press backspace.
 
      Alt-space is reserved for just-one-space in Emacs.
+
+----------------------------------------------------------------------
+
+Troubleshooting
+---------------
+
+#. Pressing Ctrl-Shift in a terminal window displays a yellow box
+   containing "ISO 14755 mode".
+
+   This a "feature" of xterm.  Use xfce4-terminal instead.  Check
+   Settings Manager -> Preferred Applications -> Utilities -> Terminal
+   Emulator.
