@@ -364,7 +364,7 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, True, "inputrc")
 
     enabled = os.path.exists("/bin/ksh")
-    clean_link(args, os.path.join(args.homedir, ".kshrc"))
+    make_dot_link(args, enabled, "kshrc")
     if enabled:
         mkdir(args, enabled, os.path.join(args.cache_dir, "ksh"), 0o700)
 
@@ -449,6 +449,10 @@ def link_dotfiles(args, explicit_cache_dir):
     # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
     clean_link(args, os.path.join(args.homedir, ".Xdefaults"))
     clean_link(args, os.path.join(args.homedir, ".Xresources"))
+
+    # xxxterm is previous name for xombrero.
+    make_link(args, file_in_path("xxxterm"), "xombrero.conf", ".xxxterm.conf")
+    make_dot_link(args, file_in_path("xombrero"), "xombrero.conf")
 
     make_dot_link(args, args.is_xwindows, "xsessionrc")
 

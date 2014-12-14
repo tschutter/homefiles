@@ -1,4 +1,4 @@
-personal_ws-1.1 en 46 
+personal_ws-1.1 en 49 
 PxPointJSON
 degreaser
 stdout
@@ -24,6 +24,7 @@ Valgrind
 Xiance
 Schutter
 config
+geocoder
 kshrc
 MySQL
 FloodMap
@@ -35,9 +36,11 @@ PostScript
 tuple
 username
 extruder
+geocoding
 Bugzilla
 boolean
 FireStationDrivingDistance
+geospatial
 GISPortal
 Dropbox
 geocode

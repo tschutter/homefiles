@@ -75,7 +75,7 @@ while :; do
         logger -p daemon.debug -t $progname "interface $1 appears inactive"
         cat $CONFDIR/nwids.$1 | while read LINE; do
             logger -p daemon.debug -t $progname "trying ifconfig $1 $LINE"
-            ifconfig $1 $LINE
+            sh -c "ifconfig $1 $LINE"
             sleep $DELAY
             (ifconfig $1 | grep 'status: active' > /dev/null)
             if [ $? -eq 0 ]; then

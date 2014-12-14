@@ -67,19 +67,22 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         abook\
         git\
         mutt\
+        py-pip\
         python\
-        emacs--no_x11\
-        emacs-python\
+        emacs--gtk3\
         lbdb--\
+        pep8\
         psutils--\
         py-pip\
         pylint\
+        pyflakes\
         rxvt-unicode\
         ucpp\
         w3m--\
         wget\
         xsel\
     "
+        #emacs-python\
 
     sudo pkg_add -i -z ${PACKAGES}
 
