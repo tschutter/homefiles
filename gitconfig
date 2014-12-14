@@ -27,6 +27,9 @@
     user = tschutter
     token = $GITHUB_TOKEN
 
+[log]
+    date = iso
+
 [user]
     name = Tom Schutter
     email = t.schutter@comcast.net
