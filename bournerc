@@ -26,21 +26,38 @@ alias pgrep="pgrep -f -l"
 # More secure defaults for pwgen(1).
 alias pwgen="pwgen --capitalize --numerals --symbols 12"
 
+# Clear the screen and the scrollback buffer.
+if [ -x /usr/bin/tput ]; then
+    _CLS="/usr/bin/tput reset"
+elif [ -x /usr/bin/setterm ]; then
+    _CLS="setterm -reset"
+else
+    _CLS="clear"
+fi
+if [ "${STY}" = "" ]; then
+    # Running within screen(1).
+    alias cls='\
+        _NSCROLL=`screen -Q info | sed -e "s/[^+]*+//" -e "s/ .*//"`;\
+        screen -X scrollback 0;\
+        screen -X scrollback ${_NSCROLL};\
+        unset _NSCROLL;\
+        ${_CLS}\
+    '
+elif [ "${TMUX}" = "" ]; then
+    # Running within tmux(1).
+    # tput does not work in tmux.
+    # clear must come first.
+    alias cls='clear; tmux clear-history'
+else
+    # Running in a "real" terminal.
+    alias cls=${_CLS}
+fi
+
 # Platform dependent aliases.
 case "${_UNAME}" in
     Cygwin)
-        alias cls="reset; echo -n ''"
         # -W: show windows as well as cygwin processes
         alias ps="ps -W"
-        ;;
-    Darwin)
-        alias cls="tput reset"
-        ;;
-    Linux)
-        alias cls="setterm -reset"
-        ;;
-    OpenBSD)
-        alias cls="tput reset"
         ;;
 esac
 
