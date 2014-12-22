@@ -34,7 +34,7 @@ elif [ -x /usr/bin/setterm ]; then
 else
     _CLS="clear"
 fi
-if [ "${STY}" = "" ]; then
+if [ "${STY}" != "" ]; then
     # Running within screen(1).
     alias cls='\
         _NSCROLL=`screen -Q info | sed -e "s/[^+]*+//" -e "s/ .*//"`;\
@@ -43,7 +43,7 @@ if [ "${STY}" = "" ]; then
         unset _NSCROLL;\
         ${_CLS}\
     '
-elif [ "${TMUX}" = "" ]; then
+elif [ "${TMUX}" != "" ]; then
     # Running within tmux(1).
     # tput does not work in tmux.
     # clear must come first.
