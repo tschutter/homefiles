@@ -16,6 +16,9 @@ PROMPT_DIRTRIM=4
 # Do save lines that begin with a space; I sometimes accidently do that.
 HISTCONTROL=ignoredups
 
+# Add a timestamp to history output.
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  "
+
 # Save history files in ~/.cache/bash/history.
 HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/bash/history"
 
