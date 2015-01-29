@@ -66,5 +66,5 @@ end
 # Give some hints.
 echo gdb command aliases:\n
 echo \ \ pl: print locals\n
-echo \ \ ps OBJ: print value of std::string OBJ\n
-echo \ \ pws OBJ: print value of std::wstring OBJ\n
+echo \ \ ps STR: print value of C++ std::string STR\n
+echo \ \ pws STR: print value of C++ std::wstring STR\n
