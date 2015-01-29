@@ -62,3 +62,9 @@ end
 document pws
 Print value of <wide_string> which is a C++ wchar_t* or wstring.
 end
+
+# Give some hints.
+echo gdb command aliases:\n
+echo \ \ pl: print locals\n
+echo \ \ ps OBJ: print value of std::string OBJ\n
+echo \ \ pws OBJ: print value of std::wstring OBJ\n
