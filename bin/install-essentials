@@ -4,6 +4,7 @@
 #
 
 ROOTDIR="${HOME}/.homefiles"
+HAS_PIP=true
 
 if [ -x "/usr/bin/apt-get" ]; then
     # Debian derivatives.
@@ -45,15 +46,6 @@ if [ -x "/usr/bin/apt-get" ]; then
 
     # Set the executable from rxvt-unicode as the default xterm.
     sudo update-alternatives --set x-terminal-emulator /usr/bin/urxvt
-
-    # Including line_profiler results in the error:
-    #   Could not find a version that satisfies the requirement line-profiler (from versions: 1.0b1, 1.0b2, 1.0b3)
-    PYPI_PACKAGES="\
-        goobook\
-        pyprof2calltree\
-    "
-
-    sudo pip install ${PYPI_PACKAGES}
 
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
@@ -100,6 +92,8 @@ elif [ -x "/usr/bin/zypper" ]; then
 
     sudo zypper install --auto-agree-with-licenses --no-recommends ${PACKAGES}
 
+    HAS_PIP=false
+
 elif [ -x "/usr/bin/yum" ]; then
     # Red Hat, CentOS.
     # http://mirror.centos.org/centos/6/os/x86_64/Packages/
@@ -118,9 +112,23 @@ elif [ -x "/usr/bin/yum" ]; then
 
     sudo yum install ${PACKAGES}
 
+    HAS_PIP=false
+
 else
     echo "ERROR: Unknown package manager."
     exit 1
+fi
+
+if [ "${HAS_PIP}" = "true" ]; then
+    # Python packages via pip.
+    PYPI_PACKAGES="\
+        goobook\
+        line_profiler\
+        pyprof2calltree\
+    "
+
+    echo "INFO: Installing Python packages..."
+    sudo pip install --upgrade ${PYPI_PACKAGES}
 fi
 
 # As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
