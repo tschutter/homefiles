@@ -1,5 +1,0 @@
-# lbdb (Little Brother's DataBase) config file
-
-# Note that m_muttalias is broken.
-METHODS="m_abook"
-ABOOK_FILES="${HOME}/private/addressbook"
