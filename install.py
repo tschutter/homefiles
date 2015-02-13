@@ -368,8 +368,6 @@ def link_dotfiles(args, explicit_cache_dir):
     if enabled:
         mkdir(args, enabled, os.path.join(args.cache_dir, "ksh"), 0o700)
 
-    make_dot_link(args, file_in_path("lbdbq"), "lbdbrc")
-
     create_dotless(args)
 
     make_dot_link(
@@ -461,7 +459,6 @@ def link_binfiles(args):
     """Create links in ~/bin."""
     bindir = os.path.join(args.homedir, "bin")
     mkdir(args, True, bindir, 0o777)
-    make_link(args, True, "bin/abook-lookup")
     make_link(args, True, "bin/append-missing-newline")
     make_link(args, args.is_cygwin, "bin/cygwin-fix-sshd")
     make_link(args, True, "bin/cmake-clean")

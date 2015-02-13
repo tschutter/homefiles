@@ -11,13 +11,11 @@ if [ -x "/usr/bin/apt-get" ]; then
     # sudo apt-cache search REGEX
     # ncurses-term adds /etc/terminfo for urxvt
     PACKAGES="\
-        abook\
         emacs24\
         emacs24-el\
         git\
         git-doc\
         git-man\
-        lbdb\
         libdata-ical-perl\
         libnotify-bin\
         libtext-autoformat-perl\
@@ -64,13 +62,11 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
     # normal flavor, "screen--static" matches only the static flavor.
     # http://ftp3.usa.openbsd.org/pub/OpenBSD/<VERSION>/packages/amd64/
     PACKAGES="\
-        abook\
         git\
         mutt\
         py-pip\
         python\
         emacs--gtk3\
-        lbdb--\
         pep8\
         psutils--\
         py-pip\

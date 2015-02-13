@@ -3,10 +3,6 @@
 
 # Aliases.
 
-# abook(1) screws up symbolic links to addressbook, so we use an alias instead.
-alias abook="abook --config ${HOME}/.homefiles/abookrc --datafile ${HOME}/private/addressbook"
-alias abook-lookup="abook-lookup --datafile ${HOME}/private/addressbook"
-
 # Suppress gdb(1) introductory and copyright messages.
 alias gdb="gdb -quiet"
 
