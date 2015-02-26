@@ -1,4 +1,4 @@
-personal_ws-1.1 en 49 
+personal_ws-1.1 en 50 
 PxPointJSON
 degreaser
 stdout
@@ -11,6 +11,7 @@ SiteScope
 OpenBSD
 Bourne
 chile
+whitespace
 Chipotle
 Greenberg
 PTFE
