@@ -34,7 +34,6 @@ if [ -x "/usr/bin/apt-get" ]; then
         python-rope\
         python2.7-dev\
         python2.7-doc\
-        rxvt-unicode\
         tmux\
         w3m-el\
         w3m\
@@ -44,8 +43,9 @@ if [ -x "/usr/bin/apt-get" ]; then
 
     sudo apt-get install ${PACKAGES}
 
-    # Set the executable from rxvt-unicode as the default xterm.
-    sudo update-alternatives --set x-terminal-emulator /usr/bin/urxvt
+    # Set the executable from xfce4-terminal as the default xterm.
+    # rxvt-unicode suffers from the Ctrl-Shift gives yellow box problem.
+    sudo update-alternatives --set x-terminal-emulator /usr/bin/xfce4-terminal.wrapper
 
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
