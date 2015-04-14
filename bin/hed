@@ -10,4 +10,4 @@ LINES=`tput lines`
 LINES=`expr $LINES - 2`
 
 # Do the work.
-head --lines=${LINES} "$@"
+head -n ${LINES} "$@"
