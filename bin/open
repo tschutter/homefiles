@@ -18,21 +18,34 @@ fi
 
 # Render help.
 if [ "$1" = "--help" ]; then
-    echo "Usage: $0 [options] file [file...]"
+    echo "Usage: $0 [options] file"
     echo "  Opens files with their preferred application."
     echo ""
     echo "Options:"
     echo "  --help         show this help message and exit"
-    echo "  --query        print which application would be used to open file"
+    echo "  --query        print default application used to open file"
+    echo "  --setapp=APP   set application used to open file"
     exit 0
 fi
 
-# Check for --query option.
+# Check for options.
 QUERY=
-if [ "$1" = "--query" ]; then
-    QUERY=1
-    shift
-fi
+APP=
+case "$1" in
+    "--query")
+        QUERY=1
+        shift
+        ;;
+    "--setapp="*)
+        APP=`echo "$1" | sed 's/--setapp=//'`
+        shift
+        ;;
+    "--setapp")
+        shift
+        APP="$1"
+        shift
+        ;;
+esac
 
 # Transform requested file.
 FILE="$1"
@@ -46,8 +59,8 @@ case "${FILE}" in
         ;;
 esac
 
-# Handle --query option.
 if [ "${QUERY}" ]; then
+    # Handle --query option.
     if [ "${OPEN}" = "cygstart" ]; then
         ${OPEN} --find "${FILE}"
     else
@@ -57,13 +70,35 @@ if [ "${QUERY}" ]; then
         fi
         MIME_TYPE=`xdg-mime query filetype "${FILE}"`
         DEFAULT=`xdg-mime query default "${MIME_TYPE}"`
-        echo "${FILE} -> ${MIME_TYPE} -> ${DEFAULT}"
+        echo "default:"
+        echo "  ${FILE} -> ${MIME_TYPE} -> ${DEFAULT}"
+        echo "possible ${MIME_TYPE} handlers:"
+        grep -l ${MIME_TYPE} /usr/share/applications/*.desktop | sed -e 's|/usr/share/applications/|  |' | sed -e 's/.desktop//'
     fi
 
     # Cleanup temporary file.
     if [ "${TMPFILE}" ]; then
         rm -f "${FILE}"
     fi
+
+elif [ "${APP}" ]; then
+    # Handle --setapp option.
+    if [ "${OPEN}" = "cygstart" ]; then
+        echo "ERROR: --setapp not implemented on Cygwin"
+    else
+        if [ ! -f "${FILE}" ]; then
+            echo "ERROR: File \"${FILE}\" not found"
+            exit 1
+        fi
+        MIME_TYPE=`xdg-mime query filetype "${FILE}"`
+        xdg-mime default "${APP}.desktop" "${MIME_TYPE}"
+    fi
+
+    # Cleanup temporary file.
+    if [ "${TMPFILE}" ]; then
+        rm -f "${FILE}"
+    fi
+
 else
     # Open the specified argument.
     ${OPEN} "${FILE}"
