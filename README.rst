@@ -1,6 +1,19 @@
 Homefiles
 =========
 
+Initial System Preparation
+--------------------------
+
+OpenBSD::
+
+  MIRROR=http://ftp3.usa.openbsd.org/pub/OpenBSD/
+  PKG_PATH=${MIRROR}`uname -r`/packages/`uname -m`/; export PKG_PATH
+  sudo pkg_add -i -z git python-3*
+
+Debian, Ubuntu::
+
+  sudo apt-get install git python3
+
 Usage
 -----
 
