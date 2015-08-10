@@ -29,6 +29,13 @@ shopt -s histappend
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# Give a bit more information when tmuxinator completes.
+function mux {
+    command mux $*;
+    echo "remaining tmux sessions:";
+    tmux list-sessions;
+}
+
 # Platform specific definitions.
 if [ "${_UNAME}" = "Cygwin" ]; then
     # Ignore case while completing
