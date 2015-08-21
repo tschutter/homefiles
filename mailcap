@@ -7,6 +7,7 @@ audio/*;totem %s
 text/calendar; ~/.mutt/vcalendar-filter %s; copiousoutput
 
 # HTML (view)
+text/html; firefox -new-tab %s ; test=sh -c 'test $DISPLAY'
 text/html; w3m -T text/html %s
 #text/html; lynx %s; nametemplate=%s.html
 
