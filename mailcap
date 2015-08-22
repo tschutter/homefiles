@@ -7,7 +7,7 @@ audio/*;totem %s
 text/calendar; ~/.mutt/vcalendar-filter %s; copiousoutput
 
 # HTML (view)
-text/html; firefox -new-tab %s ; test=sh -c 'test $DISPLAY'
+text/html; firefox -new-tab %s; test=sh -c 'test $DISPLAY'
 text/html; w3m -T text/html %s
 #text/html; lynx %s; nametemplate=%s.html
 
@@ -16,10 +16,11 @@ text/html; w3m -T text/html -dump -cols 128 %s; copiousoutput
 #text/html; lynx -dump %s; copiousoutput; nametemplate=%s.html
 
 # Images
-image/*; xzgv %s; test=RunningX
+image/*; xzgv %s; test=sh -c 'test $DISPLAY'
 image/*; anytopnm %s | pnmscale -xsize 80 -ysize 50 | ppmtopgm | pgmtopbm | pbmtoascii ; copiousoutput
 
 # PDF documents
+application/pdf; evince %s; test=sh -c 'test $DISPLAY'
 application/pdf; pdftotext -layout %s -; copiousoutput
 
 # Postscript
