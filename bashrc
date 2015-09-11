@@ -32,7 +32,7 @@ shopt -s checkwinsize
 # Give a bit more information when tmuxinator completes.
 function mux {
     command mux $*;
-    echo "remaining tmux sessions:";
+    echo "tmux list-sessions:";
     tmux list-sessions;
 }
 
