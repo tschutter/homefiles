@@ -3,25 +3,6 @@
 # Directory tree file search
 #
 
-# Function that locates an executable.
-# The first parameter is the executable filename.
-# The second parameter is a variable that will hold the absolute pathname.
-locate_exe() {
-    if [ -x /usr/local/bin/$1 ]; then
-        eval "$2=/usr/local/bin/$1"
-    elif [ -x /usr/bin/$1 ]; then
-        eval "$2=/usr/bin/$1"
-    elif [ -x /bin/$1 ]; then
-        eval "$2=/bin/$1"
-    else
-        echo "ERROR: Unable to locate the '$1' program."
-        exit 2
-    fi
-}
-
-# Locate executables.
-locate_exe "find" FIND
-
 usage() {
     echo "Searches for a file in the current directory and all subdirectories." >&2
     echo "" >&2
@@ -63,7 +44,7 @@ if [ "${ARGS}" = "" ]; then
 fi
 
 for ARG in ${ARGS}; do
-    /usr/bin/find\
+    find\
         .\
         -name .svn -prune -o\
         -name .git -prune -o\
