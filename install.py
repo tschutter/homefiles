@@ -46,7 +46,7 @@ def force_run_command(cmdargs, stdinstr=None):
 def run_command(args, cmdargs, stdinstr=None):
     """Run an external command, printing stdout and stderr."""
     if args.verbose:
-        print("Running '%s'" % " ".join(cmdargs))
+        print("Running '{}'".format(" ".join(cmdargs)))
     if not args.dryrun:
         output = force_run_command(cmdargs, stdinstr)
         output = output.rstrip()
@@ -95,7 +95,7 @@ def mkdir(args, enabled, directory, mode):
     """Create directory."""
     if enabled:
         if not os.path.isdir(directory):
-            print("Creating '%s' directory." % simplify_path(directory))
+            print("Creating '{}' directory.".format(simplify_path(directory)))
             if not args.dryrun:
                 os.mkdir(directory, mode)
     else:
@@ -108,7 +108,7 @@ def file_in_path(filename):
     path = os.getenv("PATH", os.defpath)
 
     # Add ~/bin in case this is not a login shell.
-    path = "%s%s%s" % (path, os.pathsep, os.path.expanduser("~/bin"))
+    path = os.pathsep.join((path, os.path.expanduser("~/bin")))
 
     # Loop through all of the path components searching for filename.
     for pathdir in path.split(os.pathsep):
@@ -124,14 +124,14 @@ def clean_link(args, linkname, backup=True):
 
     if os.path.islink(link_pathname):
         # The destination exists as a symbolic link.
-        print("Deleting symbolic link '%s'." % link_pathname)
+        print("Deleting symbolic link '{}'.".format(link_pathname))
         if not args.dryrun:
             os.unlink(link_pathname)
 
     elif os.path.exists(link_pathname):
         if os.path.isdir(link_pathname):
             if len(os.listdir(link_pathname)) == 0:
-                print("Removing empty directory '%s'." % link_pathname)
+                print("Removing empty directory '{}'.".format(link_pathname))
                 if not args.dryrun:
                     os.rmdir(link_pathname)
                     return
@@ -140,11 +140,11 @@ def clean_link(args, linkname, backup=True):
         if backup:
             backup_dir = os.path.join(args.cache_dir, "homefiles_backup")
             mkdir(args, True, backup_dir, 0o700)
-            print("Moving '%s' to '%s'." % (link_pathname, backup_dir))
+            print("Moving '{}' to '{}'.".format(link_pathname, backup_dir))
             if not args.dryrun:
                 shutil.move(link_pathname, backup_dir)
         else:
-            print("Deleting file or directory '%s'." % link_pathname)
+            print("Deleting file or directory '{}'.".format(link_pathname))
             if not args.dryrun:
                 os.unlink(link_pathname)
 
@@ -179,7 +179,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     # The target filename should always exist.
     if not os.path.exists(file_pathname):
-        print("ERROR: File '%s' does not exist." % file_pathname)
+        print("ERROR: File '{}' does not exist.".format(file_pathname))
         sys.exit(1)
 
     if enabled and not args.force and os.path.islink(link_pathname):
@@ -194,7 +194,7 @@ def make_link(args, enabled, filename, linkname=None):
         else:
             if args.verbose:
                 print(
-                    "Link already exists from '%s' to '%s'." % (
+                    "Link already exists from '{}' to '{}'.".format(
                         link_pathname,
                         file_pathname
                     )
@@ -205,7 +205,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     if not enabled:
         if args.verbose:
-            print("Not linking to '%s' (not enabled)." % filename)
+            print("Not linking to '{}' (not enabled).".format(filename))
         return
 
     # Ensure that the link_pathname directory exists.
@@ -222,7 +222,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     # Make the symbolic link from link_pathname to link_target.
     print(
-        "Creating symbolic link from '%s' to '%s'." % (
+        "Creating symbolic link from '{}' to '{}'.".format(
             link_pathname,
             link_target
         )
@@ -276,7 +276,7 @@ def create_dotless(args):
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
             mkdir(args, True, dotless_dir, 0o700)
-            print("Running lesskey to create '%s'." % dotless_pathname)
+            print("Running lesskey to create '{}'.".format(dotless_pathname))
             lesskey = "#env\nLESSHISTFILE={}\n".format(history_pathname)
             run_command(
                 args,
@@ -297,7 +297,7 @@ def process_terminfo(args):
     terminfo_dir = os.path.join(args.homedir, ".terminfo")
     terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
     if not os.path.exists(terminfo_compiled):
-        print("Running tic to create '%s'." % terminfo_compiled)
+        print("Running tic to create '{}'.".format(terminfo_compiled))
         terminfo_source = os.path.join(
             args.homefiles,
             "rxvt-unicode.terminfo"
@@ -479,33 +479,68 @@ def link_binfiles(args):
     make_link(args, True, "bin/unicode2ascii")
 
 
-def xfwm4_remove_keybinding(args, binding):
-    """Remove a xfwm4 keybinding."""
+def xfwm4_remove_key_binding(args, binding):
+    """Remove a xfwm4 key binding."""
     if os.path.exists("/usr/bin/xfconf-query"):
         cmdargs = [
             "/usr/bin/xfconf-query",
             "--channel",
             "xfce4-keyboard-shortcuts",
-            "--property"
+            "--property",
+            binding
         ]
-        output = force_run_command(cmdargs + [binding])
+        output = force_run_command(cmdargs)
         if output.find("does not exist on channel") != -1:
             if args.verbose:
-                print("Keybinding '%s' already removed." % binding)
+                print("Key binding '{}' already removed.".format(binding))
         else:
-            print("Removing keybinding '%s' from xfce4 config." % binding)
-            run_command(args, cmdargs + [binding, "--reset"])
+            print("Removing key binding '{}'.".format(binding))
+            run_command(args, cmdargs + ["--reset"])
+
+
+def xfwm4_add_key_binding(args, binding, command):
+    """Add a xfwm4 key binding."""
+    if os.path.exists("/usr/bin/xfconf-query"):
+        cmdargs = [
+            "/usr/bin/xfconf-query",
+            "--channel",
+            "xfce4-keyboard-shortcuts",
+            "--property",
+            binding
+        ]
+        output = force_run_command(cmdargs)
+        if output.strip() == command:
+            if args.verbose:
+                print(
+                    "Key '{}' already bound to '{}'.".format(binding, command)
+                )
+        else:
+            print("Binding key '{}' to '{}'.".format(binding, command))
+            run_command(args, cmdargs + ["--create", "--set", command])
 
 
 def configure_wm_keybindings(args):
-    """Setup window manager keybindings."""
+    """Setup window manager key bindings."""
 
     # xfconf-query cannot run unless there is a valid DISPLAY.
-    if "DISPLAY" in os.environ:
-        # C-F3,C-F4 are set in .emacs.d/init.el so we take them away from
-        # xfwm4.
-        xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F3")
-        xfwm4_remove_keybinding(args, "/xfwm4/custom/<Control>F4")
+    if "DISPLAY" not in os.environ:
+        return
+
+    # Use "xfconf-query --channel xfce4-keyboard-shortcuts --list --verbose" to
+    # list current keybindings.
+
+    # C-F3,C-F4 are set in .emacs.d/init.el so we take them away from xfwm4.
+    xfwm4_remove_key_binding(args, "/xfwm4/custom/<Control>F3")
+    xfwm4_remove_key_binding(args, "/xfwm4/custom/<Control>F4")
+
+    # By default <Super>e launches Leafpad.  But I use Emacs not
+    # Leafpad.  Bind <Super>e to the file manager instead like Windows
+    # does.
+    xfwm4_add_key_binding(
+        args,
+        "/commands/custom/<Super>e",
+        "exo-open --launch FileManager"
+    )
 
 
 def create_tmp_file(prefix, suffix, content_bytes):
@@ -535,7 +570,7 @@ def install_fonts(args):
                 dst_pathname = cygpath_u(dst_pathname)
                 if not args.force and os.path.exists(dst_pathname):
                     continue
-                print("Installing font '%s'." % src_pathname)
+                print("Installing font '{}'.".format(src_pathname))
                 vbs_text = bytes(
                     'Set objShell = CreateObject("Shell.Application")\r\n' +
                     'Set objFolder = objShell.Namespace(&H14&)\r\n' +
