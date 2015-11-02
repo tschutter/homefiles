@@ -508,15 +508,27 @@ def xfwm4_add_key_binding(args, binding, command):
             "--property",
             binding
         ]
-        output = force_run_command(cmdargs)
-        if output.strip() == command:
+        output = force_run_command(cmdargs).strip()
+        if output == command:
             if args.verbose:
                 print(
                     "Key '{}' already bound to '{}'.".format(binding, command)
                 )
         else:
-            print("Binding key '{}' to '{}'.".format(binding, command))
-            run_command(args, cmdargs + ["--create", "--set", command])
+            print(output)
+            if output.find("does not exist on channel") != -1:
+                output = ""
+            print(
+                "Changing binding of key '{}' from '{}' to '{}'.".format(
+                    binding,
+                    output,
+                    command
+                )
+            )
+            run_command(
+                args,
+                cmdargs + ["--create", "--type", "string", "--set", command]
+            )
 
 
 def configure_wm_keybindings(args):
@@ -528,6 +540,11 @@ def configure_wm_keybindings(args):
 
     # Use "xfconf-query --channel xfce4-keyboard-shortcuts --list --verbose" to
     # list current keybindings.
+
+    # Note that there are "/xfwm4/default" properties and
+    # "/xfwm4/custom" properties.  I don't know exactly the
+    # difference, but it sounds like the custom properties would
+    # override the defaults.
 
     # C-F3,C-F4 are set in .emacs.d/init.el so we take them away from xfwm4.
     xfwm4_remove_key_binding(args, "/xfwm4/custom/<Control>F3")
