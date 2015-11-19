@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # uboat.py --- generate u-boat-death messages, patterned after Iron Coffins
 
@@ -22,6 +22,7 @@
 # Noah Friedman rewrote parts of the engine.
 # Brian W. Fitzpatrick rewrote it in Python
 
+from __future__ import print_function
 import random
 
 class Uboat():

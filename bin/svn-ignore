@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
 From http://stefaanlippens.net/svnignorescript
 """
 
+from __future__ import print_function
 import argparse
 import os
 import subprocess

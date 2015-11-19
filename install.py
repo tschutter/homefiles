@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
 Installs files in tschutter/homefiles using symbolic links.
@@ -9,6 +9,7 @@ Installs files in tschutter/homefiles using symbolic links.
 #   modify ~/.config/xfce4/helpers.rc
 #   create ~/.local/share/xfce4/helpers/custom-MailReader.desktop
 
+from __future__ import print_function
 import argparse
 import glob
 import os
