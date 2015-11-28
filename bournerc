@@ -86,13 +86,21 @@ for F in /usr/bin/chromium-browser; do
     fi
 done
 
-# Setup sensible-editor.  Emacs is too slow to start for this role.
-for F in /usr/bin/mg /usr/bin/vi; do
-    if [ -x "${F}" ]; then
-        export VISUAL=${F}
-        break
-    fi
-done
+# Setup sensible-editor.
+if [ -x "/usr/bin/emacsclient" ]; then
+    # -a='': if the Emacs server is not running, run `emacs --daemon' to
+    #        start Emacs in daemon mode, and try to connect to it
+    # -t: open a new Emacs frame on the current terminal
+    export EDITOR="/usr/bin/emacsclient -a='' -t"
+    export VISUAL="/usr/bin/emacsclient -a=''"
+else
+    for F in /usr/bin/mg /usr/bin/vi; do
+        if [ -x "${F}" ]; then
+            export VISUAL=${F}
+            break
+        fi
+    done
+fi
 
 # Directory navigation functions.
 _cdhelper() {
