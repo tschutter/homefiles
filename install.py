@@ -47,7 +47,7 @@ def force_run_command(cmdargs, stdinstr=None):
 def run_command(args, cmdargs, stdinstr=None):
     """Run an external command, printing stdout and stderr."""
     if args.verbose:
-        print("Running '{}'".format(" ".join(cmdargs)))
+        print("Running '{0}'".format(" ".join(cmdargs)))
     if not args.dryrun:
         output = force_run_command(cmdargs, stdinstr)
         output = output.rstrip()
@@ -96,7 +96,7 @@ def mkdir(args, enabled, directory, mode):
     """Create directory."""
     if enabled:
         if not os.path.isdir(directory):
-            print("Creating '{}' directory.".format(simplify_path(directory)))
+            print("Creating '{0}' directory.".format(simplify_path(directory)))
             if not args.dryrun:
                 os.mkdir(directory, mode)
     else:
@@ -125,14 +125,14 @@ def clean_link(args, linkname, backup=True):
 
     if os.path.islink(link_pathname):
         # The destination exists as a symbolic link.
-        print("Deleting symbolic link '{}'.".format(link_pathname))
+        print("Deleting symbolic link '{0}'.".format(link_pathname))
         if not args.dryrun:
             os.unlink(link_pathname)
 
     elif os.path.exists(link_pathname):
         if os.path.isdir(link_pathname):
             if len(os.listdir(link_pathname)) == 0:
-                print("Removing empty directory '{}'.".format(link_pathname))
+                print("Removing empty directory '{0}'.".format(link_pathname))
                 if not args.dryrun:
                     os.rmdir(link_pathname)
                     return
@@ -141,11 +141,11 @@ def clean_link(args, linkname, backup=True):
         if backup:
             backup_dir = os.path.join(args.cache_dir, "homefiles_backup")
             mkdir(args, True, backup_dir, 0o700)
-            print("Moving '{}' to '{}'.".format(link_pathname, backup_dir))
+            print("Moving '{0}' to '{1}'.".format(link_pathname, backup_dir))
             if not args.dryrun:
                 shutil.move(link_pathname, backup_dir)
         else:
-            print("Deleting file or directory '{}'.".format(link_pathname))
+            print("Deleting file or directory '{0}'.".format(link_pathname))
             if not args.dryrun:
                 os.unlink(link_pathname)
 
@@ -180,7 +180,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     # The target filename should always exist.
     if not os.path.exists(file_pathname):
-        print("ERROR: File '{}' does not exist.".format(file_pathname))
+        print("ERROR: File '{0}' does not exist.".format(file_pathname))
         sys.exit(1)
 
     if enabled and not args.force and os.path.islink(link_pathname):
@@ -195,7 +195,7 @@ def make_link(args, enabled, filename, linkname=None):
         else:
             if args.verbose:
                 print(
-                    "Link already exists from '{}' to '{}'.".format(
+                    "Link already exists from '{0}' to '{1}'.".format(
                         link_pathname,
                         file_pathname
                     )
@@ -206,7 +206,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     if not enabled:
         if args.verbose:
-            print("Not linking to '{}' (not enabled).".format(filename))
+            print("Not linking to '{0}' (not enabled).".format(filename))
         return
 
     # Ensure that the link_pathname directory exists.
@@ -223,7 +223,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     # Make the symbolic link from link_pathname to link_target.
     print(
-        "Creating symbolic link from '{}' to '{}'.".format(
+        "Creating symbolic link from '{0}' to '{1}'.".format(
             link_pathname,
             link_target
         )
@@ -277,8 +277,8 @@ def create_dotless(args):
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
             mkdir(args, True, dotless_dir, 0o700)
-            print("Running lesskey to create '{}'.".format(dotless_pathname))
-            lesskey = "#env\nLESSHISTFILE={}\n".format(history_pathname)
+            print("Running lesskey to create '{0}'.".format(dotless_pathname))
+            lesskey = "#env\nLESSHISTFILE={0}\n".format(history_pathname)
             run_command(
                 args,
                 ["lesskey", "-o", dotless_pathname, "-"],
@@ -298,7 +298,7 @@ def process_terminfo(args):
     terminfo_dir = os.path.join(args.homedir, ".terminfo")
     terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
     if not os.path.exists(terminfo_compiled):
-        print("Running tic to create '{}'.".format(terminfo_compiled))
+        print("Running tic to create '{0}'.".format(terminfo_compiled))
         terminfo_source = os.path.join(
             args.homefiles,
             "rxvt-unicode.terminfo"
@@ -493,9 +493,9 @@ def xfwm4_remove_key_binding(args, binding):
         output = force_run_command(cmdargs)
         if output.find("does not exist on channel") != -1:
             if args.verbose:
-                print("Key binding '{}' already removed.".format(binding))
+                print("Key binding '{0}' already removed.".format(binding))
         else:
-            print("Removing key binding '{}'.".format(binding))
+            print("Removing key binding '{0}'.".format(binding))
             run_command(args, cmdargs + ["--reset"])
 
 
@@ -513,14 +513,14 @@ def xfwm4_add_key_binding(args, binding, command):
         if output == command:
             if args.verbose:
                 print(
-                    "Key '{}' already bound to '{}'.".format(binding, command)
+                    "Key '{0}' already bound to '{1}'.".format(binding, command)
                 )
         else:
             print(output)
             if output.find("does not exist on channel") != -1:
                 output = ""
             print(
-                "Changing binding of key '{}' from '{}' to '{}'.".format(
+                "Changing binding of key '{0}' from '{1}' to '{2}'.".format(
                     binding,
                     output,
                     command
@@ -588,11 +588,11 @@ def install_fonts(args):
                 dst_pathname = cygpath_u(dst_pathname)
                 if not args.force and os.path.exists(dst_pathname):
                     continue
-                print("Installing font '{}'.".format(src_pathname))
+                print("Installing font '{0}'.".format(src_pathname))
                 vbs_text = bytes(
                     'Set objShell = CreateObject("Shell.Application")\r\n' +
                     'Set objFolder = objShell.Namespace(&H14&)\r\n' +
-                    'objFolder.CopyHere "{}"\r\n'.format(
+                    'objFolder.CopyHere "{0}"\r\n'.format(
                         cygpath_w(src_pathname)
                     ),
                     'UTF-8'
