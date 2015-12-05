@@ -1,6 +1,11 @@
 // KeySnail init file
 //
 // KeySnail provides commands and functions which emulate the Emacs behavior in Firefox.
+//
+// Install:
+//   wget -P /tmp --quiet https://github.com/mooz/keysnail/raw/master/keysnail.xpi
+//   firefox /tmp/keysnail.xpi
+//
 // https://github.com/mooz/keysnail/wiki
 
 // ========================= Special key settings ========================== //
