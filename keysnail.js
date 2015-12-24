@@ -367,7 +367,7 @@ key.setViewKey(':', function (ev, arg) {
                 shell.input(null, arg);
             }, 'List and execute commands', true);
 
-key.setViewKey('R', function (ev) {
+key.setViewKey(["C-x", "r"], function (ev) {
                 BrowserReload();
             }, 'Reload the page', true);
 
@@ -473,7 +473,7 @@ key.setCaretKey(':', function (ev, arg) {
                 shell.input(null, arg);
             }, 'List and execute commands', true);
 
-key.setCaretKey('R', function (ev) {
+key.setCaretKey(["C-x", "r"], function (ev) {
                 BrowserReload();
             }, 'Reload the page', true);
 
