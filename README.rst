@@ -81,8 +81,8 @@ Firefox
 
 #. Install KeySnail to get Emacs keybindings in Firefox::
 
-   wget https://github.com/mooz/keysnail/raw/master/keysnail.xpi
-   firefox keysnail.xpi
+    wget https://github.com/mooz/keysnail/raw/master/keysnail.xpi
+    firefox keysnail.xpi
 
 ----------------------------------------------------------------------
 
