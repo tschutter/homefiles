@@ -151,11 +151,13 @@ def clean_link(args, linkname, backup=True):
 
 
 def make_link(args, enabled, filename, linkname=None):
-    """If enabled is True, create a symbolic link from linkname to
+    """
+    If enabled is True, create a symbolic link from linkname to
     filename.
 
-    If linkname is relative, prefix it with $HOME.  If filename is
-    relative, prefix it with $HOME/.homefiles.  If linkname is not
+    If filename is relative, prefix it with $HOME/.homefiles.
+
+    If linkname is relative, prefix it with $HOME.  If linkname is not
     specified, it is the same as filename.
     """
 
@@ -439,8 +441,14 @@ def link_dotfiles(args, explicit_cache_dir):
     make_link(
         args,
         file_in_path("xfce4-terminal"),
-        "terminalrc",
+        "xfce4-terminal-terminalrc",
         ".config/xfce4/terminal/terminalrc"
+    )
+    make_link(
+        args,
+        file_in_path("xfce4-terminal"),
+        "xfce4-terminal-accels.scm",
+        ".config/xfce4/terminal/accels.scm"
     )
 
     make_dot_link(args, file_in_path("xzgv"), "xzgvrc")
