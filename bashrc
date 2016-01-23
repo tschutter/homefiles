@@ -29,6 +29,37 @@ shopt -s histappend
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# Enable cut-n-paste between shell and X clipboard using Emacs key
+# bindings.  Note that M-w needs to be handled by the terminal
+# instead, because M-w should copy a region, and only the terminal
+# knows about selected regions.
+# http://unix.stackexchange.com/questions/18701
+# http://stackoverflow.com/questions/994563
+# http://stackoverflow.com/questions/8366450
+if [[ -n ${DISPLAY} ]]; then
+    # These bindings cannot be put in .inputrc because they use the
+    # bash-specific $READLINE environment variables.  With these
+    # bindings we lose the kill ring concept in bash, but I never use
+    # that anyways.  It is more important to have key binding
+    # consistency between applications.
+
+    # Kill text from point to end of line and copy to X clipboard.
+    _x-kill-line() {
+        echo -n "${READLINE_LINE:$READLINE_POINT}" | xsel -b -i
+        READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}"
+    }
+    bind -m emacs -x '"\C-k": _x-kill-line'
+
+    # Yank X clipboard into bash's line buffer, placing point at end of yanked text.
+    _x-yank() {
+        CLIP=$(xsel -b -o)
+        COUNT=$(echo "$CLIP" | wc -c)
+        READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}${CLIP}${READLINE_LINE:$READLINE_POINT}"
+        READLINE_POINT=$(($READLINE_POINT + $COUNT - 1))
+    }
+    bind -m emacs -x '"\C-y": _x-yank'
+fi
+
 # Give a bit more information when tmuxinator completes.
 function mux {
     command mux $*;
