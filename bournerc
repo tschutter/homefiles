@@ -12,10 +12,11 @@ alias lynx="lynx -accept_all_cookies"
 # We don't set the LESS environment variable, because that applies to
 # PAGER usage (think man).
 if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
-    # --raw-control-chars = cause raw control characters to be displayed
-    # this fixes output of "pass | more" and displays colors
-    alias more="less --no-init --quit-at-eof --LONG-PROMPT --raw-control-chars"
-    alias less="less --no-init --quit-at-eof --LONG-PROMPT --raw-control-chars"
+    # --RAW-CONTROL-CHARS = cause raw ANSI color escape sequences to
+    # be displayed.  This fixes output of "pass | more" and which
+    # displays colors.
+    alias more="less --no-init --quit-at-eof --LONG-PROMPT --RAW-CONTROL-CHARS"
+    alias less="less --no-init --quit-at-eof --LONG-PROMPT --RAW-CONTROL-CHARS"
 fi
 
 # pgrep(1).
