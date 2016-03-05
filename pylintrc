@@ -13,6 +13,8 @@ persistent=no
 
 # C0323: Operator not followed by a space
 #        Does not handle var =\ correctly
+# C0330: Wrong hanging indentation before block
+#        Broken in pylint-1.3.1; see https://github.com/PyCQA/pylint/issues/289
 # R0903: Too few public methods
 #        Does not support POD class usage
 # W0703: Catch "Exception"
@@ -20,15 +22,12 @@ persistent=no
 #        http://stackoverflow.com/questions/756180/pylint-warning-on-except-exception
 # I0011: Locally disabling .....
 #        Why would I want a notice that I had locally disabled a warning?
-disable=C0323,R0903,W0703,I0011
+disable=C0323,C0330,R0903,W0703,I0011
 
 [REPORTS]
 
 # Select the output format to one that can be used by editors.
-output-format=parseable
-
-# Include message ID in output.
-include-ids=yes
+msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}"
 
 # Do not report statistics, only messages.
 reports=no
