@@ -90,7 +90,6 @@ checkfile() {
         ( pylint\
             --profile=no\
             --persistent=no\
-            --output-format=parseable\
             --reports=no\
             ${FILE}\
             2>&1
