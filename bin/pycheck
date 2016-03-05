@@ -88,8 +88,6 @@ checkfile() {
         #   UserWarning: parseable output format is deprecated
         # but there is no way to suppress it.
         ( pylint\
-            --profile=no\
-            --persistent=no\
             --reports=no\
             ${FILE}\
             2>&1
