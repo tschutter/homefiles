@@ -561,6 +561,20 @@ def configure_wm_keybindings(args):
     xfwm4_remove_key_binding(args, "/xfwm4/custom/<Control>F3")
     xfwm4_remove_key_binding(args, "/xfwm4/custom/<Control>F4")
 
+    # <Control><Alt>Left moves to the previous workspace, so make
+    # <Shift><Alt>Left move the current window to the previous
+    # workspace.
+    xfwm4_add_key_binding(
+        args,
+        "/xfwm4/custom/<Shift><Alt>Left",
+        "move_window_prev_workspace_key"
+    )
+    xfwm4_add_key_binding(
+        args,
+        "/xfwm4/custom/<Shift><Alt>Right",
+        "move_window_next_workspace_key"
+    )
+
     # By default <Super>e launches Leafpad.  But I use Emacs not
     # Leafpad.  Bind <Super>e to the file manager instead like Windows
     # does.
