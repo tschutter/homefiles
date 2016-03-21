@@ -103,6 +103,13 @@ complete -o nospace -F _uuu uuu
 _uuuu() { _basecd ../../../../; }
 complete -o nospace -F _uuuu uuuu
 
+# Use fasd(1) to maintain a jump-list of directories.
+# https://github.com/clvv/fasd
+_FASD_DATA="${XDG_CACHE_HOME:-$HOME/.cache}/fasd"
+MANPATH=${MANPATH}:${HOME}/.homefiles/man
+. ${HOME}/.homefiles/bin/fasd
+eval "$(fasd --init auto)"
+
 # The __git_ps1() function defined by git-completion.bash has a number
 # of configuration settings.
 # Show unstaged (*) and staged (+) changes next to the branch name.
