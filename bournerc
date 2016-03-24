@@ -178,23 +178,24 @@ __git_ps1() {
 # \t the current time in 24-hour HH:MM:SS format
 # \w the current working directory, with $HOME abbreviated with a tilde
 # \e]0;STRING\a sets the icon name and window title to STRING
+# _PS1_FASD is set by kshrc because PROMPT_COMMAND is not available in ksh.
 ps1-default() {
     # Default prompt string.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_FASD}${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 ps1-time() {
     # Prompt string with timestamp.  Useful if you want to know when a
     # command was run.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_FASD}${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 ps1-history() {
     # Prompt string with history numbers.
     if [ "${EMACS}" != "t" ]; then
-        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
+        PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_FASD}${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 

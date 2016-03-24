@@ -26,6 +26,17 @@ bind '^XF'=end-of-line # end
 bind '^[[3'=prefix-2 2>/dev/null # del prep on OpenBSD < 5.2
 bind '^[[3~'=delete-char-forward # del
 
+# Use fasd(1) to maintain a jump-list of directories.
+# https://github.com/clvv/fasd
+_FASD_DATA="${XDG_CACHE_HOME:-$HOME/.cache}/fasd"
+_FASD_AWK=awk
+MANPATH=${MANPATH}:${HOME}/.homefiles/man
+. ${HOME}/.homefiles/bin/fasd
+eval "$(fasd --init auto)"
+_PS1_FASD='$(_fasd_ps1_func)'
+# Re-select the default prompt string to pickup _PS1_FASD.
+ps1-default
+
 # Source local kshrc.
 if [ -f ~/.kshrc-local ]; then
     . ~/.kshrc-local
