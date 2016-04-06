@@ -122,6 +122,7 @@ fi
 if [ "${HAS_PIP}" = "true" ]; then
     # Python packages via pip.
     PYPI_PACKAGES="\
+        setuptools\
         goobook\
         line_profiler\
         pyprof2calltree\
