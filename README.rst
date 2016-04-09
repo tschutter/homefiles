@@ -8,7 +8,7 @@ OpenBSD::
 
     MIRROR=http://mirror.esc7.net/pub/OpenBSD/
     PKG_PATH=${MIRROR}`uname -r`/packages/`uname -m`/; export PKG_PATH
-    sudo pkg_add -i -z git python-3*
+    doas pkg_add -i -z git python-3*
 
 Debian, Ubuntu::
 

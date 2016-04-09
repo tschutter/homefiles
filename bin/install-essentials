@@ -72,7 +72,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
     "
         #emacs-python\
 
-    sudo pkg_add -i -z ${PACKAGES}
+    doas pkg_add -i -z ${PACKAGES}
 
 elif [ -x "/usr/bin/zypper" ]; then
     # OpenSUSE.
