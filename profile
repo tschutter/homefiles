@@ -59,7 +59,7 @@ PYTHONPATH=${HOME}/.homefiles/lib/python; export PYTHONPATH
 
 if [ "${_UNAME}" = "OpenBSD" ]; then
     # Source directory for pkg_add.
-    MIRROR=http://ftp3.usa.openbsd.org/pub/OpenBSD/
+    MIRROR=http://mirror.esc7.net/pub/OpenBSD/
     PKG_PATH=${MIRROR}`uname -r`/packages/`uname -m`/; export PKG_PATH
 fi
 
