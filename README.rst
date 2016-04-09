@@ -9,6 +9,7 @@ OpenBSD::
     MIRROR=http://mirror.esc7.net/pub/OpenBSD/
     PKG_PATH=${MIRROR}`uname -r`/packages/`uname -m`/; export PKG_PATH
     doas pkg_add -i -z git python-3*
+    echo "XTerm*loginShell: true" >> ~/.Xdefaults
 
 Debian, Ubuntu::
 
