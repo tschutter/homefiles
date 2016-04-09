@@ -5,6 +5,11 @@
 
 ROOTDIR="${HOME}/.homefiles"
 HAS_PIP=true
+if [ -x "/usr/bin/doas" ]; then
+    SUDO="/usr/bin/doas"
+else
+    SUDO="sudo"
+fi
 
 if [ -x "/usr/bin/apt-get" ]; then
     # Debian derivatives.
@@ -41,23 +46,22 @@ if [ -x "/usr/bin/apt-get" ]; then
         xzgv\
     "
 
-    sudo apt-get install ${PACKAGES}
+    ${SUDO} apt-get install ${PACKAGES}
 
     # Set the executable from xfce4-terminal as the default xterm.
     # rxvt-unicode suffers from the Ctrl-Shift gives yellow box problem.
-    sudo update-alternatives --set x-terminal-emulator /usr/bin/xfce4-terminal.wrapper
+    ${SUDO} update-alternatives --set x-terminal-emulator /usr/bin/xfce4-terminal.wrapper
 
 elif [ -x "/usr/sbin/pkg_add" ]; then
     # OpenBSD.
     # pkg_add supports `stems with flavors', that is, a stem separated
     # from flavors with a double dash.  "screen--" matches only the
     # normal flavor, "screen--static" matches only the static flavor.
-    # http://ftp3.usa.openbsd.org/pub/OpenBSD/<VERSION>/packages/amd64/
+    # http://mirror.esc7.net/pub/OpenBSD/<VERSION>/packages/amd64/
     PACKAGES="\
         git\
-        mutt\
-        py-pip\
-        python\
+        mutt--\
+        python-3*\
         emacs--gtk3\
         pep8\
         psutils--\
@@ -90,7 +94,7 @@ elif [ -x "/usr/bin/zypper" ]; then
         xzgv\
     "
 
-    sudo zypper install --auto-agree-with-licenses --no-recommends ${PACKAGES}
+    ${SUDO} zypper install --auto-agree-with-licenses --no-recommends ${PACKAGES}
 
     HAS_PIP=false
 
@@ -110,7 +114,7 @@ elif [ -x "/usr/bin/yum" ]; then
         xzgv\
     "
 
-    sudo yum install ${PACKAGES}
+    ${SUDO} yum install ${PACKAGES}
 
     HAS_PIP=false
 
@@ -129,7 +133,7 @@ if [ "${HAS_PIP}" = "true" ]; then
     "
 
     echo "INFO: Installing Python packages..."
-    sudo pip install --upgrade ${PYPI_PACKAGES}
+    ${SUDO} pip install --upgrade ${PYPI_PACKAGES}
 fi
 
 # As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
@@ -139,12 +143,12 @@ cd /tmp
 
 tar xzf ${ROOTDIR}/packages/agr-ropemode-584d3eba7ca6.tar.gz
 cd agr-ropemode-584d3eba7ca6
-sudo /usr/bin/env python setup.py --quiet install
+${SUDO} /usr/bin/env python setup.py --quiet install
 cd ..
-sudo rm -rf agr-ropemode-584d3eba7ca6
+${SUDO} rm -rf agr-ropemode-584d3eba7ca6
 
 tar xzf ${ROOTDIR}/packages/agr-ropemacs-7af544334b85.tar.gz
 cd agr-ropemacs-7af544334b85
-sudo /usr/bin/env python setup.py --quiet install
+${SUDO} /usr/bin/env python setup.py --quiet install
 cd ..
-sudo rm -rf agr-ropemacs-7af544334b85
+${SUDO} rm -rf agr-ropemacs-7af544334b85
