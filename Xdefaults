@@ -1,0 +1,7 @@
+! http://www.openbsd.org/faq/faq8.html#ksh
+!
+! OpenBSD has chosen to follow the X.org behavior which is to not
+! start the shell in xterm as a login shell.  Starting as a login
+! shell is necessary for ksh to load ~/.profile.
+!
+XTerm*loginShell: true

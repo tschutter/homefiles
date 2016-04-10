@@ -455,8 +455,14 @@ def link_dotfiles(args, explicit_cache_dir):
 
     make_dot_link(args, file_in_path("w3m"), "w3m")
 
-    # Smack the ~/.Xdefaults and ~/.Xresources link if they exist.
-    clean_link(args, os.path.join(args.homedir, ".Xdefaults"))
+    if sys.platform.startswith("openbsd"):
+        # Load ~/.profile in new xterm.
+        make_dot_link(args, True, "Xdefaults")
+    else:
+        # Smack ~/.Xdefaults if it exists.
+        clean_link(args, os.path.join(args.homedir, ".Xdefaults"))
+
+    # Smack ~/.Xresources if it exists.
     clean_link(args, os.path.join(args.homedir, ".Xresources"))
 
     # xxxterm is previous name for xombrero.
