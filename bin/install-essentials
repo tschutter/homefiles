@@ -4,11 +4,10 @@
 #
 
 ROOTDIR="${HOME}/.homefiles"
-HAS_PIP=true
 if [ -x "/usr/bin/doas" ]; then
     SUDO="/usr/bin/doas"
 else
-    SUDO="sudo"
+    SUDO="sudo --set-home"
 fi
 
 if [ -x "/usr/bin/apt-get" ]; then
@@ -96,8 +95,6 @@ elif [ -x "/usr/bin/zypper" ]; then
 
     ${SUDO} zypper install --auto-agree-with-licenses --no-recommends ${PACKAGES}
 
-    HAS_PIP=false
-
 elif [ -x "/usr/bin/yum" ]; then
     # Red Hat, CentOS.
     # http://mirror.centos.org/centos/6/os/x86_64/Packages/
@@ -116,39 +113,81 @@ elif [ -x "/usr/bin/yum" ]; then
 
     ${SUDO} yum install ${PACKAGES}
 
-    HAS_PIP=false
-
 else
     echo "ERROR: Unknown package manager."
     exit 1
 fi
 
-if [ "${HAS_PIP}" = "true" ]; then
-    # Python packages via pip.
-    PYPI_PACKAGES="\
-        setuptools\
-        goobook\
-        line_profiler\
-        pyprof2calltree\
-    "
+# Determine which versions of Python are installed.
+for ROOTDIR in /usr/bin /usr/local/bin; do
+    for PYTHON in ${ROOTDIR}/python[23].[0123456789]; do
+        VERSION=`echo ${PYTHON} | grep -o '[23]\.[0123456789]'`
+        VERSIONS="${VERSIONS} ${VERSION}"
+    done
+done
 
-    echo "INFO: Installing Python packages..."
-    ${SUDO} pip install --upgrade ${PYPI_PACKAGES}
-fi
+# Install pip for each version of installed Python.
+GET_PIP_URL="https://bootstrap.pypa.io/get-pip.py"
+GET_PIP=/tmp/get-pip.py
+for VERSION in ${VERSIONS}; do
+    # Find the corresponding version of pip.
+    FOUND_PIP=false
+    for ROOTDIR in /usr/bin /usr/local/bin; do
+        if [ -x ${ROOTDIR}/pip${VERSION} ]; then
+            FOUND_PIP=true
+        fi
+    done
+
+    if [ "${FOUND_PIP}" = false ]; then
+        PIP=pip${VERSION}
+        if [ ! -f "${GET_PIP}" ]; then
+            echo "INFO: Fetching ${GET_PIP_URL}..."
+            wget --quiet -O ${GET_PIP} ${GET_PIP_URL}
+        fi
+        echo "INFO: Installing ${PIP}..."
+        ${SUDO} python${VERSION} ${GET_PIP}
+    fi
+done
+
+# Python packages via pip.
+# Note that setuptools and wheel should have been installed by get-pip.py
+PYPI_PACKAGES="\
+    goobook\
+    line_profiler\
+    pyflakes\
+    pylint\
+    pyprof2calltree\
+    rst2pdf\
+"
+for VERSION in ${VERSIONS}; do
+    PYTHON=python${VERSION}
+    PIP=""
+    for ROOTDIR in /usr/bin /usr/local/bin; do
+        if [ -x ${ROOTDIR}/pip${VERSION} ]; then
+            PIP=${ROOTDIR}/pip${VERSION}
+        fi
+    done
+    if [ "${PIP}" != "" ]; then
+        for PACKAGE in ${PYPI_PACKAGES}; do
+            echo "INFO: Installing ${PACKAGE} using pip${VERSION}..."
+            ${SUDO} ${PYTHON} ${PIP} install --quiet --upgrade ${PACKAGE}
+        done
+    fi
+done
 
 # As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
 # ignores the ropemacs-enable-shortcuts variable when loading.
 # Therefore we load it the hard way.
-cd /tmp
-
-tar xzf ${ROOTDIR}/packages/agr-ropemode-584d3eba7ca6.tar.gz
-cd agr-ropemode-584d3eba7ca6
-${SUDO} /usr/bin/env python setup.py --quiet install
-cd ..
-${SUDO} rm -rf agr-ropemode-584d3eba7ca6
-
-tar xzf ${ROOTDIR}/packages/agr-ropemacs-7af544334b85.tar.gz
-cd agr-ropemacs-7af544334b85
-${SUDO} /usr/bin/env python setup.py --quiet install
-cd ..
-${SUDO} rm -rf agr-ropemacs-7af544334b85
+#cd /tmp
+#
+#tar xzf ${ROOTDIR}/packages/agr-ropemode-584d3eba7ca6.tar.gz
+#cd agr-ropemode-584d3eba7ca6
+#${SUDO} /usr/bin/env python setup.py --quiet install
+#cd ..
+#${SUDO} rm -rf agr-ropemode-584d3eba7ca6
+#
+#tar xzf ${ROOTDIR}/packages/agr-ropemacs-7af544334b85.tar.gz
+#cd agr-ropemacs-7af544334b85
+#${SUDO} /usr/bin/env python setup.py --quiet install
+#cd ..
+#${SUDO} rm -rf agr-ropemacs-7af544334b85
