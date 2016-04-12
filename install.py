@@ -438,16 +438,17 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, vim_installed, "vimrc")
     mkdir(args, vim_installed, os.path.join(explicit_cache_dir, "vim"), 0o700)
 
+    xfce4_config_dir = os.path.join(args.homedir, ".config", "xfce4")
     mkdir(
         args,
         file_in_path("xfce4-terminal"),
-        ".config/xfce4",
+        xfce4_config_dir,
         0o700
     )
     mkdir(
         args,
         file_in_path("xfce4-terminal"),
-        ".config/xfce4/terminal",
+        os.path.join(xfce4_config_dir, "terminal"),
         0o700
     )
     make_link(
