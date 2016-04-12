@@ -5,6 +5,7 @@
 
 ROOTDIR="${HOME}/.homefiles"
 if [ -x "/usr/bin/doas" ]; then
+    HOME=/root
     SUDO="/usr/bin/doas"
 else
     SUDO="sudo --set-home"
