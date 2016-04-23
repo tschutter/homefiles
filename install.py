@@ -344,6 +344,8 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, enabled, "bash_logout")
     mkdir(args, enabled, os.path.join(args.cache_dir, "bash"), 0o700)
 
+    make_dot_link(args, file_in_path("cwm"), "cwmrc")
+
     clean_link(args, os.path.join(args.homedir, ".emacs"))
     # ~/.cache/emacs is created by ~/.emacs.d/init.el
 
