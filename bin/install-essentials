@@ -63,6 +63,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         mutt--\
         python-3*\
         emacs--gtk3\
+        password-store\
         pep8\
         psutils--\
         py-pip\
