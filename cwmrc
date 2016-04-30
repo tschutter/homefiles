@@ -32,6 +32,7 @@ sticky yes
 bind 4-a      menu_cmd
 bind 4S-a     menusearch
 
+# Application shortcuts.
 bind 4-e      thunar
 bind 4-t      "xterm -ls"
 bind 4-w      firefox
@@ -44,30 +45,31 @@ bind 4-k      delete
 bind 4-z      restart
 bind 4-q      quit
 
-# Show groups.
-bind 4-0      nogroup
-bind 4-1      grouponly1
-bind 4-2      grouponly2
-bind 4-3      grouponly3
-bind 4-4      grouponly4
-bind 4-5      grouponly5
-bind 4-6      grouponly6
-bind 4-7      grouponly7
-bind 4-8      grouponly8
-bind 4-9      grouponly9
+# Switch between virtual desktops.
+# We use 4-F1 instead of 4-1 because 4-1 doesn't work in xfwm4.
+bind 4-F1     grouponly1
+bind 4-F2     grouponly2
+bind 4-F3     grouponly3
+bind 4-F4     grouponly4
+bind 4-F5     grouponly5
+bind 4-F6     grouponly6
+bind 4-F7     grouponly7
+bind 4-F8     grouponly8
+bind 4-F9     grouponly9
+bind 4-F10    nogroup
 bind 4-Left   lcyclegroup
 bind 4-Right  cyclegroup
 
-# Assign current window to a group.
-bind 4M-1     movetogroup1
-bind 4M-2     movetogroup2
-bind 4M-3     movetogroup3
-bind 4M-4     movetogroup4
-bind 4M-5     movetogroup5
-bind 4M-6     movetogroup6
-bind 4M-7     movetogroup7
-bind 4M-8     movetogroup8
-bind 4M-9     movetogroup9
+# Assign current window to a virtual desktop.
+bind 4M-F1    movetogroup1
+bind 4M-F2    movetogroup2
+bind 4M-F3    movetogroup3
+bind 4M-F4    movetogroup4
+bind 4M-F5    movetogroup5
+bind 4M-F6    movetogroup6
+bind 4M-F7    movetogroup7
+bind 4M-F8    movetogroup8
+bind 4M-F9    movetogroup9
 
 # Cycle through windows.
 bind 4-Tab    cycle
