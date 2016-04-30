@@ -605,6 +605,40 @@ def configure_wm_keybindings(args):
         "exo-open --launch FileManager"
     )
 
+    # Use the Windows key "<Super>" to manipulate windows.
+    winkey = "/xfwm4/custom/<Super>"
+    altwinkey = "/xfwm4/custom/<Super><Alt>"
+    xfwm4_add_key_binding(args, winkey + "Left", "prev_workspace_key")
+    xfwm4_add_key_binding(args, winkey + "Right", "next_workspace_key")
+    for num in range(1, 10):
+        xfwm4_add_key_binding(
+            args,
+            winkey + "F{0}".format(num),
+            "workspace_{0}_key".format(num)
+        )
+    xfwm4_add_key_binding(
+        args,
+        altwinkey + "Left",
+        "move_window_prev_workspace_key"
+    )
+    xfwm4_add_key_binding(
+        args,
+        altwinkey + "Right",
+        "move_window_next_workspace_key"
+    )
+    for num in range(1, 10):
+        xfwm4_add_key_binding(
+            args,
+            altwinkey + "F{0}".format(num),
+            "move_window_workspace_{0}_key".format(num)
+        )
+
+    # But these do not work.
+    xfwm4_remove_key_binding(args, "/commands/custom/<Super>1")
+    xfwm4_remove_key_binding(args, "/commands/custom/<Super>2")
+    xfwm4_add_key_binding(args, winkey + "1", "workspace_1_key")
+    xfwm4_add_key_binding(args, winkey + "2", "workspace_2_key")
+
 
 def create_tmp_file(prefix, suffix, content_bytes):
     """Create a temporary file containing contents."""
