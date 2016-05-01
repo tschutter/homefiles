@@ -4,6 +4,7 @@ ColorBackground=#ffffffffffff
 ColorCursor=#a3d6a3d6a3d6
 ColorSelection=#e3d6e3d6e3d6
 ColorSelectionUseDefault=FALSE
+CommandLoginShell=TRUE
 FontName=Ubuntu Mono 12
 MiscAlwaysShowTabs=FALSE
 MiscBell=FALSE
