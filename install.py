@@ -484,6 +484,14 @@ def link_dotfiles(args, explicit_cache_dir):
     make_link(args, file_in_path("xxxterm"), "xombrero.conf", ".xxxterm.conf")
     make_dot_link(args, file_in_path("xombrero"), "xombrero.conf")
 
+    mkdir(
+        args,
+        file_in_path("xpra"),
+        os.path.join(args.homedir, ".xpra"),
+        0o700
+    )
+    make_link(args, file_in_path("xpra"), "xpra.conf", ".xpra/xpra.conf")
+
     make_dot_link(args, args.is_xwindows, "xsessionrc")
 
 
