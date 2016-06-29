@@ -605,17 +605,30 @@ def configure_wm_keybindings(args):
     )
 
     # By default <Super>e launches Leafpad.  But I use Emacs not
-    # Leafpad.  Bind <Super>e to the file manager instead like Windows
-    # does.
+    # Leafpad.
     xfwm4_add_key_binding(
         args,
         "/commands/custom/<Super>e",
+        "emacs"
+    )
+
+    # Use <Super>f to launch a file manager.
+    xfwm4_add_key_binding(
+        args,
+        "/commands/custom/<Super>f",
         "exo-open --launch FileManager"
+    )
+
+    # Use <Super>t to launch a terminal window.
+    xfwm4_add_key_binding(
+        args,
+        "/commands/custom/<Super>t",
+        "exo-open --launch TerminalEmulator"
     )
 
     # Use the Windows key "<Super>" to manipulate windows.
     winkey = "/xfwm4/custom/<Super>"
-    altwinkey = "/xfwm4/custom/<Super><Alt>"
+    ctrlwinkey = "/xfwm4/custom/<Super><Ctrl>"
     xfwm4_add_key_binding(args, winkey + "Left", "prev_workspace_key")
     xfwm4_add_key_binding(args, winkey + "Right", "next_workspace_key")
     for num in range(1, 10):
@@ -626,18 +639,18 @@ def configure_wm_keybindings(args):
         )
     xfwm4_add_key_binding(
         args,
-        altwinkey + "Left",
+        ctrlwinkey + "Left",
         "move_window_prev_workspace_key"
     )
     xfwm4_add_key_binding(
         args,
-        altwinkey + "Right",
+        ctrlwinkey + "Right",
         "move_window_next_workspace_key"
     )
     for num in range(1, 10):
         xfwm4_add_key_binding(
             args,
-            altwinkey + "F{0}".format(num),
+            ctrlwinkey + "F{0}".format(num),
             "move_window_workspace_{0}_key".format(num)
         )
 
