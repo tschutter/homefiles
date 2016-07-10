@@ -31,8 +31,6 @@ if [ -x "/usr/bin/apt-get" ]; then
         ncurses-term\
         psutils\
         pychecker\
-        pyflakes\
-        pylint\
         pymacs\
         python-docutils\
         python-pip\
@@ -64,11 +62,8 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         python-3*\
         emacs--gtk3\
         password-store\
-        pep8\
         psutils--\
         py-pip\
-        pylint\
-        pyflakes\
         rxvt-unicode\
         ucpp\
         w3m--\
@@ -153,9 +148,11 @@ done
 
 # Python packages via pip.
 # Note that setuptools and wheel should have been installed by get-pip.py
+# 2016-07-10 pip refuses to install PyChecker
 PYPI_PACKAGES="\
     goobook\
     line_profiler\
+    pep8\
     pyflakes\
     pylint\
     pyprof2calltree\
