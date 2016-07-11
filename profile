@@ -59,8 +59,8 @@ PYTHONPATH=${HOME}/.homefiles/lib/python; export PYTHONPATH
 
 if [ "${_UNAME}" = "OpenBSD" ]; then
     # Source directory for pkg_add.
-    MIRROR=http://mirror.esc7.net/pub/OpenBSD/
-    PKG_PATH=${MIRROR}`uname -r`/packages/`uname -m`/; export PKG_PATH
+    MIRROR=http://mirror.esc7.net/pub/OpenBSD
+    PKG_PATH=${MIRROR}/%v/packages/%a/; export PKG_PATH
 fi
 
 # Use less(1) for a pager.
