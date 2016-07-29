@@ -22,8 +22,12 @@
 #endif
 
 ! emacs(1) settings.
-Emacs.font: FONT
-Emacs.geometry: TEXT_GEOMETRY
+! When launched from a terminal, "emacs" is used.
+! When launched from the Xfce whisker menu, "emacs24" is used.
+emacs.font: FONT
+emacs.geometry: TEXT_GEOMETRY
+emacs24.font: FONT
+emacs24.geometry: TEXT_GEOMETRY
 
 ! rxvt-unicode(1) settings.
 URxvt.font: xft:FONT
