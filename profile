@@ -48,6 +48,10 @@ fi
 # Prepend user's bin directory to the path.
 path_prepend ${HOME}/bin
 
+# Use the ISO 8601 date format (YYYY-MM-DD).
+# http://kb.mozillazine.org/Date_display_format
+export LC_TIME=en_DK.utf8
+
 # MySQL history.
 MYSQL_HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/mysql/history"; export MYSQL_HISTFILE
 
