@@ -80,10 +80,13 @@ Linux Mint
 Firefox
 ~~~~~~~
 
+#. Install Bluhell Firewall, the lightweight Ad-Blocker and
+   Tracking/Privacy Protector.  Use the Firefox Add-ons menu.
+   
 #. Install KeySnail to get Emacs keybindings in Firefox::
 
-    wget https://github.com/mooz/keysnail/raw/master/keysnail.xpi
-    firefox keysnail.xpi
+    wget -P /tmp https://github.com/mooz/keysnail/raw/master/keysnail.xpi
+    firefox /tmp/keysnail.xpi
 
 ----------------------------------------------------------------------
 
