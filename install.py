@@ -515,6 +515,7 @@ def link_binfiles(args):
     make_link(args, True, "bin/svn-ignore")
     make_link(args, True, "bin/ssh-reverse-tunnel")
     make_link(args, True, "bin/tgrep")
+    make_link(args, os.path.exists("/usr/bin/thunderbird"), "bin/thunderbird")
     make_link(args, True, "bin/tm")
     make_link(args, True, "bin/unicode2ascii")
 

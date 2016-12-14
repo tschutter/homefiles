@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Launch Thunderbird but display dates in ISO-8601 format.
+#
+
+export LC_TIME=en_DK.utf8
+
+exec /usr/bin/thunderbird
