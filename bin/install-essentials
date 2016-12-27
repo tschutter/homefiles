@@ -71,6 +71,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
 
     if ${HAS_X}; then
         # password-store requires xclip
+        # ucpp is used by .xsessionrc
         PACKAGES="\
             ${PACKAGES}\
             emacs--gtk3\

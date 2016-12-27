@@ -476,7 +476,7 @@ def link_dotfiles(args, explicit_cache_dir):
 
     make_dot_link(args, exe_in_path("w3m"), "w3m")
 
-    if sys.platform.startswith("openbsd"):
+    if sys.platform.startswith("openbsd") and args.is_xwindows:
         # Load ~/.profile in new xterm.
         make_dot_link(args, True, "Xdefaults")
     else:
@@ -807,7 +807,10 @@ def main():
     # Determine what platform we are on.
     args.is_cygwin = sys.platform == "cygwin"
     args.is_windows = sys.platform.startswith("win")
-    args.is_xwindows = not (args.is_cygwin or args.is_windows)
+    args.is_xwindows = (
+        exe_in_path("xterm") and
+        not (args.is_cygwin or args.is_windows)
+    )
 
     # Ensure that directories exist.
     mkdir(args, True, args.cache_dir, 0o700)
