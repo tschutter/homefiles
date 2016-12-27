@@ -103,8 +103,13 @@ def mkdir(args, enabled, directory, mode):
         clean_link(args, directory, False)
 
 
-def file_in_path(filename):
-    """Returns True if filename is in PATH."""
+def is_exe(pathname):
+    """Returns True if pathname is an executable file."""
+    return os.path.isfile(pathname) and os.access(pathname, os.X_OK)
+
+
+def exe_in_path(filename):
+    """Returns True if filename is in PATH and is executable."""
     # Get the PATH.
     path = os.getenv("PATH", os.defpath)
 
@@ -114,8 +119,9 @@ def file_in_path(filename):
     # Loop through all of the path components searching for filename.
     for pathdir in path.split(os.pathsep):
         pathname = os.path.join(pathdir, filename)
-        if os.path.exists(pathname):
+        if is_exe(pathname):
             return True
+
     return False
 
 
@@ -275,7 +281,7 @@ def create_dotless(args):
     dotless_pathname = os.path.join(dotless_dir, "less")
     history_pathname = os.path.join(dotless_dir, "history")
 
-    enabled = file_in_path("less") and file_in_path("lesskey")
+    enabled = exe_in_path("less") and exe_in_path("lesskey")
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
             mkdir(args, True, dotless_dir, 0o700)
@@ -327,14 +333,14 @@ def link_dotfiles(args, explicit_cache_dir):
     # Determine if gvim or vim is installed.  Python 2.4 does not have any().
     vim_installed = False
     for exe in ["gvim", "vim", "vim.tiny"]:
-        vim_installed = file_in_path(exe)
+        vim_installed = exe_in_path(exe)
         if vim_installed:
             break
 
     # All files in private_dir must be checked for existence before
     # calling make_link in case private_dir does not exist.
-    make_dot_link(args, file_in_path("aspell"), "aspell.en.prepl")
-    make_dot_link(args, file_in_path("aspell"), "aspell.en.pws")
+    make_dot_link(args, exe_in_path("aspell"), "aspell.en.prepl")
+    make_dot_link(args, exe_in_path("aspell"), "aspell.en.pws")
     make_dot_link(args, True, "bournerc")
 
     enabled = os.path.exists("/bin/bash")
@@ -344,27 +350,27 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, enabled, "bash_logout")
     mkdir(args, enabled, os.path.join(args.cache_dir, "bash"), 0o700)
 
-    make_dot_link(args, file_in_path("cwm"), "cwmrc")
+    make_dot_link(args, exe_in_path("cwm"), "cwmrc")
 
     clean_link(args, os.path.join(args.homedir, ".emacs"))
     # ~/.cache/emacs is created by ~/.emacs.d/init.el
 
     if not sys.platform.startswith("openbsd"):
-        make_dot_link(args, file_in_path("vi"), "exrc")
+        make_dot_link(args, exe_in_path("vi"), "exrc")
 
-    make_dot_link(args, file_in_path("firefox"), "keysnail.js")
+    make_dot_link(args, exe_in_path("firefox"), "keysnail.js")
 
     make_link(args, True, "image/ironcat-80.jpg", ".face")
 
-    enabled = file_in_path("gdb")
+    enabled = exe_in_path("gdb")
     make_dot_link(args, enabled, "gdbinit")
     mkdir(args, enabled, os.path.join(explicit_cache_dir, "gdb"), 0o700)
 
-    make_dot_link(args, file_in_path("git"), "gitconfig")
+    make_dot_link(args, exe_in_path("git"), "gitconfig")
 
     goobookrc = os.path.join(args.private_dir, "goobookrc")
     if os.path.exists(goobookrc):
-        make_link(args, file_in_path("goobook"), goobookrc, ".goobookrc")
+        make_link(args, exe_in_path("goobook"), goobookrc, ".goobookrc")
 
     make_dot_link(args, True, "hushlogin")
 
@@ -379,43 +385,43 @@ def link_dotfiles(args, explicit_cache_dir):
 
     make_dot_link(
         args,
-        file_in_path("mail") or file_in_path("mutt"),
+        exe_in_path("mail") or exe_in_path("mutt"),
         "mailcap"
     )
 
-    make_dot_link(args, file_in_path("mg"), "mg")
+    make_dot_link(args, exe_in_path("mg"), "mg")
 
-    make_dot_link(args, file_in_path("mintty"), "minttyrc")
+    make_dot_link(args, exe_in_path("mintty"), "minttyrc")
 
-    enabled = file_in_path("mutt")
+    enabled = exe_in_path("mutt")
     make_dot_link(args, enabled, "mutt")
     # Create ~/.cache/mutt so mutt can store certs on first run.
     mkdir(args, enabled, os.path.join(explicit_cache_dir, "mutt"), 0o700)
 
-    make_dot_link(args, file_in_path("muttprint"), "muttprintrc")
+    make_dot_link(args, exe_in_path("muttprint"), "muttprintrc")
 
-    enabled = file_in_path("mysql")
+    enabled = exe_in_path("mysql")
     mkdir(args, enabled, os.path.join(args.cache_dir, "mysql"), 0o700)
 
     if sys.platform.startswith("openbsd"):
-        make_dot_link(args, file_in_path("vi"), "nexrc")
+        make_dot_link(args, exe_in_path("vi"), "nexrc")
 
-    enabled = file_in_path("orpie")
+    enabled = exe_in_path("orpie")
     make_dot_link(args, enabled, "orpierc")
     mkdir(args, enabled, os.path.join(args.cache_dir, "orpie"), 0o700)
 
     make_dot_link(args, True, "profile")
 
-    make_dot_link(args, file_in_path("pychecker"), "pycheckrc")
+    make_dot_link(args, exe_in_path("pychecker"), "pycheckrc")
 
-    enabled = file_in_path("pdb")
+    enabled = exe_in_path("pdb")
     make_dot_link(args, enabled, "pdbrc")
     make_dot_link(args, enabled, "pdbrc.py")
     mkdir(args, enabled, os.path.join(args.cache_dir, "pdb"), 0o700)
 
-    make_dot_link(args, file_in_path("pylint"), "pylintrc")
+    make_dot_link(args, exe_in_path("pylint"), "pylintrc")
 
-    enabled = file_in_path("python")
+    enabled = exe_in_path("python")
     clean_link(
         args,
         os.path.join(args.homedir, ".pythonstartup"),
@@ -423,18 +429,18 @@ def link_dotfiles(args, explicit_cache_dir):
     )
     mkdir(args, enabled, os.path.join(args.cache_dir, "python"), 0o700)
 
-    make_dot_link(args, file_in_path("screen"), "screenrc")
+    make_dot_link(args, exe_in_path("screen"), "screenrc")
 
     make_sig_link(args)
 
     if sys.platform.startswith("openbsd"):
         process_terminfo(args)
 
-    make_dot_link(args, file_in_path("tmux"), "tmux.conf")
+    make_dot_link(args, exe_in_path("tmux"), "tmux.conf")
 
-    make_dot_link(args, file_in_path("urxvt"), "urxvt")
+    make_dot_link(args, exe_in_path("urxvt"), "urxvt")
 
-    make_dot_link(args, file_in_path("valgrind"), "valgrindrc")
+    make_dot_link(args, exe_in_path("valgrind"), "valgrindrc")
 
     clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)
     make_dot_link(args, vim_installed, "vimrc")
@@ -443,32 +449,32 @@ def link_dotfiles(args, explicit_cache_dir):
     xfce4_config_dir = os.path.join(args.homedir, ".config", "xfce4")
     mkdir(
         args,
-        file_in_path("xfce4-terminal"),
+        exe_in_path("xfce4-terminal"),
         xfce4_config_dir,
         0o700
     )
     mkdir(
         args,
-        file_in_path("xfce4-terminal"),
+        exe_in_path("xfce4-terminal"),
         os.path.join(xfce4_config_dir, "terminal"),
         0o700
     )
     make_link(
         args,
-        file_in_path("xfce4-terminal"),
+        exe_in_path("xfce4-terminal"),
         "xfce4-terminal-terminalrc",
         ".config/xfce4/terminal/terminalrc"
     )
     make_link(
         args,
-        file_in_path("xfce4-terminal"),
+        exe_in_path("xfce4-terminal"),
         "xfce4-terminal-accels.scm",
         ".config/xfce4/terminal/accels.scm"
     )
 
-    make_dot_link(args, file_in_path("xzgv"), "xzgvrc")
+    make_dot_link(args, exe_in_path("xzgv"), "xzgvrc")
 
-    make_dot_link(args, file_in_path("w3m"), "w3m")
+    make_dot_link(args, exe_in_path("w3m"), "w3m")
 
     if sys.platform.startswith("openbsd"):
         # Load ~/.profile in new xterm.
@@ -481,16 +487,16 @@ def link_dotfiles(args, explicit_cache_dir):
     clean_link(args, os.path.join(args.homedir, ".Xresources"))
 
     # xxxterm is previous name for xombrero.
-    make_link(args, file_in_path("xxxterm"), "xombrero.conf", ".xxxterm.conf")
-    make_dot_link(args, file_in_path("xombrero"), "xombrero.conf")
+    make_link(args, exe_in_path("xxxterm"), "xombrero.conf", ".xxxterm.conf")
+    make_dot_link(args, exe_in_path("xombrero"), "xombrero.conf")
 
     mkdir(
         args,
-        file_in_path("xpra"),
+        exe_in_path("xpra"),
         os.path.join(args.homedir, ".xpra"),
         0o700
     )
-    make_link(args, file_in_path("xpra"), "xpra.conf", ".xpra/xpra.conf")
+    make_link(args, exe_in_path("xpra"), "xpra.conf", ".xpra/xpra.conf")
 
     make_dot_link(args, args.is_xwindows, "xsessionrc")
 
@@ -506,8 +512,8 @@ def link_binfiles(args):
     make_link(args, True, "bin/findfile")
     make_link(args, True, "bin/hed")
     make_link(args, True, "bin/install-essentials")
-    make_link(args, file_in_path("gnome-open"), "bin/mailto-gmail")
-    make_link(args, file_in_path("mutt"), "bin/mailto-mutt")
+    make_link(args, exe_in_path("gnome-open"), "bin/mailto-gmail")
+    make_link(args, exe_in_path("mutt"), "bin/mailto-mutt")
     make_link(args, True, "bin/open")
     make_link(args, True, "bin/pycheck")
     make_link(args, True, "bin/strip-bom")
