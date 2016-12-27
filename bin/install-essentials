@@ -11,6 +11,8 @@ else
     SUDO="sudo --set-home"
 fi
 
+HAS_X=true
+
 if [ -x "/usr/bin/apt-get" ]; then
     # Debian derivatives.
     # http://packages.ubuntu.com/
@@ -33,7 +35,6 @@ if [ -x "/usr/bin/apt-get" ]; then
         pychecker\
         pymacs\
         python-docutils\
-        python-pip\
         python-rope\
         python2.7-dev\
         python2.7-doc\
@@ -58,19 +59,34 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
     # http://mirror.esc7.net/pub/OpenBSD/<VERSION>/packages/amd64/
     PACKAGES="\
         git\
-        mutt--\
         python-3*\
-        emacs--gtk3\
-        password-store\
-        psutils--\
-        py-pip\
-        rxvt-unicode\
-        ucpp\
-        w3m--\
         wget\
-        xsel\
     "
+        #mutt--\
         #emacs-python\
+
+    if [ ! -x /usr/X11R6/bin/xterm ]; then
+        HAS_X=false
+    fi
+
+    if ${HAS_X}; then
+        # password-store requires xclip
+        PACKAGES="\
+            ${PACKAGES}\
+            emacs--gtk3\
+            password-store\
+            psutils--\
+            rxvt-unicode\
+            ucpp\
+            w3m--\
+            xsel\
+        "
+    else
+        PACKAGES="\
+            ${PACKAGES}\
+            emacs--no_x11\
+        "
+    fi
 
     doas pkg_add -i -z ${PACKAGES}
 
@@ -156,8 +172,13 @@ PYPI_PACKAGES="\
     pyflakes\
     pylint\
     pyprof2calltree\
-    rst2pdf\
 "
+if ${HAS_X}; then
+    PYPI_PACKAGES="\
+        ${PYPI_PACKAGES}\
+        rst2pdf\
+    "
+fi
 for VERSION in ${VERSIONS}; do
     PYTHON=python${VERSION}
     PIP=""
