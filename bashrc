@@ -13,7 +13,9 @@ fi
 PROMPT_DIRTRIM=4
 
 # Don't save duplicate lines in the history list.
-# Do save lines that begin with a space; I sometimes accidently do that.
+# Do save lines that begin with a space by not including ignorespace;
+# many times there are leading spaces when pasting a group of
+# commands.
 HISTCONTROL=ignoredups
 
 # Add a timestamp to history output.
