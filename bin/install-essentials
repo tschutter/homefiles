@@ -13,7 +13,7 @@ fi
 
 HAS_X=true
 
-if [ -x "/usr/bin/apt-get" ]; then
+if [ -x "/usr/bin/apt" ]; then
     # Debian derivatives.
     # http://packages.ubuntu.com/
     # sudo apt-cache search REGEX
@@ -24,6 +24,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         git\
         git-doc\
         git-man\
+        global\
         libdata-ical-perl\
         libnotify-bin\
         libtext-autoformat-perl\
@@ -45,7 +46,7 @@ if [ -x "/usr/bin/apt-get" ]; then
         xzgv\
     "
 
-    ${SUDO} apt-get install ${PACKAGES}
+    ${SUDO} apt install ${PACKAGES}
 
     # Set the executable from xfce4-terminal as the default xterm.
     # rxvt-unicode suffers from the Ctrl-Shift gives yellow box problem.
