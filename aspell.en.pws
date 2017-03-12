@@ -1,16 +1,14 @@
-personal_ws-1.1 en 133 
+personal_ws-1.1 en 134 
 PxPoint
 chainring
 mdallin
 hgoldstein
 Skylar
-potentiometer
 stunnel
 degreaser
 tschutter
 whitespace
 Dremel
-microcontroller
 Greenberg
 ATmega
 Molex
@@ -37,6 +35,7 @@ Cygwin
 Schutter
 CoreLogic
 tuple
+microcontrollers
 Acholi
 geospatial
 Ochira
@@ -70,16 +69,16 @@ bostone
 OPAS
 daparicio
 SharePoint
-nparian
 polenta
+nparian
 bthelen
+DevTimeTracker
 Namusisi
 Valgrind
 xfwm
 sbauer
 GISPortal
 PostScript
-microcontrollers
 ssundahl
 schemas
 Skylar's
@@ -99,6 +98,7 @@ Robina
 Namugongo
 qau
 Jinja
+FireStationDrivingDistance
 boolean
 pnagy
 ESRI
@@ -106,6 +106,7 @@ rkodsy
 kwulff
 POSIX
 Tefula
+QGIS
 Navteq
 Bunyoro
 OpenGL
@@ -120,9 +121,10 @@ GitHub
 geocoding
 kshrc
 dbrouwer
+potentiometer
+microcontroller
 mdrollinger
 Benadryl
-FireStationDrivingDistance
 chreynolds
 Zener
 SiteScope
@@ -130,5 +132,4 @@ degreased
 Lapeta
 Bugzilla
 chiles
-DevTimeTracker
 PxPointJSON
