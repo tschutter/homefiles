@@ -39,6 +39,7 @@ if [ -x "/usr/bin/apt" ]; then
         python-rope\
         python2.7-dev\
         python2.7-doc\
+        shellcheck\
         tmux\
         w3m-el\
         w3m\
@@ -46,6 +47,7 @@ if [ -x "/usr/bin/apt" ]; then
         xzgv\
     "
 
+    # shellcheck disable=SC2086
     ${SUDO} apt install ${PACKAGES}
 
     # Set the executable from xfce4-terminal as the default xterm.
@@ -90,6 +92,7 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         "
     fi
 
+    # shellcheck disable=SC2086
     doas pkg_add -i -z ${PACKAGES}
 
 elif [ -x "/usr/bin/zypper" ]; then
@@ -102,12 +105,14 @@ elif [ -x "/usr/bin/zypper" ]; then
         lynx\
         mutt\
         rxvt-unicode\
+        shellcheck\
         tmux\
         w3m\
         xsel\
         xzgv\
     "
 
+    # shellcheck disable=SC2086
     ${SUDO} zypper install --auto-agree-with-licenses --no-recommends ${PACKAGES}
 
 elif [ -x "/usr/bin/yum" ]; then
@@ -126,6 +131,7 @@ elif [ -x "/usr/bin/yum" ]; then
         xzgv\
     "
 
+    # shellcheck disable=SC2086
     ${SUDO} yum install ${PACKAGES}
 
 else
@@ -136,7 +142,7 @@ fi
 # Determine which versions of Python are installed.
 for ROOTDIR in /usr/bin /usr/local/bin; do
     for PYTHON in ${ROOTDIR}/python[23].[0123456789]; do
-        VERSION=`echo ${PYTHON} | grep -o '[23]\.[0123456789]'`
+        VERSION=$(echo "${PYTHON}" | grep -o '[23]\.[0123456789]')
         VERSIONS="${VERSIONS} ${VERSION}"
     done
 done
@@ -148,7 +154,7 @@ for VERSION in ${VERSIONS}; do
     # Find the corresponding version of pip.
     FOUND_PIP=false
     for ROOTDIR in /usr/bin /usr/local/bin; do
-        if [ -x ${ROOTDIR}/pip${VERSION} ]; then
+        if [ -x "${ROOTDIR}/pip${VERSION}" ]; then
             FOUND_PIP=true
         fi
     done
@@ -160,7 +166,7 @@ for VERSION in ${VERSIONS}; do
             wget --quiet -O ${GET_PIP} ${GET_PIP_URL}
         fi
         echo "INFO: Installing ${PIP}..."
-        ${SUDO} python${VERSION} ${GET_PIP}
+        ${SUDO} "python${VERSION}" ${GET_PIP}
     fi
 done
 
@@ -185,14 +191,14 @@ for VERSION in ${VERSIONS}; do
     PYTHON=python${VERSION}
     PIP=""
     for ROOTDIR in /usr/bin /usr/local/bin; do
-        if [ -x ${ROOTDIR}/pip${VERSION} ]; then
+        if [ -x "${ROOTDIR}/pip${VERSION}" ]; then
             PIP=${ROOTDIR}/pip${VERSION}
         fi
     done
     if [ "${PIP}" != "" ]; then
         for PACKAGE in ${PYPI_PACKAGES}; do
             echo "INFO: Installing ${PACKAGE} using pip${VERSION}..."
-            ${SUDO} ${PYTHON} ${PIP} install --quiet --upgrade ${PACKAGE}
+            ${SUDO} "${PYTHON}" "${PIP}" install --quiet --upgrade "${PACKAGE}"
         done
     fi
 done
