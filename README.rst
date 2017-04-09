@@ -43,16 +43,6 @@ Some configuration is difficult to do via scripts.
 XUbuntu / xfce
 ~~~~~~~~~~~~~~
 
-#. Settings Manager -> Other -> Keyboard Input Methods
-
-   * In the "Next input method" row, click on the "..." button and select "Delete".
-
-     Alt-space is reserved for set-mark-command in Emacs.
-
-   * Uncheck "Show icon on system tray".
-
-     Why show an icon that only lets you select English?
-
 #. Settings Manager -> Personal -> Window Manager Tweaks -> Accessibility
 
    * Uncheck "Automatically tile windows when moving toward the screen
@@ -82,7 +72,7 @@ Firefox
 
 #. Install Bluhell Firewall, the lightweight Ad-Blocker and
    Tracking/Privacy Protector.  Use the Firefox Add-ons menu.
-   
+
 #. Install KeySnail to get Emacs keybindings in Firefox::
 
     wget -P /tmp https://github.com/mooz/keysnail/raw/master/keysnail.xpi
