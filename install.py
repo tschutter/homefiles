@@ -297,7 +297,10 @@ def create_dotless(args):
         clean_link(args, history_pathname)
         clean_link(args, dotless_dir)
 
-    if not args.dryrun:
+    # If not enabled, do not call make_link(), because make_link()
+    # assumes that the target exists, even if the second parameter is
+    # False.
+    if not args.dryrun and enabled:
         make_link(args, enabled, dotless_pathname, ".less")
 
 
