@@ -1,5 +1,8 @@
 # screen config file
 
+# Set the command character to C-b like tmux.
+escape ^Bb
+
 # Change scrollback to 2000 lines
 defscrollback 2000
 
