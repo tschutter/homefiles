@@ -20,7 +20,7 @@ Usage
 
 Initial checkout::
 
-    git clone --recursive git://github.com/tschutter/homefiles.git $HOME/.homefiles
+    git clone git://github.com/tschutter/homefiles.git $HOME/.homefiles
     cd $HOME/.homefiles
     ./install.py
     bin/install-essentials
