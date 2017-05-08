@@ -63,8 +63,12 @@ if [[ -n ${DISPLAY} ]]; then
 fi
 
 # Give a bit more information when tmuxinator completes.
+if [ -f /usr/share/bash-completion/completions/tmuxinator ]; then
+    # shellcheck disable=SC1091
+    source /usr/share/bash-completion/completions/tmuxinator
+fi
 function mux {
-    command mux $*;
+    command tmuxinator $*;
     echo "tmux list-sessions:";
     tmux list-sessions;
 }
