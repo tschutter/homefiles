@@ -1,5 +1,9 @@
 " vim and gvim config file
 
+" If vim hangs during startup, it is possible (likely) that it is
+" processing a very large viminfo file.  In that case, delete it:
+"   rm ~/.cache/vim/viminfo
+
 " Whoever designed the viminfo variable was smoking crack.  All we
 " want to do is specify the location of the viminfo file, but to do
 " so we must also specify the !, ', and % options as well.
