@@ -37,6 +37,21 @@ _PS1_FASD='$(_fasd_ps1_func)'
 # Re-select the default prompt string to pickup _PS1_FASD.
 ps1-default
 
+# KSH support for git-prompt.
+# https://gist.github.com/qbit/5483415
+. ~/.homefiles/ksh-git-prompt.sh
+
+# The __git_ps1() function defined by git-completion.bash has a number
+# of configuration settings.
+# Show unstaged (*) and staged (+) changes next to the branch name.
+GIT_PS1_SHOWDIRTYSTATE=t
+# Show stashed objects exist ($) next to the branch name.
+GIT_PS1_SHOWSTASHSTATE=t
+# Show untracked files exist (%) next to the branch name.
+GIT_PS1_SHOWUNTRACKEDFILES=t
+# Show the difference between HEAD and its upstream.
+GIT_PS1_SHOWUPSTREAM="auto"
+
 # Source local kshrc.
 if [ -f ~/.kshrc-local ]; then
     . ~/.kshrc-local
