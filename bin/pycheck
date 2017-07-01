@@ -89,6 +89,7 @@ checkfile() {
         # but there is no way to suppress it.
         ( pylint\
             --reports=no\
+            --score=no\
             ${FILE}\
             2>&1
         ) | grep -v -E '^\*\*\*|--msg-template'
