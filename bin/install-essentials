@@ -140,33 +140,42 @@ else
 fi
 
 # Determine which versions of Python are installed.
+PYTHON_VERSIONS=""
 for ROOTDIR in /usr/bin /usr/local/bin; do
     for PYTHON in ${ROOTDIR}/python[23].[0123456789]; do
         VERSION=$(echo "${PYTHON}" | grep -o '[23]\.[0123456789]')
-        VERSIONS="${VERSIONS} ${VERSION}"
+        PYTHON_VERSIONS="${PYTHON_VERSIONS} ${VERSION}"
     done
 done
+
+# Order them from newest to oldest.
+PYTHON_VERSIONS=$(
+    echo "${PYTHON_VERSIONS}" | tr " " "\n" | sort -r | uniq | tr "\n" " "
+)
+
+# Get the newest version.
+NEWEST_PYTHON_VERSION=$(echo "${PYTHON_VERSIONS}" | cut -d " " -f1)
 
 # Install pip for each version of installed Python.
 GET_PIP_URL="https://bootstrap.pypa.io/get-pip.py"
 GET_PIP=/tmp/get-pip.py
-for VERSION in ${VERSIONS}; do
+for PYTHON_VERSION in ${PYTHON_VERSIONS}; do
     # Find the corresponding version of pip.
     FOUND_PIP=false
     for ROOTDIR in /usr/bin /usr/local/bin; do
-        if [ -x "${ROOTDIR}/pip${VERSION}" ]; then
+        if [ -x "${ROOTDIR}/pip${PYTHON_VERSION}" ]; then
             FOUND_PIP=true
         fi
     done
 
     if [ "${FOUND_PIP}" = false ]; then
-        PIP=pip${VERSION}
+        PIP=pip${PYTHON_VERSION}
         if [ ! -f "${GET_PIP}" ]; then
             echo "INFO: Fetching ${GET_PIP_URL}..."
             wget --quiet -O ${GET_PIP} ${GET_PIP_URL}
         fi
         echo "INFO: Installing ${PIP}..."
-        ${SUDO} "python${VERSION}" ${GET_PIP}
+        ${SUDO} "python${PYTHON_VERSION}" ${GET_PIP}
     fi
 done
 
@@ -187,21 +196,19 @@ if ${HAS_X}; then
         rst2pdf\
     "
 fi
-for VERSION in ${VERSIONS}; do
-    PYTHON=python${VERSION}
-    PIP=""
-    for ROOTDIR in /usr/bin /usr/local/bin; do
-        if [ -x "${ROOTDIR}/pip${VERSION}" ]; then
-            PIP=${ROOTDIR}/pip${VERSION}
-        fi
-    done
-    if [ "${PIP}" != "" ]; then
-        for PACKAGE in ${PYPI_PACKAGES}; do
-            echo "INFO: Installing ${PACKAGE} using pip${VERSION}..."
-            ${SUDO} "${PYTHON}" "${PIP}" install --quiet --upgrade "${PACKAGE}"
-        done
+PYTHON=python${NEWEST_PYTHON_VERSION}
+PIP=""
+for ROOTDIR in /usr/bin /usr/local/bin; do
+    if [ -x "${ROOTDIR}/pip${NEWEST_PYTHON_VERSION}" ]; then
+        PIP=${ROOTDIR}/pip${NEWEST_PYTHON_VERSION}
     fi
 done
+if [ "${PIP}" != "" ]; then
+    for PACKAGE in ${PYPI_PACKAGES}; do
+        echo "INFO: Installing ${PACKAGE} using pip${NEWEST_PYTHON_VERSION}..."
+        ${SUDO} "${PYTHON}" "${PIP}" install --quiet --upgrade "${PACKAGE}"
+    done
+fi
 
 # As of 2012-01-11, the python-ropemacs 0.6c2-4 package is broken.  It
 # ignores the ropemacs-enable-shortcuts variable when loading.
