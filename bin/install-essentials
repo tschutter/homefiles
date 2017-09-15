@@ -139,22 +139,31 @@ else
     exit 1
 fi
 
-# Determine which versions of Python are installed.
-PYTHON_VERSIONS=""
+# Determine which versions of Python3 are installed, ordered newest to oldest.
+PYTHON3_VERSIONS=""
 for ROOTDIR in /usr/bin /usr/local/bin; do
-    for PYTHON in ${ROOTDIR}/python[23].[0123456789]; do
-        VERSION=$(echo "${PYTHON}" | grep -o '[23]\.[0123456789]')
-        PYTHON_VERSIONS="${PYTHON_VERSIONS} ${VERSION}"
+    for PYTHON in ${ROOTDIR}/python3.[0123456789]; do
+        VERSION=$(echo "${PYTHON}" | grep -o '3\.[0123456789]')
+        PYTHON3_VERSIONS="${PYTHON3_VERSIONS} ${VERSION}"
     done
 done
-
-# Order them from newest to oldest.
-PYTHON_VERSIONS=$(
-    echo "${PYTHON_VERSIONS}" | tr " " "\n" | sort -r | uniq | tr "\n" " "
+PYTHON3_VERSIONS=$(
+    echo "${PYTHON3_VERSIONS}" | tr " " "\n" | sort -r | uniq | tr "\n" " "
 )
+NEWEST_PYTHON3_VERSION=$(echo "${PYTHON3_VERSIONS}" | cut -d " " -f1)
 
-# Get the newest version.
-NEWEST_PYTHON_VERSION=$(echo "${PYTHON_VERSIONS}" | cut -d " " -f1)
+# Determine which versions of Python2 are installed, ordered newest to oldest.
+PYTHON2_VERSIONS=""
+for ROOTDIR in /usr/bin /usr/local/bin; do
+    for PYTHON in ${ROOTDIR}/python2.[0123456789]; do
+        VERSION=$(echo "${PYTHON}" | grep -o '2\.[0123456789]')
+        PYTHON2_VERSIONS="${PYTHON2_VERSIONS} ${VERSION}"
+    done
+done
+PYTHON2_VERSIONS=$(
+    echo "${PYTHON2_VERSIONS}" | tr " " "\n" | sort -r | uniq | tr "\n" " "
+)
+NEWEST_PYTHON2_VERSION=$(echo "${PYTHON2_VERSIONS}" | cut -d " " -f1)
 
 # Install pip for each version of installed Python.
 GET_PIP_URL="https://bootstrap.pypa.io/get-pip.py"
@@ -179,10 +188,14 @@ for PYTHON_VERSION in ${PYTHON_VERSIONS}; do
     fi
 done
 
-# Python packages via pip.
 # Note that setuptools and wheel should have been installed by get-pip.py
 # 2016-07-10 pip refuses to install PyChecker
-PYPI_PACKAGES="\
+
+# FIXME: Use "pip list" to filter out packages that are already
+# installed, because installing an already installed package is slow.
+
+# Python3 packages via pip.
+PYPI3_PACKAGES="\
     goobook\
     line_profiler\
     pep8\
@@ -190,23 +203,39 @@ PYPI_PACKAGES="\
     pylint\
     pyprof2calltree\
 "
+PYTHON3=python${NEWEST_PYTHON3_VERSION}
+PIP3=""
+for ROOTDIR in /usr/bin /usr/local/bin; do
+    if [ -x "${ROOTDIR}/pip${NEWEST_PYTHON3_VERSION}" ]; then
+        PIP3=${ROOTDIR}/pip${NEWEST_PYTHON3_VERSION}
+    fi
+done
+if [ "${PIP3}" != "" ]; then
+    for PACKAGE in ${PYPI3_PACKAGES}; do
+        echo "INFO: Installing ${PACKAGE} using ${PIP3}..."
+        ${SUDO} "${PYTHON3}" "${PIP3}" install --quiet --upgrade "${PACKAGE}"
+    done
+fi
+
+# Python2 packages via pip.
+PYPI2_PACKAGES=""
 if ${HAS_X}; then
-    PYPI_PACKAGES="\
-        ${PYPI_PACKAGES}\
+    PYPI2_PACKAGES="\
+        ${PYPI2_PACKAGES}\
         rst2pdf\
     "
 fi
-PYTHON=python${NEWEST_PYTHON_VERSION}
-PIP=""
+PYTHON2=python${NEWEST_PYTHON2_VERSION}
+PIP2=""
 for ROOTDIR in /usr/bin /usr/local/bin; do
-    if [ -x "${ROOTDIR}/pip${NEWEST_PYTHON_VERSION}" ]; then
-        PIP=${ROOTDIR}/pip${NEWEST_PYTHON_VERSION}
+    if [ -x "${ROOTDIR}/pip${NEWEST_PYTHON2_VERSION}" ]; then
+        PIP2=${ROOTDIR}/pip${NEWEST_PYTHON2_VERSION}
     fi
 done
-if [ "${PIP}" != "" ]; then
-    for PACKAGE in ${PYPI_PACKAGES}; do
-        echo "INFO: Installing ${PACKAGE} using pip${NEWEST_PYTHON_VERSION}..."
-        ${SUDO} "${PYTHON}" "${PIP}" install --quiet --upgrade "${PACKAGE}"
+if [ "${PIP2}" != "" ]; then
+    for PACKAGE in ${PYPI2_PACKAGES}; do
+        echo "INFO: Installing ${PACKAGE} using ${PIP2}..."
+        ${SUDO} "${PYTHON2}" "${PIP2}" install --quiet --upgrade "${PACKAGE}"
     done
 fi
 
