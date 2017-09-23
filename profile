@@ -70,6 +70,19 @@ fi
 # Make less more friendly for non-text input files, see lesspipe(1).
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
+# Tell gpg-agent(1) which tty to use.
+export GPG_TTY=$(tty)
+
+# When logged in via SSH and running a gpg operation which asks for a
+# key's passphrase, request that the password be entered directly in
+# the terminal rather than opening an external passphrase window
+# (pinentry).
+# if [[ -n "$SSH_CONNECTION" ]] ;then
+#     export PINENTRY_USER_DATA="USE_CURSES=1"
+# fi
+# Which does not work.  For now, added this to ~/.gnupg/gpg-agent.conf:
+#   set pinentry-program /usr/bin/pinentry-curses
+
 # Prevent "Couldn't connect to accessibility bus" warnings when
 # starting some apps such as evince.  See:
 # http://askubuntu.com/questions/227515/terminal-warning-when-opening-a-file-in-gedit
