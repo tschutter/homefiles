@@ -28,7 +28,7 @@ while [ "$1" != "" ]; do
             if [ "${FILES}" = "" ]; then
                 FILES="$1"
             else
-                FILES="${FILES} $1"
+                FILES="${FILES}|$1"
             fi
             ;;
     esac
@@ -141,7 +141,7 @@ checkfile() {
     fi
 }
 
-IFS=' '
+IFS='|'
 FIRST=true
 for FILE in ${FILES}; do
     if [ ! -f "${FILE}" ]; then
