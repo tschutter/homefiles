@@ -8,11 +8,24 @@ if [ -f ~/.bournerc ]; then
     . ~/.bournerc
 fi
 
+# Don't save duplicate lines in the history list.
+# Do save lines that begin with a space by not including ignorespace;
+# many times there are leading spaces when pasting a group of
+# commands.  OpenBSD 6.2 and newer.
+HISTCONTROL=ignoredups
+
 # Save history files in ~/.cache/ksh/history.
 HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/ksh/history"
 
 # Display more than the default 16 last commands.
-alias history="fc -l -r -1 -1024"
+unalias history
+function history {
+    if [ "$1" = "" ]; then
+        fc -l -r -1 -1028
+    else
+        fc -l -r -1 -"$1"
+    fi
+}
 
 # Emacs history editing.
 set -o emacs
