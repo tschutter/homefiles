@@ -81,7 +81,7 @@ export GPG_TTY=$(tty)
 #     export PINENTRY_USER_DATA="USE_CURSES=1"
 # fi
 # Which does not work.  For now, added this to ~/.gnupg/gpg-agent.conf:
-#   set pinentry-program /usr/bin/pinentry-curses
+#   pinentry-program /usr/bin/pinentry-curses
 
 # Prevent "Couldn't connect to accessibility bus" warnings when
 # starting some apps such as evince.  See:
