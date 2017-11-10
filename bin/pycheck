@@ -71,11 +71,17 @@ else
     USE_PYFLAKES=false
     echo "## pyflakes not installed"
 fi
-if checkpath pep8; then
-    USE_PEP8=true
+if checkpath pycodestyle; then
+    USE_PYCODESTYLE=true
 else
-    USE_PEP8=false
-    echo "## pep8 not installed"
+    USE_PYCODESTYLE=false
+    echo "## pycodestyle not installed"
+fi
+if checkpath pydocstyle; then
+    USE_PYDOCSTYLE=true
+else
+    USE_PYDOCSTYLE=false
+    echo "## pydocstyle not installed"
 fi
 
 checkfile() {
@@ -129,12 +135,22 @@ checkfile() {
         fi
     fi
 
-    if [ "${USE_PEP8}" = true ]; then
+    if [ "${USE_PYCODESTYLE}" = true ]; then
         if ! ${SINGLE}; then
-            echo "## pep8"
+            echo "## pycodestyle"
         fi
         # E202 whitespace before ')'
-        pep8 --ignore=E202 --repeat "${FILE}"
+        pycodestyle --ignore=E202 --repeat "${FILE}"
+        if ${SINGLE}; then
+            exit
+        fi
+    fi
+
+    if [ "${USE_PYDOCSTYLE}" = true ]; then
+        if ! ${SINGLE}; then
+            echo "## pydocstyle"
+        fi
+        pydocstyle "${FILE}"
         if ${SINGLE}; then
             exit
         fi
