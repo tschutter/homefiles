@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 """
-Installs files in tschutter/homefiles using symbolic links.
+Configure user settings.
+
+- Install files in tschutter/homefiles using symbolic links.
+- Configure window manager keybindings.
+- Install fonts.
 """
 
 from __future__ import print_function
@@ -51,7 +55,7 @@ def run_command(args, cmdargs, stdinstr=None):
 
 
 def cygpath_w(pathname):
-    """Converts a pathname to Windows style X:\foo\bar."""
+    r"""Convert a pathname to Windows style X:\foo\bar."""
     if sys.platform == "cygwin":
         pipe = subprocess.Popen(
             ["cygpath", "--windows", pathname],
@@ -65,7 +69,7 @@ def cygpath_w(pathname):
 
 
 def cygpath_u(pathname):
-    """Converts a pathname to Cygwin style /cygpath/X/foo/bar."""
+    """Convert a pathname to Cygwin style /cygpath/X/foo/bar."""
     if sys.platform == "cygwin":
         pipe = subprocess.Popen(
             ["cygpath", "--unix", pathname],
@@ -99,12 +103,12 @@ def mkdir(args, enabled, directory, mode):
 
 
 def is_exe(pathname):
-    """Returns True if pathname is an executable file."""
+    """Return True if pathname is an executable file."""
     return os.path.isfile(pathname) and os.access(pathname, os.X_OK)
 
 
 def exe_in_path(filename):
-    """Returns True if filename is in PATH and is executable."""
+    """Return True if filename is in PATH and is executable."""
     # Get the PATH.
     path = os.getenv("PATH", os.defpath)
 
@@ -153,8 +157,7 @@ def clean_link(args, linkname, backup=True):
 
 def make_link(args, enabled, filename, linkname=None):
     """
-    If enabled is True, create a symbolic link from linkname to
-    filename.
+    Create a symbolic link from linkname to filename if enabled is True.
 
     If filename is relative, prefix it with $HOME/.homefiles.
 
@@ -272,7 +275,6 @@ def create_dotless(args):
 
     The lesskey program creates the less dotfile in cache_dir/less.
     """
-
     dotless_dir = os.path.join(args.cache_dir, "less")
     dotless_pathname = os.path.join(dotless_dir, "less")
     history_pathname = os.path.join(dotless_dir, "history")
@@ -583,8 +585,7 @@ def xfwm4_add_key_binding(args, binding, command):
 
 
 def configure_wm_keybindings(args):
-    """Setup window manager key bindings."""
-
+    """Define window manager key bindings."""
     # xfconf-query cannot run unless there is a valid DISPLAY.
     if "DISPLAY" not in os.environ:
         if args.verbose:
@@ -690,7 +691,6 @@ def create_tmp_file(prefix, suffix, content_bytes):
 
 def install_fonts(args):
     """Install fonts."""
-
     font_src_dir = os.path.join(args.homefiles, "fonts")
 
     # See http://blogs.technet.com/b/heyscriptingguy/archive/\
@@ -752,8 +752,7 @@ def install_fonts(args):
 
 
 def main():
-    """main"""
-
+    """Main."""
     arg_parser = argparse.ArgumentParser(
         description="Install files in ~/.homefiles using symbolic links, "
         "configure keybindings, and install fonts."
