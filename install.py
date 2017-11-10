@@ -4,11 +4,6 @@
 Installs files in tschutter/homefiles using symbolic links.
 """
 
-# TODO:
-# Connect mailto-mutt:
-#   modify ~/.config/xfce4/helpers.rc
-#   create ~/.local/share/xfce4/helpers/custom-MailReader.desktop
-
 from __future__ import print_function
 import argparse
 import glob
@@ -51,7 +46,7 @@ def run_command(args, cmdargs, stdinstr=None):
     if not args.dryrun:
         output = force_run_command(cmdargs, stdinstr)
         output = output.rstrip()
-        if len(output) > 0:
+        if output:
             print(output)
 
 
@@ -127,7 +122,7 @@ def exe_in_path(filename):
 
 def clean_link(args, linkname, backup=True):
     """Delete link or backup files and dirs."""
-    link_pathname = os.path.join(args.homedir, linkname)
+    link_pathname = os.path.join(args.home_dir, linkname)
 
     if os.path.islink(link_pathname):
         # The destination exists as a symbolic link.
@@ -137,7 +132,7 @@ def clean_link(args, linkname, backup=True):
 
     elif os.path.exists(link_pathname):
         if os.path.isdir(link_pathname):
-            if len(os.listdir(link_pathname)) == 0:
+            if not os.listdir(link_pathname):
                 print("Removing empty directory '{0}'.".format(link_pathname))
                 if not args.dryrun:
                     os.rmdir(link_pathname)
@@ -166,6 +161,7 @@ def make_link(args, enabled, filename, linkname=None):
     If linkname is relative, prefix it with $HOME.  If linkname is not
     specified, it is the same as filename.
     """
+    # pylint: disable=too-many-branches
 
     if linkname is None:
         if os.path.isabs(filename):
@@ -184,7 +180,7 @@ def make_link(args, enabled, filename, linkname=None):
     if os.path.isabs(linkname):
         link_pathname = linkname
     else:
-        link_pathname = os.path.join(args.homedir, linkname)
+        link_pathname = os.path.join(args.home_dir, linkname)
 
     # The target filename should always exist.
     if not os.path.exists(file_pathname):
@@ -306,7 +302,7 @@ def create_dotless(args):
 
 def process_terminfo(args):
     """Process terminfo compilation."""
-    terminfo_dir = os.path.join(args.homedir, ".terminfo")
+    terminfo_dir = os.path.join(args.home_dir, ".terminfo")
     terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
     if not os.path.exists(terminfo_compiled):
         print("Running tic to create '{0}'.".format(terminfo_compiled))
@@ -347,15 +343,19 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, True, "bournerc")
 
     enabled = os.path.exists("/bin/bash")
-    clean_link(args, os.path.join(args.homedir, ".bash_history"), backup=False)
-    clean_link(args, os.path.join(args.homedir, ".bash_profile"))
+    clean_link(
+        args,
+        os.path.join(args.home_dir, ".bash_history"),
+        backup=False
+    )
+    clean_link(args, os.path.join(args.home_dir, ".bash_profile"))
     make_dot_link(args, enabled, "bashrc")
     make_dot_link(args, enabled, "bash_logout")
     mkdir(args, enabled, os.path.join(args.cache_dir, "bash"), 0o700)
 
     make_dot_link(args, exe_in_path("cwm"), "cwmrc")
 
-    clean_link(args, os.path.join(args.homedir, ".emacs"))
+    clean_link(args, os.path.join(args.home_dir, ".emacs"))
     # ~/.cache/emacs is created by ~/.emacs.d/init.el
 
     if not sys.platform.startswith("openbsd"):
@@ -427,7 +427,7 @@ def link_dotfiles(args, explicit_cache_dir):
     enabled = exe_in_path("python")
     clean_link(
         args,
-        os.path.join(args.homedir, ".pythonstartup"),
+        os.path.join(args.home_dir, ".pythonstartup"),
         backup=False
     )
     mkdir(args, enabled, os.path.join(args.cache_dir, "python"), 0o700)
@@ -445,11 +445,11 @@ def link_dotfiles(args, explicit_cache_dir):
 
     make_dot_link(args, exe_in_path("valgrind"), "valgrindrc")
 
-    clean_link(args, os.path.join(args.homedir, ".viminfo"), backup=False)
+    clean_link(args, os.path.join(args.home_dir, ".viminfo"), backup=False)
     make_dot_link(args, vim_installed, "vimrc")
     mkdir(args, vim_installed, os.path.join(explicit_cache_dir, "vim"), 0o700)
 
-    xfce4_config_dir = os.path.join(args.homedir, ".config", "xfce4")
+    xfce4_config_dir = os.path.join(args.home_dir, ".config", "xfce4")
     mkdir(
         args,
         exe_in_path("xfce4-terminal"),
@@ -484,10 +484,10 @@ def link_dotfiles(args, explicit_cache_dir):
         make_dot_link(args, True, "Xdefaults")
     else:
         # Smack ~/.Xdefaults if it exists.
-        clean_link(args, os.path.join(args.homedir, ".Xdefaults"))
+        clean_link(args, os.path.join(args.home_dir, ".Xdefaults"))
 
     # Smack ~/.Xresources if it exists.
-    clean_link(args, os.path.join(args.homedir, ".Xresources"))
+    clean_link(args, os.path.join(args.home_dir, ".Xresources"))
 
     # xxxterm is previous name for xombrero.
     make_link(args, exe_in_path("xxxterm"), "xombrero.conf", ".xxxterm.conf")
@@ -496,7 +496,7 @@ def link_dotfiles(args, explicit_cache_dir):
     mkdir(
         args,
         exe_in_path("xpra"),
-        os.path.join(args.homedir, ".xpra"),
+        os.path.join(args.home_dir, ".xpra"),
         0o700
     )
     make_link(args, exe_in_path("xpra"), "xpra.conf", ".xpra/xpra.conf")
@@ -506,7 +506,7 @@ def link_dotfiles(args, explicit_cache_dir):
 
 def link_binfiles(args):
     """Create links in ~/bin."""
-    bindir = os.path.join(args.homedir, "bin")
+    bindir = os.path.join(args.home_dir, "bin")
     mkdir(args, True, bindir, 0o777)
     make_link(args, True, "bin/append-missing-newline")
     make_link(args, args.is_cygwin, "bin/cygwin-fix-sshd")
@@ -531,54 +531,55 @@ def link_binfiles(args):
 
 def xfwm4_remove_key_binding(args, binding):
     """Remove a xfwm4 key binding."""
-    if os.path.exists("/usr/bin/xfconf-query"):
-        cmdargs = [
-            "/usr/bin/xfconf-query",
-            "--channel",
-            "xfce4-keyboard-shortcuts",
-            "--property",
-            binding
-        ]
-        output = force_run_command(cmdargs)
-        if output.find("does not exist on channel") != -1:
-            if args.verbose:
-                print("Key binding '{0}' already removed.".format(binding))
-        else:
-            print("Removing key binding '{0}'.".format(binding))
-            run_command(args, cmdargs + ["--reset"])
+    cmdargs = [
+        "/usr/bin/xfconf-query",
+        "--channel",
+        "xfce4-keyboard-shortcuts",
+        "--property",
+        binding
+    ]
+    output = force_run_command(cmdargs)
+    if output.find("does not exist on channel") != -1:
+        if args.verbose:
+            print("Key binding '{0}' already removed.".format(binding))
+    else:
+        print("Removing key binding '{0}'.".format(binding))
+        run_command(args, cmdargs + ["--reset"])
 
 
 def xfwm4_add_key_binding(args, binding, command):
     """Add a xfwm4 key binding."""
-    if os.path.exists("/usr/bin/xfconf-query"):
-        cmdargs = [
-            "/usr/bin/xfconf-query",
-            "--channel",
-            "xfce4-keyboard-shortcuts",
-            "--property",
-            binding
-        ]
-        output = force_run_command(cmdargs).strip()
-        if output == command:
-            if args.verbose:
-                print(
-                    "Key '{0}' already bound to '{1}'.".format(binding, command)
-                )
-        else:
-            print(output)
-            if output.find("does not exist on channel") != -1:
-                output = ""
+    if args.force_keybindings:
+        xfwm4_remove_key_binding(args, binding)
+
+    cmdargs = [
+        "/usr/bin/xfconf-query",
+        "--channel",
+        "xfce4-keyboard-shortcuts",
+        "--property",
+        binding
+    ]
+    output = force_run_command(cmdargs).strip()
+    if output == command:
+        if args.verbose:
             print(
-                "Changing binding of key '{0}' from '{1}' to '{2}'.".format(
-                    binding,
-                    output,
-                    command
-                )
+                "Key '{0}' already bound to '{1}'.".format(binding, command)
             )
-            run_command(
-                args,
-                cmdargs + ["--create", "--type", "string", "--set", command]
+    else:
+        print(output)
+        if output.find("does not exist on channel") != -1:
+            output = ""
+        print(
+            "Changing binding of key '{0}' from '{1}' to '{2}'.".format(
+                binding,
+                output,
+                command
             )
+        )
+        run_command(
+            args,
+            cmdargs + ["--create", "--type", "string", "--set", command]
+        )
 
 
 def configure_wm_keybindings(args):
@@ -586,6 +587,13 @@ def configure_wm_keybindings(args):
 
     # xfconf-query cannot run unless there is a valid DISPLAY.
     if "DISPLAY" not in os.environ:
+        if args.verbose:
+            print("No DISPLAY found; not setting keyboard shortcuts")
+        return
+
+    if not os.path.exists("/usr/bin/xfconf-query"):
+        if args.verbose:
+            print("Not an xfce environment; not setting keyboard shortcuts")
         return
 
     # Use "xfconf-query --channel xfce4-keyboard-shortcuts --list --verbose" to
@@ -734,7 +742,7 @@ def install_fonts(args):
     else:
         # Install for any program that uses the Fontconfig library,
         # which includes gimp and OpenOffice among others.
-        fontconfig_dir = os.path.join(args.homedir, ".fonts")
+        fontconfig_dir = os.path.join(args.home_dir, ".fonts")
         mkdir(args, True, fontconfig_dir, 0o755)
         font_glob = os.path.join(font_src_dir, "*.ttf")
         for font_pathname in glob.glob(font_glob):
@@ -751,25 +759,22 @@ def main():
         "configure keybindings, and install fonts."
     )
     arg_parser.add_argument(
-        "--home",
+        "--home-dir",
         action="store",
-        dest="homedir",
         metavar="DIR",
         default=os.path.expanduser("~"),
         help="directory to install to (default=%(default)s)"
     )
     arg_parser.add_argument(
-        "--private",
+        "--private-dir",
         action="store",
-        dest="private_dir",
         metavar="DIR",
         default=os.path.expanduser(os.path.join("~", "private")),
         help="private directory (default=%(default)s)"
     )
     arg_parser.add_argument(
-        "--cache",
+        "--cache-dir",
         action="store",
-        dest="cache_dir",
         metavar="DIR",
         default=xdg_cache_home,
         help="cache directory (default=%(default)s)"
@@ -777,9 +782,14 @@ def main():
     arg_parser.add_argument(
         "--force",
         action="store_true",
-        dest="force",
         default=False,
         help="replace existing files and symbolic links"
+    )
+    arg_parser.add_argument(
+        "--force-keybindings",
+        action="store_true",
+        default=False,
+        help="replace existing keybindings"
     )
     arg_parser.add_argument(
         "-n",
@@ -792,14 +802,13 @@ def main():
     arg_parser.add_argument(
         "--verbose",
         action="store_true",
-        dest="verbose",
         default=False,
         help="produce more verbose output"
     )
     args = arg_parser.parse_args()
 
     # Canonicalize directories.
-    args.homedir = os.path.expanduser(args.homedir)
+    args.home_dir = os.path.expanduser(args.home_dir)
     args.private_dir = os.path.expanduser(args.private_dir)
     args.homefiles = os.path.dirname(os.path.abspath(__file__))
 
