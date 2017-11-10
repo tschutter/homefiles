@@ -151,6 +151,7 @@ PYTHON3_VERSIONS=$(
     echo "${PYTHON3_VERSIONS}" | tr " " "\n" | sort -r | uniq | tr "\n" " "
 )
 NEWEST_PYTHON3_VERSION=$(echo "${PYTHON3_VERSIONS}" | cut -d " " -f1)
+echo "INFO: Latest Python3 version is ${NEWEST_PYTHON3_VERSION}"
 
 # Determine which versions of Python2 are installed, ordered newest to oldest.
 PYTHON2_VERSIONS=""
@@ -164,15 +165,17 @@ PYTHON2_VERSIONS=$(
     echo "${PYTHON2_VERSIONS}" | tr " " "\n" | sort -r | uniq | tr "\n" " "
 )
 NEWEST_PYTHON2_VERSION=$(echo "${PYTHON2_VERSIONS}" | cut -d " " -f1)
+echo "INFO: Latest Python2 version is ${NEWEST_PYTHON2_VERSION}"
 
 # Install pip for each version of installed Python.
 GET_PIP_URL="https://bootstrap.pypa.io/get-pip.py"
 GET_PIP=/tmp/get-pip.py
-for PYTHON_VERSION in ${PYTHON_VERSIONS}; do
+for PYTHON_VERSION in ${NEWEST_PYTHON3_VERSION} ${NEWEST_PYTHON2_VERSION}; do
     # Find the corresponding version of pip.
     FOUND_PIP=false
     for ROOTDIR in /usr/bin /usr/local/bin; do
         if [ -x "${ROOTDIR}/pip${PYTHON_VERSION}" ]; then
+            echo "INFO: Found ${ROOTDIR}/pip${PYTHON_VERSION}..."
             FOUND_PIP=true
         fi
     done
@@ -198,7 +201,7 @@ done
 PYPI3_PACKAGES="\
     goobook\
     line_profiler\
-    pep8\
+    pycodestyle\
     pyflakes\
     pylint\
     pyprof2calltree\
