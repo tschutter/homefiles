@@ -202,6 +202,7 @@ PYPI3_PACKAGES="\
     goobook\
     line_profiler\
     pycodestyle\
+    pydocstyle\
     pyflakes\
     pylint\
     pyprof2calltree\
