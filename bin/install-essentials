@@ -167,7 +167,7 @@ PYTHON2_VERSIONS=$(
 NEWEST_PYTHON2_VERSION=$(echo "${PYTHON2_VERSIONS}" | cut -d " " -f1)
 echo "INFO: Latest Python2 version is ${NEWEST_PYTHON2_VERSION}"
 
-# Install pip for each version of installed Python.
+# Upgrade or install pip for each version of installed Python.
 GET_PIP_URL="https://bootstrap.pypa.io/get-pip.py"
 GET_PIP=/tmp/get-pip.py
 for PYTHON_VERSION in ${NEWEST_PYTHON3_VERSION} ${NEWEST_PYTHON2_VERSION}; do
@@ -180,7 +180,11 @@ for PYTHON_VERSION in ${NEWEST_PYTHON3_VERSION} ${NEWEST_PYTHON2_VERSION}; do
         fi
     done
 
-    if [ "${FOUND_PIP}" = false ]; then
+    if [ "${FOUND_PIP}" = true ]; then
+        echo "INFO: Upgrading pip${PYTHON_VERSION}..."
+        ${SUDO} "pip${PYTHON_VERSION}" install --upgrade setuptools pip
+
+    else
         PIP=pip${PYTHON_VERSION}
         if [ ! -f "${GET_PIP}" ]; then
             echo "INFO: Fetching ${GET_PIP_URL}..."
