@@ -39,6 +39,8 @@ if [ -x "/usr/bin/apt" ]; then
         python-rope\
         python2.7-dev\
         python2.7-doc\
+        python3-dev\
+        python3-doc\
         shellcheck\
         tmux\
         w3m-el\
@@ -200,6 +202,9 @@ done
 
 # FIXME: Use "pip list" to filter out packages that are already
 # installed, because installing an already installed package is slow.
+
+# If any packages fail to install with pip, try installing by hand
+# with "pip install -v".
 
 # Python3 packages via pip.
 PYPI3_PACKAGES="\
