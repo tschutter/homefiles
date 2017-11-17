@@ -419,6 +419,8 @@ def link_dotfiles(args, explicit_cache_dir):
 
     make_dot_link(args, exe_in_path("pychecker"), "pycheckrc")
 
+    make_dot_link(args, exe_in_path("pydocstyle"), "pydocstyle")
+
     enabled = exe_in_path("pdb")
     make_dot_link(args, enabled, "pdbrc")
     make_dot_link(args, enabled, "pdbrc.py")
