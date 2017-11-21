@@ -39,27 +39,29 @@ shopt -s checkwinsize
 # http://stackoverflow.com/questions/994563
 # http://stackoverflow.com/questions/8366450
 if [[ -n ${DISPLAY} ]]; then
-    # These bindings cannot be put in .inputrc because they use the
-    # bash-specific $READLINE environment variables.  With these
-    # bindings we lose the kill ring concept in bash, but I never use
-    # that anyways.  It is more important to have key binding
-    # consistency between applications.
+    if [[ ! -v INSIDE_EMACS ]]; then
+        # These bindings cannot be put in .inputrc because they use the
+        # bash-specific $READLINE environment variables.  With these
+        # bindings we lose the kill ring concept in bash, but I never use
+        # that anyways.  It is more important to have key binding
+        # consistency between applications.
 
-    # Kill text from point to end of line and copy to X clipboard.
-    _x-kill-line() {
-        echo -n "${READLINE_LINE:$READLINE_POINT}" | xsel -b -i
-        READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}"
-    }
-    bind -m emacs -x '"\C-k": _x-kill-line'
+        # Kill text from point to end of line and copy to X clipboard.
+        _x-kill-line() {
+            echo -n "${READLINE_LINE:$READLINE_POINT}" | xsel -b -i
+            READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}"
+        }
+        bind -m emacs -x '"\C-k": _x-kill-line'
 
-    # Yank X clipboard into bash's line buffer, placing point at end of yanked text.
-    _x-yank() {
-        CLIP=$(xsel -b -o)
-        COUNT=$(echo "$CLIP" | wc -c)
-        READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}${CLIP}${READLINE_LINE:$READLINE_POINT}"
-        READLINE_POINT=$(($READLINE_POINT + $COUNT - 1))
-    }
-    bind -m emacs -x '"\C-y": _x-yank'
+        # Yank X clipboard into bash's line buffer, placing point at end of yanked text.
+        _x-yank() {
+            CLIP=$(xsel -b -o)
+            COUNT=$(echo "$CLIP" | wc -c)
+            READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}${CLIP}${READLINE_LINE:$READLINE_POINT}"
+            READLINE_POINT=$(($READLINE_POINT + $COUNT - 1))
+        }
+        bind -m emacs -x '"\C-y": _x-yank'
+    fi
 fi
 
 # Give a bit more information when tmuxinator completes.
