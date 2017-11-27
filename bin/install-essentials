@@ -197,6 +197,17 @@ for PYTHON_VERSION in ${NEWEST_PYTHON3_VERSION} ${NEWEST_PYTHON2_VERSION}; do
     fi
 done
 
+contains() {
+    # Determine if $2 string is in $1 list.
+
+    for ITEM in $1; do
+        if [ "${ITEM}" = "$2" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 # Note that setuptools and wheel should have been installed by get-pip.py
 # 2016-07-10 pip refuses to install PyChecker
 
@@ -206,9 +217,8 @@ done
 # If any packages fail to install with pip, try installing by hand
 # with "pip install -v".
 
-# Python3 packages via pip.
+# Define Python3 packages via pip.
 PYPI3_PACKAGES="\
-    goobook\
     line_profiler\
     pycodestyle\
     pydocstyle\
@@ -223,15 +233,9 @@ for ROOTDIR in /usr/bin /usr/local/bin; do
         PIP3=${ROOTDIR}/pip${NEWEST_PYTHON3_VERSION}
     fi
 done
-if [ "${PIP3}" != "" ]; then
-    for PACKAGE in ${PYPI3_PACKAGES}; do
-        echo "INFO: Installing ${PACKAGE} using ${PIP3}..."
-        ${SUDO} "${PYTHON3}" "${PIP3}" install --quiet --upgrade "${PACKAGE}"
-    done
-fi
 
-# Python2 packages via pip.
-PYPI2_PACKAGES=""
+# Define Python2 packages via pip.
+PYPI2_PACKAGES="goobook"
 if ${HAS_X}; then
     PYPI2_PACKAGES="\
         ${PYPI2_PACKAGES}\
@@ -245,7 +249,31 @@ for ROOTDIR in /usr/bin /usr/local/bin; do
         PIP2=${ROOTDIR}/pip${NEWEST_PYTHON2_VERSION}
     fi
 done
+
+# Install Python3 packages.
+if [ "${PIP3}" != "" ]; then
+    PY3_INSTALLED=$(${PIP3} list --format legacy | cut -f 1 -d' ')
+    for PACKAGE in ${PYPI2_PACKAGES}; do
+        if contains "${PY3_INSTALLED}" "${PACKAGE}"; then
+            echo "WARNING: Python2-only package ${PACKAGE} installed using ${PIP3}"
+        fi
+    done
+
+    for PACKAGE in ${PYPI3_PACKAGES}; do
+        echo "INFO: Installing ${PACKAGE} using ${PIP3}..."
+        ${SUDO} "${PYTHON3}" "${PIP3}" install --quiet --upgrade "${PACKAGE}"
+    done
+fi
+
+# Install Python2 packages.
 if [ "${PIP2}" != "" ]; then
+    PY2_INSTALLED=$(${PIP2} list --format legacy | cut -f 1 -d' ')
+    for PACKAGE in ${PYPI3_PACKAGES}; do
+        if contains "${PY2_INSTALLED}" "${PACKAGE}"; then
+            echo "WARNING: Python3-only package ${PACKAGE} installed using ${PIP2}"
+        fi
+    done
+
     for PACKAGE in ${PYPI2_PACKAGES}; do
         echo "INFO: Installing ${PACKAGE} using ${PIP2}..."
         ${SUDO} "${PYTHON2}" "${PIP2}" install --quiet --upgrade "${PACKAGE}"
