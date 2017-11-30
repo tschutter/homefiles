@@ -33,7 +33,6 @@ if [ -x "/usr/bin/apt" ]; then
         muttprint\
         ncurses-term\
         psutils\
-        pychecker\
         pymacs\
         python-docutils\
         python-rope\
@@ -209,7 +208,6 @@ contains() {
 }
 
 # Note that setuptools and wheel should have been installed by get-pip.py
-# 2016-07-10 pip refuses to install PyChecker
 
 # FIXME: Use "pip list" to filter out packages that are already
 # installed, because installing an already installed package is slow.
