@@ -377,6 +377,14 @@ def link_dotfiles(args, explicit_cache_dir):
     if os.path.exists(goobookrc):
         make_link(args, exe_in_path("goobook"), goobookrc, ".goobookrc")
 
+    # Configure gtk3 programs.
+    make_link(
+        args,
+        True,
+        "gtk-3.0-settings.ini",
+        ".config/gtk-3.0/settings.ini"
+    )
+
     make_dot_link(args, True, "hushlogin")
 
     make_dot_link(args, True, "inputrc")
