@@ -114,7 +114,8 @@ checkfile() {
             echo "## pycodestyle"
         fi
         # E202 whitespace before ')'
-        pycodestyle --ignore=E202 --repeat "${FILE}"
+        # E501 line too long - cannot be suppressed per file
+        pycodestyle --ignore=E202,E501 --repeat "${FILE}"
         if ${SINGLE}; then
             exit
         fi
