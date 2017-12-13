@@ -18,9 +18,14 @@
 #   D213: Multi-line docstring summary should start at the second line
 # I prefer the D213 style.
 #
-# These two errors are mutually exclusive:
-#   D412: No blank lines allowed between a section header and its content ('Section')
-#   D413: Missing blank line after last section ('Section')
-# I prefer the D413 style.
+# These errors think that "Parameters:" starts a section:
+#   D406: Section name should end with a newline ('Parameters', not 'Parameters:')
+#   D407: Missing dashed underline after section ('Parameters')
 #
-ignore = D105,D107,D202,D203,D212,D412
+# I prefer a blank line between a section header and its content.
+#   D412: No blank lines allowed between a section header and its content ('Section')
+#
+# This error forces a blank line at the end of a function comment containing a section.
+#   D413: Missing blank line after last section ('Section')
+#
+ignore = D105,D107,D202,D203,D212,D406,D407,D412,D413
