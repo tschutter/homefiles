@@ -631,6 +631,13 @@ def configure_wm_keybindings(args):
         "move_window_next_workspace_key"
     )
 
+    # Use <Super> (Windows key) to popup the whisker menu.
+    xfwm4_add_key_binding(
+        args,
+        "/commands/custom/Super_L",
+        "xfce4-popup-whiskermenu"
+    )
+
     # By default <Super>e launches Leafpad.  But I use Emacs not
     # Leafpad.
     xfwm4_add_key_binding(
