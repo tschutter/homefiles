@@ -631,10 +631,16 @@ def configure_wm_keybindings(args):
         "move_window_next_workspace_key"
     )
 
-    # Use <Super> (Windows key) to popup the whisker menu.
+    # Use <Super>Esc to popup the whisker menu.
+    #
+    # Using just the <Super> (Windows) key by itself does not work
+    # because the whisker menu will be displayed for any <Super>key.
+    # <Super>Esc is perfect because:
+    # - Esc is in the upper-left corner just like the whisker menu.
+    # - Pressing Esc will make the whisker menu go away.
     xfwm4_add_key_binding(
         args,
-        "/commands/custom/Super_L",
+        "/commands/custom/<Super>Escape",
         "xfce4-popup-whiskermenu"
     )
 
