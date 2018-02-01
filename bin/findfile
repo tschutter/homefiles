@@ -3,6 +3,10 @@
 # Directory tree file search
 #
 
+# Disable glob expansion.  Fixes 'findfile "*.txt"' if .txt files
+# exist in current directory.
+set -o noglob
+
 usage() {
     echo "Searches for a file in the current directory and all subdirectories." >&2
     echo "" >&2
