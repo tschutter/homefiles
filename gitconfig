@@ -4,6 +4,9 @@
     # hist = one-line per commit log
     hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
 
+    # logv = log + names and status of changed files
+    logv = log --name-status
+
     # stat = short status
     stat = status -s
 
@@ -28,6 +31,7 @@
     token = $GITHUB_TOKEN
 
 [log]
+    abbrevCommit = true
     date = iso
 
 [user]
