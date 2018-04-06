@@ -10,6 +10,14 @@
     # stat = short status
     stat = status -s
 
+    # tags = verbose tag list
+    # %C(auto) = turn on auto coloring
+    # %h = short hash
+    # %cd = committer date (format respects --date= option)
+    # %d = ref names, like the --decorate option
+    # %s = subject
+    tags = log --tags --no-walk --date=format:%Y-%m-%dT%H:%M:%S --pretty='%C(auto)%h %cd%d %s'
+
     # unadd/unstage = remove files/directories from staging
     unadd = reset
     unstage = reset
