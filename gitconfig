@@ -51,7 +51,7 @@
 [color "decorate"]
     # Default is yellow when printing tags, which is unreadable on a
     # white background.
-    tag = magenta
+    tag = "dim yellow"
 
 [branch]
     # When creating branches, indicated that they should be rebased
