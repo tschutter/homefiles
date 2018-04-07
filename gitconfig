@@ -1,5 +1,13 @@
 # git config file
 
+[github]
+    user = tschutter
+    token = $GITHUB_TOKEN
+
+[user]
+    name = Tom Schutter
+    email = t.schutter@comcast.net
+
 [alias]
     # hist = one-line per commit log
     hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
@@ -28,22 +36,27 @@
 [core]
     editor = mg
 
-[github]
-    user = tschutter
-    token = $GITHUB_TOKEN
-
 [log]
+    # Instead of showing the full 40-byte hexadecimal commit object
+    # name, show only a partial prefix.
     abbrevCommit = true
+    # Show timestamps in a ISO 8601-like format.
     date = iso
-
-[user]
-    name = Tom Schutter
-    email = t.schutter@comcast.net
 
 [color]
     diff = auto
     status = auto
     ui = true
+
+[color "decorate"]
+    # Default is yellow when printing tags, which is unreadable on a
+    # white background.
+    tag = magenta
+
+[branch]
+    # When creating branches, indicated that they should be rebased
+    # instead of merged when doing a "git pull".
+    autosetuprebase = always
 
 [push]
     # set default to push the current branch to a central branch of
