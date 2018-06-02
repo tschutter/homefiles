@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Configure user settings.
@@ -8,7 +8,6 @@ Configure user settings.
 - Install fonts.
 """
 
-from __future__ import print_function
 import argparse
 import glob
 import os
