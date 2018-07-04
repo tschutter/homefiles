@@ -1,4 +1,4 @@
-personal_ws-1.1 en 138 
+personal_ws-1.1 en 141 
 PxPoint
 chainring
 mdallin
@@ -15,6 +15,7 @@ ATmega
 Molex
 FloodMap
 bikepacking
+Kenosha
 config
 Tino
 geocode
@@ -65,6 +66,7 @@ ungreased
 stdout
 Ashish
 Wristlet
+trailhead
 shifter
 isopropyl
 bostone
@@ -127,6 +129,7 @@ kshrc
 dbrouwer
 potentiometer
 microcontroller
+poblano
 mdrollinger
 Benadryl
 chreynolds
