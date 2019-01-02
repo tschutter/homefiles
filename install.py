@@ -20,10 +20,12 @@ import time
 try:
     # pylint: disable=F0401
     from xdg.BaseDirectory import xdg_cache_home
+    from xdg.BaseDirectory import xdg_config_home
 except ImportError:
     # xdg not available on all platforms
     # pylint: disable=C0103
     xdg_cache_home = os.path.expanduser("~/.cache")
+    xdg_config_home = os.path.expanduser("~/.config")
 
 
 def force_run_command(cmdargs, stdinstr=None):
@@ -381,7 +383,7 @@ def link_dotfiles(args, explicit_cache_dir):
         args,
         True,
         "gtk-3.0-settings.ini",
-        ".config/gtk-3.0/settings.ini"
+        os.path.join(args.config_dir, "gtk-3.0", "settings.ini")
     )
 
     make_dot_link(args, True, "hushlogin")
@@ -458,7 +460,7 @@ def link_dotfiles(args, explicit_cache_dir):
     make_dot_link(args, vim_installed, "vimrc")
     mkdir(args, vim_installed, os.path.join(explicit_cache_dir, "vim"), 0o700)
 
-    xfce4_config_dir = os.path.join(args.home_dir, ".config", "xfce4")
+    xfce4_config_dir = os.path.join(args.config_dir, "xfce4")
     mkdir(
         args,
         exe_in_path("xfce4-terminal"),
@@ -475,13 +477,13 @@ def link_dotfiles(args, explicit_cache_dir):
         args,
         exe_in_path("xfce4-terminal"),
         "xfce4-terminal-terminalrc",
-        ".config/xfce4/terminal/terminalrc"
+        os.path.join(args.config_dir, "xfce4", "terminal", "terminalrc")
     )
     make_link(
         args,
         exe_in_path("xfce4-terminal"),
         "xfce4-terminal-accels.scm",
-        ".config/xfce4/terminal/accels.scm"
+        os.path.join(args.config_dir, "xfce4", "terminal", "accels.scm")
     )
 
     make_dot_link(args, exe_in_path("xzgv"), "xzgvrc")
@@ -799,6 +801,13 @@ def main():
         help="cache directory (default=%(default)s)"
     )
     arg_parser.add_argument(
+        "--config-dir",
+        action="store",
+        metavar="DIR",
+        default=xdg_config_home,
+        help="config directory (default=%(default)s)"
+    )
+    arg_parser.add_argument(
         "--force",
         action="store_true",
         default=False,
@@ -846,6 +855,7 @@ def main():
     # Ensure that directories exist.
     mkdir(args, True, args.cache_dir, 0o700)
     mkdir(args, True, explicit_cache_dir, 0o700)
+    mkdir(args, True, args.config_dir, 0o700)
 
     link_dotfiles(args, explicit_cache_dir)
 
