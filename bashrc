@@ -39,7 +39,7 @@ shopt -s checkwinsize
 # http://stackoverflow.com/questions/994563
 # http://stackoverflow.com/questions/8366450
 if [[ -n ${DISPLAY} ]]; then
-    if [[ ! -v INSIDE_EMACS ]]; then
+    if [[ "${INSIDE_EMACS}" == "" ]]; then
         # These bindings cannot be put in .inputrc because they use the
         # bash-specific $READLINE environment variables.  With these
         # bindings we lose the kill ring concept in bash, but I never use

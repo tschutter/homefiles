@@ -181,20 +181,20 @@ __git_ps1() {
 # _PS1_FASD is set by kshrc because PROMPT_COMMAND is not available in ksh.
 ps1-default() {
     # Default prompt string.
-    if [ ! -v INSIDE_EMACS ]; then
+    if [ "${INSIDE_EMACS}" == "" ]; then
         PS1='\[\e]0;${_HOSTNAME}:\w\a\]'${_PS1_FASD}${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 ps1-time() {
     # Prompt string with timestamp.  Useful if you want to know when a
     # command was run.
-    if [ ! -v INSIDE_EMACS ]; then
+    if [ "${INSIDE_EMACS}" == "" ]; then
         PS1='\[\e]0;${_HOSTNAME}:\w\a\]\t '${_PS1_FASD}${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
 ps1-history() {
     # Prompt string with history numbers.
-    if [ ! -v INSIDE_EMACS ]; then
+    if [ "${INSIDE_EMACS}" == "" ]; then
         PS1='\[\e]0;${_HOSTNAME}:\w\a\]\!:'${_PS1_FASD}${_PS1_PREFIX}${_HOSTNAME}':\w'\`__git_ps1\`${_PS_DOLLAR}' '
     fi
 }
