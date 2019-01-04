@@ -364,8 +364,6 @@ def link_dotfiles(args, explicit_cache_dir):
     if not sys.platform.startswith("openbsd"):
         make_dot_link(args, exe_in_path("vi"), "exrc")
 
-    make_dot_link(args, exe_in_path("firefox"), "keysnail.js")
-
     make_link(args, True, "image/ironcat-80.jpg", ".face")
 
     enabled = exe_in_path("gdb")
