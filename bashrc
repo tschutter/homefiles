@@ -24,6 +24,9 @@ export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  "
 # Save history files in ~/.cache/bash/history.
 HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/bash/history"
 
+# Disable XON/XOFF (ctrl-s/ctrl-q) flow control.
+stty -ixon
+
 # Append to the history file, don't overwrite it.
 shopt -s histappend
 

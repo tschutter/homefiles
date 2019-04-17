@@ -17,6 +17,9 @@ HISTCONTROL=ignoredups
 # Save history files in ~/.cache/ksh/history.
 HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/ksh/history"
 
+# Disable XON/XOFF (ctrl-s/ctrl-q) flow control.
+stty -ixon
+
 # Display more than the default 16 last commands.
 unalias history
 function history {
