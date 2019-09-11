@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-"""
-Find files with non-ASCII characters.
-"""
+"""Find files with non-ASCII characters."""
 
 import argparse
 import fnmatch
@@ -130,7 +128,7 @@ def find_files(args):
 
 
 def main():
-    """main"""
+    """Main."""
     arg_parser = argparse.ArgumentParser(
         description="Find files with non-ASCII characters."
     )
