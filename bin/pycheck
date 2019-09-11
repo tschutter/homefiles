@@ -62,6 +62,10 @@ def run_pycodestyle(program, filename):
 def run_pydocstyle(program, filename):
     """Run the pydocstyle checker."""
 
+    if not filename.endswith(".py"):
+        print("pydocstyle cannot be run on a file without .py extension")
+        return
+
     args = [program, filename]
     subprocess.run(args)
 
