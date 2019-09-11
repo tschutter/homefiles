@@ -1,150 +1,132 @@
-#!/bin/sh
-#
-# Runs multiple Python static checkers.
-#
+#!/usr/bin/env python3
 
-# Process command line.
-SINGLE=false
-FILES=""
-while [ "$1" != "" ]; do
-    case $1 in
-        -h|"-?"|--help)
-            echo "Usage: $(basename "$0") [options] FILE ..." >&2
-            echo "  Runs multiple Python static checkers." >&2
-            echo "" >&2
-            echo "Options:" >&2
-            echo "  -h, --help            show this help message and exit" >&2
-            echo "  -s, --single          only run first checker found" >&2
-            exit 1
-            ;;
-        -s|--single)
-            SINGLE=true
-            ;;
-        -*)
-            echo "ERROR: Unknown option $1" >&2
-            exit 1
-            ;;
-        *)
-            if [ "${FILES}" = "" ]; then
-                FILES="$1"
-            else
-                FILES="${FILES}|$1"
-            fi
-            ;;
-    esac
-    shift
-done
+"""Run multiple Python static checkers."""
 
-if [ "${FILES}" = "" ]; then
-    echo "ERROR: no files specified" >&2
-    exit 1
-fi
+import argparse
+import os
+import re
+import subprocess
 
-checkpath() {
-    # Return True if $1 is in ${PATH}.
-    IFS=':'
-    for dir in $PATH ; do
-        if [ -x "$dir/$1" ]; then
-           return 0
-        fi
-    done
-    IFS=' '
-    return 1
+
+def which(checker):
+    """Determine if a checker is installed."""
+
+    for path in os.environ["PATH"].split(os.pathsep):
+        exe_file = os.path.join(path, checker)
+        if os.path.isfile(exe_file) and os.access(exe_file, os.X_OK):
+            return exe_file
+
+    return None
+
+
+def run_pylint(program, filename):
+    """Run the pylint checker."""
+
+    args = [program, "--reports=no", "--score=no", filename]
+    stdout = subprocess.run(
+        args,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True
+    ).stdout
+
+    ignore = re.compile(r"^\*\*\*\*\*\*")  # "|--msg-template"
+    for line in stdout.split("\n")[:-1]:
+        if not ignore.match(line):
+            print(line)
+
+
+def run_pyflakes(program, filename):
+    """Run the pyflakes checker."""
+
+    args = [program, filename]
+    subprocess.run(args)
+
+
+def run_pycodestyle(program, filename):
+    """Run the pycodestyle checker."""
+
+    # E202 whitespace before ')'
+    # E501 line too long - cannot be suppressed per file
+    args = [program, "--ignore=E202,E501", "--repeat", filename]
+    subprocess.run(args)
+
+
+def run_pydocstyle(program, filename):
+    """Run the pydocstyle checker."""
+
+    args = [program, filename]
+    subprocess.run(args)
+
+
+def check_file(checkers, filename):
+    """Check a single file."""
+
+    for checker in checkers:
+        program = which(checker)
+        if program is None:
+            print(f"## {checker} not installed")
+        else:
+            print(f"## {checker}")
+            KNOWN_CHECKERS[checker](program, filename)
+
+
+KNOWN_CHECKERS = {
+    "pylint": run_pylint,
+    "pyflakes": run_pyflakes,
+    "pycodestyle": run_pycodestyle,
+    "pydocstyle": run_pydocstyle
 }
 
-# Determine which checkers are installed.
-if checkpath pylint; then
-    USE_PYLINT=true
-else
-    USE_PYLINT=false
-    echo "## pylint not installed"
-fi
-if checkpath pyflakes; then
-    USE_PYFLAKES=true
-else
-    USE_PYFLAKES=false
-    echo "## pyflakes not installed"
-fi
-if checkpath pycodestyle; then
-    USE_PYCODESTYLE=true
-else
-    USE_PYCODESTYLE=false
-    echo "## pycodestyle not installed"
-fi
-if checkpath pydocstyle; then
-    USE_PYDOCSTYLE=true
-else
-    USE_PYDOCSTYLE=false
-    echo "## pydocstyle not installed"
-fi
 
-checkfile() {
-    FILE="$1"
+def main():
+    """Main."""
 
-    if [ "${USE_PYLINT}" = true ]; then
-        if ! ${SINGLE}; then
-            echo "## pylint"
-        fi
-        # pylint 1.1.0 has a bug where it emits to stderr this message:
-        #   UserWarning: parseable output format is deprecated
-        # but there is no way to suppress it.
-        ( pylint\
-            --reports=no\
-            --score=no\
-            "${FILE}"\
-            2>&1
-        ) | grep -v -E '^\*\*\*|--msg-template'
-        if ${SINGLE}; then
-            exit
-        fi
-    fi
+    # Define arguments.
+    arg_parser = argparse.ArgumentParser(
+        description="Run multiple Python static checkers."
+    )
+    arg_parser.add_argument(
+        "--checkers",
+        default=",".join(KNOWN_CHECKERS.keys()),
+        help="output grid file format (default=%(default)s)"
+    )
+    arg_parser.add_argument(
+        "files",
+        metavar="file",
+        nargs="+",
+        help="file to check"
+    )
 
-    if [ "${USE_PYFLAKES}" = true ]; then
-        if ! ${SINGLE}; then
-            echo "## pyflakes"
-        fi
-        pyflakes "${FILE}"
-        if ${SINGLE}; then
-            exit
-        fi
-    fi
+    # Parse and validate command line arguments.
+    args = arg_parser.parse_args()
+    args.checkers = args.checkers.split(",")
+    for checker in args.checkers:
+        if checker not in KNOWN_CHECKERS:
+            print(f"error: unknown checker '{checker}'")
+            return 1
 
-    if [ "${USE_PYCODESTYLE}" = true ]; then
-        if ! ${SINGLE}; then
-            echo "## pycodestyle"
-        fi
-        # E202 whitespace before ')'
-        # E501 line too long - cannot be suppressed per file
-        pycodestyle --ignore=E202,E501 --repeat "${FILE}"
-        if ${SINGLE}; then
-            exit
-        fi
-    fi
+    # Check if specified files exist.
+    file_not_found = False
+    for filename in args.files:
+        if not os.path.isfile(filename):
+            print(f"error: {filename} not found")
+            file_not_found = True
+    if file_not_found:
+        return 1
 
-    if [ "${USE_PYDOCSTYLE}" = true ]; then
-        if ! ${SINGLE}; then
-            echo "## pydocstyle"
-        fi
-        pydocstyle "${FILE}"
-        if ${SINGLE}; then
-            exit
-        fi
-    fi
-}
+    # Check each file.
+    first = True
+    for filename in args.files:
+        if not first:
+            print("")
+        else:
+            first = False
+        print(f"### {filename}")
+        check_file(args.checkers, filename)
 
-IFS='|'
-FIRST=true
-for FILE in ${FILES}; do
-    if [ ! -f "${FILE}" ]; then
-        echo "ERROR: ${FILE} not found" >&2
-        exit 1
-    else
-        if [ "${FIRST}" = true ]; then
-            FIRST=false
-        else
-            echo ""
-        fi
-        echo "### ${FILE}"
-        checkfile "${FILE}"
-    fi
-done
+    return 0
+
+
+if __name__ == "__main__":
+    main()
