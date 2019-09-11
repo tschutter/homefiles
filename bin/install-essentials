@@ -224,6 +224,7 @@ PYPI3_PACKAGES="\
     pyflakes\
     pylint\
     pyprof2calltree\
+    pytype\
 "
 PYTHON3=python${NEWEST_PYTHON3_VERSION}
 PIP3=""
