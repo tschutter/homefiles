@@ -61,7 +61,7 @@ def ignore_file(filename, globs):
         if filename.endswith(ext):
             return True
 
-    if len(globs) == 0:
+    if not globs:
         return False
 
     for glob in globs:
@@ -73,6 +73,7 @@ def ignore_file(filename, globs):
 
 def find_files(args):
     """Do the actual finding."""
+    # pylint: disable=too-many-branches
 
     binary_re = re.compile(rb"[^\t\r\n\x20-\x7e]")
 
@@ -110,7 +111,10 @@ def find_files(args):
                                         )
                                     )
                                     break
-                                line = line[:-1].decode("ascii", errors="replace")
+                                line = line[:-1].decode(
+                                    "ascii",
+                                    errors="replace"
+                                )
                                 if len(line) > 80:
                                     line = line[:65] + " [...truncated]"
                                 if args.line_number:
@@ -148,7 +152,6 @@ def main():
     )
     arg_parser.add_argument(
         "--max-lines",
-#        dest="max_lines",
         metavar="N",
         default=10,
         help="max number of lines to print per file (default=%(default)i)"
@@ -163,6 +166,7 @@ def main():
     find_files(args)
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
