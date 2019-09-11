@@ -19,10 +19,9 @@ def which(checker):
     return None
 
 
-def run_pylint(program, filename):
-    """Run the pylint checker."""
+def run_and_filter(args, ignore):
+    """Run a program and filter the output."""
 
-    args = [program, "--reports=no", "--score=no", filename]
     stdout = subprocess.run(
         args,
         stdout=subprocess.PIPE,
@@ -30,10 +29,18 @@ def run_pylint(program, filename):
         text=True
     ).stdout
 
-    ignore = re.compile(r"^\*\*\*\*\*\*")  # "|--msg-template"
+    re_ignore = re.compile(ignore)
     for line in stdout.split("\n")[:-1]:
-        if not ignore.match(line):
+        if not re_ignore.match(line):
             print(line)
+
+
+def run_pylint(program, filename):
+    """Run the pylint checker."""
+
+    args = [program, "--reports=no", "--score=no", filename]
+    ignore = r"^\*\*\*\*\*\*"  # "|--msg-template"
+    run_and_filter(args, ignore)
 
 
 def run_pyflakes(program, filename):
@@ -59,6 +66,24 @@ def run_pydocstyle(program, filename):
     subprocess.run(args)
 
 
+def run_pytype(program, filename):
+    """Run the pytype checker."""
+
+    if not filename.endswith(".py"):
+        print("pytype cannot be run on a file without .py extension")
+        return
+
+    args = [program, "--no-cache", filename]
+    ignore = (
+        r"^Computing dependencies$|"
+        r"^ninja: Entering directory |"
+        r"^\[1/1\] check |"
+        r"^Analyzing 1 sources with [0-9]+ local dependencies$|"
+        r"^Success: no errors found$"
+    )
+    run_and_filter(args, ignore)
+
+
 def check_file(checkers, filename):
     """Check a single file."""
 
@@ -75,7 +100,8 @@ KNOWN_CHECKERS = {
     "pylint": run_pylint,
     "pyflakes": run_pyflakes,
     "pycodestyle": run_pycodestyle,
-    "pydocstyle": run_pydocstyle
+    "pydocstyle": run_pydocstyle,
+    "pytype": run_pytype
 }
 
 
