@@ -11,6 +11,12 @@ if [ $# -gt 0 -o "$1" = "--help" ]; then
     exit 1
 fi
 
-git stash push --keep-index --message "git-pull temp" --quiet
+git stash push --keep-index --message "git-pull temp" --quiet\
+  | grep "^No local changes to save$"
+STASHED=$?
+
 git pull
-git stash pop --quiet
+
+if [ ${STASHED} -eq 1 ]; then
+  git stash pop --quiet
+fi
