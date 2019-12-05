@@ -153,7 +153,10 @@ def clean_link(args, linkname, backup=True):
         else:
             print("Deleting file or directory '{0}'.".format(link_pathname))
             if not args.dryrun:
-                os.unlink(link_pathname)
+                if os.path.isdir(link_pathname):
+                    shutil.rmtree(link_pathname)
+                else:
+                    os.unlink(link_pathname)
 
 
 def make_link(args, enabled, filename, linkname=None):
@@ -522,6 +525,7 @@ def link_binfiles(args):
     make_link(args, True, "bin/cmake-clean")
     make_link(args, True, "bin/find-non-ascii")
     make_link(args, True, "bin/findfile")
+    make_link(args, True, "bin/git-pull")
     make_link(args, True, "bin/hed")
     make_link(args, True, "bin/install-essentials")
     make_link(args, exe_in_path("gnome-open"), "bin/mailto-gmail")
