@@ -43,8 +43,8 @@ def run_pylint(program, filename):
     run_and_filter(args, ignore)
 
 
-def run_pyflakes(program, filename):
-    """Run the pyflakes checker."""
+def run_pyflakes3(program, filename):
+    """Run the pyflakes3 checker."""
 
     args = [program, filename]
     subprocess.run(args)
@@ -102,7 +102,7 @@ def check_file(checkers, filename):
 
 KNOWN_CHECKERS = {
     "pylint": run_pylint,
-    "pyflakes": run_pyflakes,
+    "pyflakes3": run_pyflakes3,
     "pycodestyle": run_pycodestyle,
     "pydocstyle": run_pydocstyle,
     "pytype": run_pytype
