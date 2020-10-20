@@ -2,7 +2,16 @@
 #
 # Launch Thunderbird but display dates in ISO-8601 format.
 #
+# http://kb.mozillazine.org/Date_display_format (out of date)
+# https://bugzilla.mozilla.org/show_bug.cgi?id=1509096
+# https://bugzilla.mozilla.org/show_bug.cgi?id=1426907#c138
+# if [ ! `locale -a | grep "^root$"` ]; then
+#   sudo cp /usr/share/i18n/locales/en_DK /usr/share/i18n/locales/root
+#   echo 'root UTF-8' | sudo tee -a /etc/locale.gen
+#   sudo locale-gen
+# fi
+#
 
-export LC_TIME=en_DK.utf8
+export LC_TIME=root
 
 exec /usr/bin/thunderbird
