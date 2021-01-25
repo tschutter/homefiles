@@ -34,12 +34,10 @@ if [ -x "/usr/bin/apt" ]; then
         ncurses-term\
         psutils\
         pymacs\
-        python-docutils\
-        python-rope\
-        python2.7-dev\
-        python2.7-doc\
         python3-dev\
         python3-doc\
+        python3-docutils\
+        python3-rope\
         shellcheck\
         tmux\
         w3m-el\
@@ -155,24 +153,10 @@ PYTHON3_VERSIONS=$(
 NEWEST_PYTHON3_VERSION=$(echo "${PYTHON3_VERSIONS}" | cut -d " " -f1)
 echo "INFO: Latest Python3 version is ${NEWEST_PYTHON3_VERSION}"
 
-# Determine which versions of Python2 are installed, ordered newest to oldest.
-PYTHON2_VERSIONS=""
-for ROOTDIR in /usr/bin /usr/local/bin; do
-    for PYTHON in ${ROOTDIR}/python2.[0123456789]; do
-        VERSION=$(echo "${PYTHON}" | grep -o '2\.[0123456789]')
-        PYTHON2_VERSIONS="${PYTHON2_VERSIONS} ${VERSION}"
-    done
-done
-PYTHON2_VERSIONS=$(
-    echo "${PYTHON2_VERSIONS}" | tr " " "\n" | sort -r | uniq | tr "\n" " "
-)
-NEWEST_PYTHON2_VERSION=$(echo "${PYTHON2_VERSIONS}" | cut -d " " -f1)
-echo "INFO: Latest Python2 version is ${NEWEST_PYTHON2_VERSION}"
-
 # Upgrade or install pip for each version of installed Python.
 GET_PIP_URL="https://bootstrap.pypa.io/get-pip.py"
 GET_PIP=/tmp/get-pip.py
-for PYTHON_VERSION in ${NEWEST_PYTHON3_VERSION} ${NEWEST_PYTHON2_VERSION}; do
+for PYTHON_VERSION in ${NEWEST_PYTHON3_VERSION}; do
     # Find the corresponding version of pip.
     FOUND_PIP=false
     for ROOTDIR in /usr/bin /usr/local/bin; do
@@ -218,6 +202,7 @@ contains() {
 
 # Define Python3 packages via pip.
 PYPI3_PACKAGES="\
+    goobook\
     line_profiler\
     pycodestyle\
     pydocstyle\
@@ -225,6 +210,7 @@ PYPI3_PACKAGES="\
     pylint\
     pyprof2calltree\
     pytype\
+    rst2pdf\
 "
 PYTHON3=python${NEWEST_PYTHON3_VERSION}
 PIP3=""
@@ -234,49 +220,11 @@ for ROOTDIR in /usr/bin /usr/local/bin; do
     fi
 done
 
-# Define Python2 packages via pip.
-PYPI2_PACKAGES="goobook"
-if ${HAS_X}; then
-    PYPI2_PACKAGES="\
-        ${PYPI2_PACKAGES}\
-        rst2pdf\
-    "
-fi
-PYTHON2=python${NEWEST_PYTHON2_VERSION}
-PIP2=""
-for ROOTDIR in /usr/bin /usr/local/bin; do
-    if [ -x "${ROOTDIR}/pip${NEWEST_PYTHON2_VERSION}" ]; then
-        PIP2=${ROOTDIR}/pip${NEWEST_PYTHON2_VERSION}
-    fi
-done
-
-# Install Python3 packages.
+# Install/update Python3 packages.
 if [ "${PIP3}" != "" ]; then
-    PY3_INSTALLED=$(${PIP3} list --format columns | cut -f 1 -d' ' | tail -n +3)
-    for PACKAGE in ${PYPI2_PACKAGES}; do
-        if contains "${PY3_INSTALLED}" "${PACKAGE}"; then
-            echo "WARNING: Python2-only package ${PACKAGE} installed using ${PIP3}"
-        fi
-    done
-
     for PACKAGE in ${PYPI3_PACKAGES}; do
         echo "INFO: Installing ${PACKAGE} using ${PIP3}..."
         ${SUDO} "${PYTHON3}" "${PIP3}" install --quiet --upgrade "${PACKAGE}"
-    done
-fi
-
-# Install Python2 packages.
-if [ "${PIP2}" != "" ]; then
-    PY2_INSTALLED=$(${PIP2} list --format columns | cut -f 1 -d' ' | tail -n +3)
-    for PACKAGE in ${PYPI3_PACKAGES}; do
-        if contains "${PY2_INSTALLED}" "${PACKAGE}"; then
-            echo "WARNING: Python3-only package ${PACKAGE} installed using ${PIP2}"
-        fi
-    done
-
-    for PACKAGE in ${PYPI2_PACKAGES}; do
-        echo "INFO: Installing ${PACKAGE} using ${PIP2}..."
-        ${SUDO} "${PYTHON2}" "${PIP2}" install --quiet --upgrade "${PACKAGE}"
     done
 fi
 
