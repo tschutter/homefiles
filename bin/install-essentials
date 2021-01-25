@@ -19,8 +19,8 @@ if [ -x "/usr/bin/apt" ]; then
     # sudo apt-cache search REGEX
     # ncurses-term adds /etc/terminfo for urxvt
     PACKAGES="\
-        emacs25\
-        emacs25-el\
+        emacs\
+        emacs-el\
         git\
         git-doc\
         git-man\
