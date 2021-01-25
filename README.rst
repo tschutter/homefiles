@@ -80,6 +80,35 @@ Firefox
 
 ----------------------------------------------------------------------
 
+Other Optional Setup
+--------------------
+
+#. Generate ssh private/public key pair::
+
+    ssh-keygen
+
+#. Add ssh public key to Bitbucket and GitHub.
+
+#. Install pcloud app.
+
+   * Download `pCloud Drive
+     <https://www.pcloud.com/download-free-online-cloud-file-storage.html>`_
+     and save it to ~/bin/pcloud.  Make it executable.
+
+   * Run ``pcloud`` and login.
+
+   * Add a sync between ``~/org`` and ``pcloudDrive/org``.
+
+#. Copy GPG secret keys.  Run on source machine::
+
+    gpg --export-secret-keys >> gpg-secrets.txt
+
+   Copy ``gpg-secrets.txt`` to new machine and then import::
+
+    gpg --import gpg-secrets.txt
+
+----------------------------------------------------------------------
+
 Troubleshooting
 ---------------
 
