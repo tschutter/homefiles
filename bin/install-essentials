@@ -32,6 +32,7 @@ if [ -x "/usr/bin/apt" ]; then
         mutt\
         muttprint\
         ncurses-term\
+        pass\
         psutils\
         pymacs\
         python3-dev\
