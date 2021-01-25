@@ -39,6 +39,7 @@ if [ -x "/usr/bin/apt" ]; then
         python3-doc\
         python3-docutils\
         python3-rope\
+        ripgrep\
         shellcheck\
         tmux\
         w3m-el\
