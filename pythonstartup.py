@@ -1,6 +1,7 @@
 """
-Loaded by interactive Python sessions via PYTHONSTARTUP environment
-variable.
+Loaded by interactive Python sessions.
+
+Referenced by the PYTHONSTARTUP environment variable.
 
 For occasional use.  If you are looking in here, you probably should
 be using ipython instead.
@@ -18,6 +19,7 @@ try:
 except ImportError:
     # xdg not available on all platforms
     # pylint: disable=C0103
+    print("xdg module not available, see ~/.homefiles/pythonstartup.py")
     xdg_cache_home = os.path.expanduser("~/.cache")
 
 # Including rlcompleter is required for auto-completion.  The assert
@@ -30,14 +32,24 @@ print("Use TAB for auto-completion.")
 
 
 def _history_pathname():
-    """Determine pathname of where history is stored."""
+    """
+    Determine pathname of where history is stored.
+
+    Default is ~/.python_history, but we are trying to cleanup the
+    user's home directory.
+    """
     pathname = os.path.join(xdg_cache_home, "python", "history")
     return pathname
 
 
 def _save_history():
     """Save history to file."""
-    readline.write_history_file(_history_pathname())
+    pathname = _history_pathname()
+    directory = os.path.dirname(pathname)
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+    readline.write_history_file(pathname)
+
 
 atexit.register(_save_history)
 
@@ -48,5 +60,6 @@ def _load_history():
     if os.path.exists(history_pathname):
         readline.read_history_file(history_pathname)
         print("History loaded from {}.".format(history_pathname))
+
 
 _load_history()
