@@ -48,6 +48,10 @@ fi
 # Prepend user's bin directory to the path.
 path_prepend ${HOME}/bin
 
+# Prepend user's .local/bin directory to the path.
+# See https://www.python.org/dev/peps/pep-0370/.
+path_prepend ${HOME}/.local/bin
+
 # MySQL history.
 MYSQL_HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/mysql/history"; export MYSQL_HISTFILE
 
