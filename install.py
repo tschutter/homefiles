@@ -431,7 +431,6 @@ def link_dotfiles(args, explicit_cache_dir):
 
     enabled = exe_in_path("pdb")
     make_dot_link(args, enabled, "pdbrc")
-    make_dot_link(args, enabled, "pdbrc.py")
     mkdir(args, enabled, os.path.join(args.cache_dir, "pdb"), 0o700)
 
     make_dot_link(args, exe_in_path("pylint"), "pylintrc")

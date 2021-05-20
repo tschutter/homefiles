@@ -19,7 +19,7 @@ alias pl p_ locals() local:
 
 # Execute non-pdb commands.
 import os
-execfile(os.path.expanduser("~/.pdbrc.py"))  # foo
+exec(open(os.path.expanduser("~/.homefiles/pdbrc.py")).read())
 
 # Give some hints.  NameError happens if pdb was triggered by:
 #   import pdb; pdb.set_trace()
