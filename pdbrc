@@ -1,4 +1,7 @@
 # pdb(1) config file
+#
+# Trigger pdb by adding "breakpoint()" to code.
+#
 
 from __future__ import print_function
 
