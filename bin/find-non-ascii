@@ -62,11 +62,7 @@ def ignore_file(filename, globs):
     if not globs:
         return False
 
-    for glob in globs:
-        if fnmatch.fnmatch(filename, glob):
-            return False
-
-    return True
+    return not any(fnmatch.fnmatch(filename, glob) for glob in globs)
 
 
 def find_files(args):
