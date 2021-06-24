@@ -136,12 +136,11 @@ def clean_link(args, linkname, backup=True):
             os.unlink(link_pathname)
 
     elif os.path.exists(link_pathname):
-        if os.path.isdir(link_pathname):
-            if not os.listdir(link_pathname):
-                print("Removing empty directory '{0}'.".format(link_pathname))
-                if not args.dryrun:
-                    os.rmdir(link_pathname)
-                    return
+        if os.path.isdir(link_pathname) and not os.listdir(link_pathname):
+            print("Removing empty directory '{0}'.".format(link_pathname))
+            if not args.dryrun:
+                os.rmdir(link_pathname)
+                return
 
         # The destination exists as a file or dir.  Back it up.
         if backup:
@@ -552,12 +551,12 @@ def xfwm4_remove_key_binding(args, binding):
         binding
     ]
     output = force_run_command(cmdargs)
-    if output.find("does not exist on channel") != -1:
-        if args.verbose:
-            print("Key binding '{0}' already removed.".format(binding))
-    else:
+    if output.find("does not exist on channel") == -1:
         print("Removing key binding '{0}'.".format(binding))
         run_command(args, cmdargs + ["--reset"])
+
+    elif args.verbose:
+        print("Key binding '{0}' already removed.".format(binding))
 
 
 def xfwm4_add_key_binding(args, binding, command):
@@ -850,9 +849,9 @@ def main():
     args.is_cygwin = sys.platform == "cygwin"
     args.is_windows = sys.platform.startswith("win")
     args.is_xwindows = (
-        exe_in_path("xterm") and
-        not (args.is_cygwin or args.is_windows)
+        exe_in_path("xterm") and not args.is_cygwin and not args.is_windows
     )
+
 
     # Ensure that directories exist.
     mkdir(args, True, args.cache_dir, 0o700)
