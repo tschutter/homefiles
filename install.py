@@ -32,15 +32,15 @@ def force_run_command(cmdargs, stdinstr=None):
     """Run an external command, returning stdout and stderr as a string."""
     if stdinstr is None:
         stdinstr = ""
-    process = subprocess.Popen(
+    with subprocess.Popen(
         cmdargs,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
-    )
-    if stdinstr is not None:
-        stdinstr = stdinstr.encode("ascii")
-    stdoutdata, stderrdata = process.communicate(stdinstr)
+    ) as process:
+        if stdinstr is not None:
+            stdinstr = stdinstr.encode("ascii")
+        stdoutdata, stderrdata = process.communicate(stdinstr)
     return (stdoutdata + stderrdata).decode()
 
 
@@ -136,12 +136,11 @@ def clean_link(args, linkname, backup=True):
             os.unlink(link_pathname)
 
     elif os.path.exists(link_pathname):
-        if os.path.isdir(link_pathname):
-            if not os.listdir(link_pathname):
-                print("Removing empty directory '{0}'.".format(link_pathname))
-                if not args.dryrun:
-                    os.rmdir(link_pathname)
-                    return
+        if os.path.isdir(link_pathname) and not os.listdir(link_pathname):
+            print("Removing empty directory '{0}'.".format(link_pathname))
+            if not args.dryrun:
+                os.rmdir(link_pathname)
+                return
 
         # The destination exists as a file or dir.  Back it up.
         if backup:
@@ -552,12 +551,11 @@ def xfwm4_remove_key_binding(args, binding):
         binding
     ]
     output = force_run_command(cmdargs)
-    if output.find("does not exist on channel") != -1:
-        if args.verbose:
-            print("Key binding '{0}' already removed.".format(binding))
-    else:
+    if output.find("does not exist on channel") == -1:
         print("Removing key binding '{0}'.".format(binding))
         run_command(args, cmdargs + ["--reset"])
+    elif args.verbose:
+        print("Key binding '{0}' already removed.".format(binding))
 
 
 def xfwm4_add_key_binding(args, binding, command):
@@ -732,10 +730,10 @@ def install_fonts(args):
                     continue
                 print("Installing font '{0}'.".format(src_pathname))
                 vbs_text = bytes(
-                    'Set objShell = CreateObject("Shell.Application")\r\n' +
-                    'Set objFolder = objShell.Namespace(&H14&)\r\n' +
-                    'objFolder.CopyHere "{0}"\r\n'.format(
-                        cygpath_w(src_pathname)
+                    (
+                        'Set objShell = CreateObject("Shell.Application")\r\n'
+                        'Set objFolder = objShell.Namespace(&H14&)\r\n'
+                        f'objFolder.CopyHere "{cygpath_w(src_pathname)}"\r\n'
                     ),
                     'UTF-8'
                 )
@@ -850,8 +848,7 @@ def main():
     args.is_cygwin = sys.platform == "cygwin"
     args.is_windows = sys.platform.startswith("win")
     args.is_xwindows = (
-        exe_in_path("xterm") and
-        not (args.is_cygwin or args.is_windows)
+        exe_in_path("xterm") and not args.is_cygwin and not args.is_windows
     )
 
     # Ensure that directories exist.
