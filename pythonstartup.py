@@ -38,8 +38,7 @@ def _history_pathname():
     Default is ~/.python_history, but we are trying to cleanup the
     user's home directory.
     """
-    pathname = os.path.join(xdg_cache_home, "python", "history")
-    return pathname
+    return os.path.join(xdg_cache_home, "python", "history")
 
 
 def _save_history():
