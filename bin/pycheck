@@ -123,9 +123,12 @@ KNOWN_CHECKERS = {
     "pytype": run_pytype
 }
 
-
 def main():
     """Main."""
+
+    # Build default list of checkers.
+    # [2021-06-25] pytype has gotten extremely slow
+    default_checkers = ",".join(c for c in KNOWN_CHECKERS if c != "pytype")
 
     # Define arguments.
     arg_parser = argparse.ArgumentParser(
@@ -133,8 +136,13 @@ def main():
     )
     arg_parser.add_argument(
         "--checkers",
-        default=",".join(KNOWN_CHECKERS.keys()),
+        default=default_checkers,
         help="output grid file format (default=%(default)s)"
+    )
+    arg_parser.add_argument(
+        "--list-checkers",
+        action="store_true",
+        help="list known checkers and exit"
     )
     arg_parser.add_argument(
         "--no-filter",
@@ -152,6 +160,9 @@ def main():
 
     # Parse and validate command line arguments.
     args = arg_parser.parse_args()
+    if args.list_checkers:
+        print(",".join(KNOWN_CHECKERS))
+        return 0
     args.checkers = args.checkers.split(",")
     for checker in args.checkers:
         if checker not in KNOWN_CHECKERS:
