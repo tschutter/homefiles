@@ -72,7 +72,14 @@ def run_pydocstyle(program, filename):
 
     # Use --match to allow for files without .py extension.
     args = [program, f"--match={filename}", filename]
-    subprocess.run(args, check=False)
+    # Allow for "Main" function comment in main().
+    # Not good.  Need to do multi-line ignores.
+    ignore = (
+        r"^.+:[0-9]+ in public function `main`:$|"
+        r"^\s+D401: First line should be in imperative mood;"
+        r" try rephrasing \(found 'Main'\)$"
+    )
+    run_and_filter(args, ignore)
 
 
 def run_pytype(program, filename):
