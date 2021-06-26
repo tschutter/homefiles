@@ -19,7 +19,7 @@ def which(checker):
     return None
 
 
-def run_and_filter(args, ignore):
+def run_and_filter(pycheck_args, args, ignore):
     """Run a program and filter the output."""
 
     stdout = subprocess.run(
@@ -30,35 +30,37 @@ def run_and_filter(args, ignore):
         text=True
     ).stdout
 
-    re_ignore = re.compile(ignore)
-    for line in stdout.split("\n")[:-1]:
-        if not re_ignore.match(line):
-            print(line)
+    if pycheck_args.filter_output:
+        re_ignore = re.compile(ignore)
+        for line in stdout.split("\n")[:-1]:
+            if not re_ignore.match(line):
+                print(line)
+    else:
+        print(stdout)
 
-
-def run_flake8(program, filename):
+def run_flake8(_pycheck_args, program, filename):
     """Run the flake8 checker."""
 
     args = [program, filename]
     subprocess.run(args, check=False)
 
 
-def run_pylint(program, filename):
+def run_pylint(pycheck_args, program, filename):
     """Run the pylint checker."""
 
     args = [program, "--reports=no", "--score=no", filename]
     ignore = r"^\*\*\*\*\*\*"  # "|--msg-template"
-    run_and_filter(args, ignore)
+    run_and_filter(pycheck_args, args, ignore)
 
 
-def run_pyflakes3(program, filename):
+def run_pyflakes3(_pycheck_args, program, filename):
     """Run the pyflakes3 checker."""
 
     args = [program, filename]
     subprocess.run(args, check=False)
 
 
-def run_pycodestyle(program, filename):
+def run_pycodestyle(_pycheck_args, program, filename):
     """Run the pycodestyle checker."""
 
     # E202 whitespace before ')'
@@ -67,7 +69,7 @@ def run_pycodestyle(program, filename):
     subprocess.run(args, check=False)
 
 
-def run_pydocstyle(program, filename):
+def run_pydocstyle(pycheck_args, program, filename):
     """Run the pydocstyle checker."""
 
     # Use --match to allow for files without .py extension.
@@ -79,10 +81,10 @@ def run_pydocstyle(program, filename):
         r"^\s+D401: First line should be in imperative mood;"
         r" try rephrasing \(found 'Main'\)$"
     )
-    run_and_filter(args, ignore)
+    run_and_filter(pycheck_args, args, ignore)
 
 
-def run_pytype(program, filename):
+def run_pytype(pycheck_args, program, filename):
     """Run the pytype checker."""
 
     if not filename.endswith(".py"):
@@ -97,19 +99,19 @@ def run_pytype(program, filename):
         r"^Analyzing 1 sources with [0-9]+ local dependencies$|"
         r"^Success: no errors found$"
     )
-    run_and_filter(args, ignore)
+    run_and_filter(pycheck_args, args, ignore)
 
 
-def check_file(checkers, filename):
+def check_file(pycheck_args, filename):
     """Check a single file."""
 
-    for checker in checkers:
+    for checker in pycheck_args.checkers:
         program = which(checker)
         if program is None:
             print(f"## {checker} not installed")
         else:
             print(f"## {checker}")
-            KNOWN_CHECKERS[checker](program, filename)
+            KNOWN_CHECKERS[checker](pycheck_args, program, filename)
 
 
 KNOWN_CHECKERS = {
@@ -133,6 +135,13 @@ def main():
         "--checkers",
         default=",".join(KNOWN_CHECKERS.keys()),
         help="output grid file format (default=%(default)s)"
+    )
+    arg_parser.add_argument(
+        "--no-filter",
+        dest="filter_output",
+        action="store_false",
+        default=True,
+        help="do not filter noise; use for debugging pycheck"
     )
     arg_parser.add_argument(
         "files",
@@ -166,7 +175,7 @@ def main():
         else:
             first = False
         print(f"### {filename}")
-        check_file(args.checkers, filename)
+        check_file(args, filename)
 
     return 0
 
