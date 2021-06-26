@@ -26,6 +26,7 @@ def run_and_filter(args, ignore):
         args,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        check=False,
         text=True
     ).stdout
 
@@ -33,6 +34,13 @@ def run_and_filter(args, ignore):
     for line in stdout.split("\n")[:-1]:
         if not re_ignore.match(line):
             print(line)
+
+
+def run_flake8(program, filename):
+    """Run the flake8 checker."""
+
+    args = [program, filename]
+    subprocess.run(args, check=False)
 
 
 def run_pylint(program, filename):
@@ -47,7 +55,7 @@ def run_pyflakes3(program, filename):
     """Run the pyflakes3 checker."""
 
     args = [program, filename]
-    subprocess.run(args)
+    subprocess.run(args, check=False)
 
 
 def run_pycodestyle(program, filename):
@@ -56,7 +64,7 @@ def run_pycodestyle(program, filename):
     # E202 whitespace before ')'
     # E501 line too long - cannot be suppressed per file
     args = [program, "--ignore=E202,E501", "--repeat", filename]
-    subprocess.run(args)
+    subprocess.run(args, check=False)
 
 
 def run_pydocstyle(program, filename):
@@ -67,7 +75,7 @@ def run_pydocstyle(program, filename):
         return
 
     args = [program, filename]
-    subprocess.run(args)
+    subprocess.run(args, check=False)
 
 
 def run_pytype(program, filename):
@@ -101,6 +109,7 @@ def check_file(checkers, filename):
 
 
 KNOWN_CHECKERS = {
+    "flake8": run_flake8,
     "pylint": run_pylint,
     "pyflakes3": run_pyflakes3,
     "pycodestyle": run_pycodestyle,
