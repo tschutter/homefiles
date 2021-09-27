@@ -116,5 +116,5 @@ Troubleshooting
    containing "ISO 14755 mode".
 
    This a "feature" of xterm.  Use xfce4-terminal instead.  Check
-   Settings Manager -> Preferred Applications -> Utilities -> Terminal
-   Emulator.
+   Settings Manager -> System -> Default Applications -> Utilities ->
+   Terminal Emulator.
