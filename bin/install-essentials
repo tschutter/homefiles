@@ -15,6 +15,10 @@ HAS_X=true
 
 if [ -x "/usr/bin/apt" ]; then
     # Debian derivatives.
+
+    # Add third party apt repositories.
+    ${SUDO} add-apt-repository ppa:agornostal/ulauncher
+
     # http://packages.ubuntu.com/
     # sudo apt-cache search REGEX
     # ncurses-term adds /etc/terminfo for urxvt
@@ -44,11 +48,15 @@ if [ -x "/usr/bin/apt" ]; then
         ripgrep\
         shellcheck\
         tmux\
+        ulauncher\
         w3m-el\
         w3m\
         xsel\
         xzgv\
     "
+
+    # Update package lists.
+    ${SUDO} apt update
 
     # shellcheck disable=SC2086
     ${SUDO} apt install ${PACKAGES}
