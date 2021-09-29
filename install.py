@@ -483,13 +483,13 @@ def link_dotfiles(args, explicit_cache_dir):
         args,
         exe_in_path("xfce4-terminal"),
         "xfce4-terminal-terminalrc",
-        os.path.join(args.config_dir, "xfce4", "terminal", "terminalrc")
+        os.path.join(xfce4_config_dir, "terminal", "terminalrc")
     )
     make_link(
         args,
         exe_in_path("xfce4-terminal"),
         "xfce4-terminal-accels.scm",
-        os.path.join(args.config_dir, "xfce4", "terminal", "accels.scm")
+        os.path.join(xfce4_config_dir, "terminal", "accels.scm")
     )
 
     make_dot_link(args, exe_in_path("xzgv"), "xzgvrc")
