@@ -451,6 +451,13 @@ def link_dotfiles(args, explicit_cache_dir):
 
     make_dot_link(args, exe_in_path("tmux"), "tmux.conf")
 
+    make_link(
+        args,
+        exe_in_path("ulauncher"),
+        "ulauncher-settings.json",
+        os.path.join(args.config_dir, "ulauncher", "settings.json")
+    )
+
     make_dot_link(args, exe_in_path("urxvt"), "urxvt")
 
     make_dot_link(args, exe_in_path("valgrind"), "valgrindrc")
