@@ -1,7 +1,0 @@
-#!/bin/sh
-exec xterm\
- -font "10x20"\
- -geometry 162x68\
- -bg white -fg black\
- -name mutt\
- -e /usr/bin/mutt

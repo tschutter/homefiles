@@ -33,8 +33,6 @@ if [ -x "/usr/bin/apt" ]; then
         libnotify-bin\
         libtext-autoformat-perl\
         mg\
-        mutt\
-        muttprint\
         ncurses-term\
         pass\
         psutils\
@@ -77,7 +75,6 @@ elif [ -x "/usr/sbin/pkg_add" ]; then
         python-3*\
         wget\
     "
-        #mutt--\
         #emacs-python\
 
     if [ ! -x /usr/X11R6/bin/xterm ]; then
@@ -115,7 +112,6 @@ elif [ -x "/usr/bin/zypper" ]; then
         emacs-24.3\
         git\
         lynx\
-        mutt\
         rxvt-unicode\
         shellcheck\
         tmux\
@@ -135,7 +131,6 @@ elif [ -x "/usr/bin/yum" ]; then
         emacs-23*\
         git\
         lynx\
-        mutt\
         rxvt-unicode\
         tmux\
         w3m\

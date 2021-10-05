@@ -397,22 +397,9 @@ def link_dotfiles(args, explicit_cache_dir):
 
     create_dotless(args)
 
-    make_dot_link(
-        args,
-        exe_in_path("mail") or exe_in_path("mutt"),
-        "mailcap"
-    )
-
     make_dot_link(args, exe_in_path("mg"), "mg")
 
     make_dot_link(args, exe_in_path("mintty"), "minttyrc")
-
-    enabled = exe_in_path("mutt")
-    make_dot_link(args, enabled, "mutt")
-    # Create ~/.cache/mutt so mutt can store certs on first run.
-    mkdir(args, enabled, os.path.join(explicit_cache_dir, "mutt"), 0o700)
-
-    make_dot_link(args, exe_in_path("muttprint"), "muttprintrc")
 
     enabled = exe_in_path("mysql")
     mkdir(args, enabled, os.path.join(args.cache_dir, "mysql"), 0o700)
@@ -534,7 +521,6 @@ def link_binfiles(args):
     make_link(args, True, "bin/hed")
     make_link(args, True, "bin/install-essentials")
     make_link(args, exe_in_path("gnome-open"), "bin/mailto-gmail")
-    make_link(args, exe_in_path("mutt"), "bin/mailto-mutt")
     make_link(args, True, "bin/open")
     make_link(args, True, "bin/pycheck")
     make_link(args, True, "bin/strip-bom")

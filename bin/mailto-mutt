@@ -1,6 +1,0 @@
-#!/bin/sh
-#
-# Opens a compose in mutt with the input mailto.
-#
-
-xfce4-terminal --command="mutt $1"

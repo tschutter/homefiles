@@ -207,9 +207,6 @@ ps1-default
 # window title back to something useful.
 alias ssh="[ -t 1 ] && echo -ne '\033]0;ssh\007'; ssh"
 
-# It's nice to know which window has our email.
-alias mutt="[ -t 1 ] && echo -ne '\033]0;mutt\007'; mutt"
-
 # Source local bournerc.
 if [ -f ~/.bournerc-local ]; then
     . ~/.bournerc-local

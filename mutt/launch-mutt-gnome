@@ -1,8 +1,0 @@
-#!/bin/sh
-# Use /usr/share/pixmaps/mutt.xpm from mutt package.
-exec /usr/bin/gnome-terminal\
- --geometry 149x51-0+0\
- --hide-menubar\
- --name mutt\
- --title mutt\
- --command=/usr/bin/mutt
