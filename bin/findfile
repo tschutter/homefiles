@@ -14,8 +14,8 @@ usage() {
     echo "  $0 [options] FILENAME" >&2
     echo "" >&2
     echo "OPTIONS:" >&2
-    echo "  -i = ignore case" >&2
     echo "  -l = use a long listing format" >&2
+    echo "  -s = case sensitive search" >&2
     echo "" >&2
     echo "EXAMPLES:" >&2
     echo "  $0 foo.c" >&2
@@ -23,19 +23,19 @@ usage() {
 }
 
 ARGS=""
-FIND_NAME_OPTION="-name"
 PRINT_OPTION="-print"
+FIND_NAME_OPTION="-iname"
 for ARG in "$@"; do
     case ${ARG} in
         --help)
             usage
             exit 1
             ;;
-        -i)
-            FIND_NAME_OPTION="-iname"
-            ;;
         -l)
             PRINT_OPTION="-ls"
+            ;;
+        -s)
+            FIND_NAME_OPTION="-name"
             ;;
         *)
             ARGS="${ARGS} ${ARG}"
