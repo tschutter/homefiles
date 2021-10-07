@@ -103,11 +103,14 @@ Other Optional Setup
 
 #. Copy GPG secret keys.  Run on source machine::
 
-    gpg --export-secret-keys >> gpg-secrets.txt
+    gpg --export-secret-keys > gpg-secrets.txt
 
    Copy ``gpg-secrets.txt`` to new machine and then import::
 
     gpg --import gpg-secrets.txt
+
+#. Setup pass database.  Read instructions in
+   ``.password-store/0-README.txt``.
 
 ----------------------------------------------------------------------
 
