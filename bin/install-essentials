@@ -231,7 +231,7 @@ done
 if [ "${PIP3}" != "" ]; then
     for PACKAGE in ${PYPI3_PACKAGES}; do
         echo "INFO: Installing/updating ${PACKAGE} using ${PIP3}..."
-        ${SUDO} "${PYTHON3}" "${PIP3}" install --quiet --upgrade "${PACKAGE}"
+        "${PYTHON3}" "${PIP3}" install --quiet --upgrade "${PACKAGE}"
     done
 fi
 
