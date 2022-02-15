@@ -25,6 +25,7 @@ if [ -x "/usr/bin/apt" ]; then
     PACKAGES="\
         emacs\
         emacs-el\
+        fzf\
         git\
         git-doc\
         git-man\
