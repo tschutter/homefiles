@@ -77,6 +77,9 @@ fi
 # Tell gpg-agent(1) which tty to use.
 export GPG_TTY=$(tty)
 
+# Enable multi-select using tab and shift-tab for fzf(1).
+export FZF_DEFAULT_OPTS='--multi'
+
 # When logged in via SSH and running a gpg operation which asks for a
 # key's passphrase, request that the password be entered directly in
 # the terminal rather than opening an external passphrase window
