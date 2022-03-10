@@ -47,7 +47,7 @@ def force_run_command(cmdargs, stdinstr=None):
 def run_command(args, cmdargs, stdinstr=None):
     """Run an external command, printing stdout and stderr."""
     if args.verbose:
-        print("Running '{0}'".format(" ".join(cmdargs)))
+        print(f"Running '{' '.join(cmdargs)}'")
     if not args.dryrun:
         output = force_run_command(cmdargs, stdinstr)
         output = output.rstrip()
@@ -58,13 +58,12 @@ def run_command(args, cmdargs, stdinstr=None):
 def cygpath_w(pathname):
     r"""Convert a pathname to Windows style X:\foo\bar."""
     if sys.platform == "cygwin":
-        pipe = subprocess.Popen(
+        with subprocess.Popen(
             ["cygpath", "--windows", pathname],
             stdout=subprocess.PIPE
-        ).stdout
-        for line in pipe:
-            pathname = line.strip().decode("ascii")
-        pipe.close()
+        ).stdout as pipe:
+            for line in pipe:
+                pathname = line.strip().decode("ascii")
 
     return pathname
 
@@ -72,13 +71,12 @@ def cygpath_w(pathname):
 def cygpath_u(pathname):
     """Convert a pathname to Cygwin style /cygpath/X/foo/bar."""
     if sys.platform == "cygwin":
-        pipe = subprocess.Popen(
+        with subprocess.Popen(
             ["cygpath", "--unix", pathname],
             stdout=subprocess.PIPE
-        ).stdout
-        for line in pipe:
-            pathname = line.strip().decode("ascii")
-        pipe.close()
+        ).stdout as pipe:
+            for line in pipe:
+                pathname = line.strip().decode("ascii")
 
     return pathname
 
@@ -96,7 +94,7 @@ def mkdir(args, enabled, directory, mode):
     """Create directory."""
     if enabled:
         if not os.path.isdir(directory):
-            print("Creating '{0}' directory.".format(simplify_path(directory)))
+            print(f"Creating '{simplify_path(directory)}' directory.")
             if not args.dryrun:
                 os.mkdir(directory, mode)
     else:
@@ -131,13 +129,13 @@ def clean_link(args, linkname, backup=True):
 
     if os.path.islink(link_pathname):
         # The destination exists as a symbolic link.
-        print("Deleting symbolic link '{0}'.".format(link_pathname))
+        print(f"Deleting symbolic link '{link_pathname}'.")
         if not args.dryrun:
             os.unlink(link_pathname)
 
     elif os.path.exists(link_pathname):
         if os.path.isdir(link_pathname) and not os.listdir(link_pathname):
-            print("Removing empty directory '{0}'.".format(link_pathname))
+            print(f"Removing empty directory '{link_pathname}'.")
             if not args.dryrun:
                 os.rmdir(link_pathname)
                 return
@@ -146,7 +144,7 @@ def clean_link(args, linkname, backup=True):
         if backup:
             backup_dir = os.path.join(args.cache_dir, "homefiles_backup")
             mkdir(args, True, backup_dir, 0o700)
-            print("Moving '{0}' to '{1}'.".format(link_pathname, backup_dir))
+            print(f"Moving '{link_pathname}' to '{backup_dir}'.")
             backup_file = os.path.join(
                 backup_dir,
                 os.path.basename(link_pathname)
@@ -158,7 +156,7 @@ def clean_link(args, linkname, backup=True):
             if not args.dryrun:
                 shutil.move(link_pathname, backup_dir)
         else:
-            print("Deleting file or directory '{0}'.".format(link_pathname))
+            print(f"Deleting file or directory '{link_pathname}'.")
             if not args.dryrun:
                 if os.path.isdir(link_pathname):
                     shutil.rmtree(link_pathname)
@@ -198,7 +196,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     # The target filename should always exist.
     if not os.path.exists(file_pathname):
-        print("ERROR: File '{0}' does not exist.".format(file_pathname))
+        print(f"ERROR: File '{file_pathname}' does not exist.")
         sys.exit(1)
 
     if enabled and not args.force and os.path.islink(link_pathname):
@@ -213,10 +211,8 @@ def make_link(args, enabled, filename, linkname=None):
         else:
             if args.verbose:
                 print(
-                    "Link already exists from '{0}' to '{1}'.".format(
-                        link_pathname,
-                        file_pathname
-                    )
+                    f"Link already exists from '{link_pathname}'"
+                    f" to '{file_pathname}'."
                 )
             return
     else:
@@ -224,7 +220,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     if not enabled:
         if args.verbose:
-            print("Not linking to '{0}' (not enabled).".format(filename))
+            print(f"Not linking to '{filename}' (not enabled).")
         return
 
     # Ensure that the link_pathname directory exists.
@@ -241,10 +237,7 @@ def make_link(args, enabled, filename, linkname=None):
 
     # Make the symbolic link from link_pathname to link_target.
     print(
-        "Creating symbolic link from '{0}' to '{1}'.".format(
-            link_pathname,
-            link_target
-        )
+        f"Creating symbolic link from '{link_pathname}' to '{link_target}'."
     )
     if not args.dryrun:
         os.symlink(link_target, link_pathname)
@@ -294,8 +287,8 @@ def create_dotless(args):
     if enabled:
         if args.force or not os.path.exists(dotless_pathname):
             mkdir(args, True, dotless_dir, 0o700)
-            print("Running lesskey to create '{0}'.".format(dotless_pathname))
-            lesskey = "#env\nLESSHISTFILE={0}\n".format(history_pathname)
+            print(f"Running lesskey to create '{dotless_pathname}'.")
+            lesskey = f"#env\nLESSHISTFILE={history_pathname}\n"
             run_command(
                 args,
                 ["lesskey", "-o", dotless_pathname, "-"],
@@ -318,7 +311,7 @@ def process_terminfo(args):
     terminfo_dir = os.path.join(args.home_dir, ".terminfo")
     terminfo_compiled = os.path.join(terminfo_dir, "r", "rxvt-unicode")
     if not os.path.exists(terminfo_compiled):
-        print("Running tic to create '{0}'.".format(terminfo_compiled))
+        print(f"Running tic to create '{terminfo_compiled}'.")
         terminfo_source = os.path.join(
             args.homefiles,
             "rxvt-unicode.terminfo"
@@ -553,10 +546,10 @@ def xfwm4_remove_key_binding(args, binding):
     ]
     output = force_run_command(cmdargs)
     if output.find("does not exist on channel") == -1:
-        print("Removing key binding '{0}'.".format(binding))
+        print(f"Removing key binding '{binding}'.")
         run_command(args, cmdargs + ["--reset"])
     elif args.verbose:
-        print("Key binding '{0}' already removed.".format(binding))
+        print(f"Key binding '{binding}' already removed.")
 
 
 def xfwm4_add_key_binding(args, binding, command):
@@ -575,18 +568,15 @@ def xfwm4_add_key_binding(args, binding, command):
     if output == command:
         if args.verbose:
             print(
-                "Key '{0}' already bound to '{1}'.".format(binding, command)
+                f"Key '{binding}' already bound to '{command}'."
             )
     else:
         print(output)
         if output.find("does not exist on channel") != -1:
             output = ""
         print(
-            "Changing binding of key '{0}' from '{1}' to '{2}'.".format(
-                binding,
-                output,
-                command
-            )
+            f"Changing binding of key '{binding}'"
+            f" from '{output}' to '{command}'."
         )
         run_command(
             args,
@@ -676,8 +666,8 @@ def configure_wm_keybindings(args):
     for num in range(1, 10):
         xfwm4_add_key_binding(
             args,
-            winkey + "F{0}".format(num),
-            "workspace_{0}_key".format(num)
+            winkey + f"F{num}",
+            f"workspace_{num}_key"
         )
     xfwm4_add_key_binding(
         args,
@@ -692,8 +682,8 @@ def configure_wm_keybindings(args):
     for num in range(1, 10):
         xfwm4_add_key_binding(
             args,
-            ctrlwinkey + "F{0}".format(num),
-            "move_window_workspace_{0}_key".format(num)
+            ctrlwinkey + f"F{num}",
+            f"move_window_workspace_{num}_key"
         )
 
     # But these do not work.
@@ -729,7 +719,7 @@ def install_fonts(args):
                 dst_pathname = cygpath_u(dst_pathname)
                 if not args.force and os.path.exists(dst_pathname):
                     continue
-                print("Installing font '{0}'.".format(src_pathname))
+                print(f"Installing font '{src_pathname}'.")
                 vbs_text = bytes(
                     (
                         'Set objShell = CreateObject("Shell.Application")\r\n'
