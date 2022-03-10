@@ -147,6 +147,14 @@ def clean_link(args, linkname, backup=True):
             backup_dir = os.path.join(args.cache_dir, "homefiles_backup")
             mkdir(args, True, backup_dir, 0o700)
             print("Moving '{0}' to '{1}'.".format(link_pathname, backup_dir))
+            backup_file = os.path.join(
+                backup_dir,
+                os.path.basename(link_pathname)
+            )
+            if os.path.exists(backup_file):
+                print(f"ERROR: '{backup_file}' already exists")
+                if not args.dryrun:
+                    sys.exit(1)
             if not args.dryrun:
                 shutil.move(link_pathname, backup_dir)
         else:
