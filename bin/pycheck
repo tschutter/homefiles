@@ -3,9 +3,12 @@
 """Run multiple Python static checkers."""
 
 import argparse
+import configparser
 import os
+import pathlib
 import re
 import subprocess
+import sys
 
 
 def which(checker):
@@ -19,8 +22,11 @@ def which(checker):
     return None
 
 
-def run_and_filter(pycheck_args, args, ignore):
+def run_and_filter(pycheck_args, args, ignore=None):
     """Run a program and filter the output."""
+
+    if pycheck_args.verbose:
+        print(f"## {' '.join(args)}")
 
     stdout = subprocess.run(
         args,
@@ -30,43 +36,60 @@ def run_and_filter(pycheck_args, args, ignore):
         text=True
     ).stdout
 
-    if pycheck_args.filter_output:
+    if ignore and pycheck_args.filter_output:
         re_ignore = re.compile(ignore)
         for line in stdout.split("\n")[:-1]:
             if not re_ignore.match(line):
                 print(line)
     else:
-        print(stdout)
+        sys.stdout.write(stdout)
 
-def run_flake8(_pycheck_args, program, filename):
+
+def run_flake8(pycheck_args, program, filename):
     """Run the flake8 checker."""
 
-    args = [program, filename]
-    subprocess.run(args, check=False)
+    args = [
+        program,
+        f"--max-line-length={pycheck_args.max_line_length}",
+        filename
+    ]
+    run_and_filter(pycheck_args, args)
 
 
 def run_pylint(pycheck_args, program, filename):
     """Run the pylint checker."""
 
-    args = [program, "--reports=no", "--score=no", filename]
+    args = [
+        program,
+        "--reports=no",
+        "--score=no",
+        f"--max-line-length={pycheck_args.max_line_length}",
+        filename
+    ]
     ignore = r"^\*\*\*\*\*\*"  # "|--msg-template"
     run_and_filter(pycheck_args, args, ignore)
 
 
-def run_pyflakes3(_pycheck_args, program, filename):
+def run_pyflakes3(pycheck_args, program, filename):
     """Run the pyflakes3 checker."""
 
     args = [program, filename]
-    subprocess.run(args, check=False)
+    run_and_filter(pycheck_args, args)
 
 
-def run_pycodestyle(_pycheck_args, program, filename):
+def run_pycodestyle(pycheck_args, program, filename):
     """Run the pycodestyle checker."""
 
     # E202 whitespace before ')'
     # E501 line too long - cannot be suppressed per file
-    args = [program, "--ignore=E202,E501", "--repeat", filename]
-    subprocess.run(args, check=False)
+    args = [
+        program,
+        "--ignore=E202,E501",
+        "--repeat",
+        f"--max-line-length={pycheck_args.max_line_length}",  # ignored?
+        filename,
+    ]
+    run_and_filter(pycheck_args, args)
 
 
 def run_pydocstyle(pycheck_args, program, filename):
@@ -123,6 +146,7 @@ KNOWN_CHECKERS = {
     "pytype": run_pytype
 }
 
+
 def main():
     """Main."""
 
@@ -145,6 +169,11 @@ def main():
         help="list known checkers and exit"
     )
     arg_parser.add_argument(
+        "--max-line-length",
+        default=80,
+        help="maximum length of any line"
+    )
+    arg_parser.add_argument(
         "--no-filter",
         dest="filter_output",
         action="store_false",
@@ -152,11 +181,24 @@ def main():
         help="do not filter noise; use for debugging pycheck"
     )
     arg_parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="show command line for each checker"
+    )
+    arg_parser.add_argument(
         "files",
         metavar="file",
         nargs="+",
         help="file to check"
     )
+
+    # Override defaults from config file.
+    config_file = os.path.join(pathlib.Path.home(), ".pycheck")
+    if os.path.isfile(config_file):
+        config = configparser.ConfigParser()
+        config.read(config_file)
+        items = {k.replace("-", "_"): v for k, v in config.items("DEFAULT")}
+        arg_parser.set_defaults(**items)
 
     # Parse and validate command line arguments.
     args = arg_parser.parse_args()
