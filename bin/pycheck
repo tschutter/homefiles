@@ -163,12 +163,13 @@ def main():
 
     # Define arguments.
     arg_parser = argparse.ArgumentParser(
-        description="Run multiple Python static checkers."
+        description="Run multiple Python static checkers.",
+        epilog="Reads ~/.pycheck if it exists for option defaults."
     )
     arg_parser.add_argument(
         "--checkers",
         default=default_checkers,
-        help="output grid file format (default=%(default)s)"
+        help="checkers to run (default=%(default)s)"
     )
     arg_parser.add_argument(
         "--list-checkers",
@@ -177,6 +178,7 @@ def main():
     )
     arg_parser.add_argument(
         "--max-line-length",
+        metavar="N",
         default=80,
         help="maximum length of any line"
     )
