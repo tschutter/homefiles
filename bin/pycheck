@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 
-"""Run multiple Python static checkers."""
+"""
+Run multiple Python static checkers.
+
+Reads ~/.pycheck if it exists, which looks like:
+
+[DEFAULT]
+max-line-length = 120
+"""
 
 import argparse
 import configparser
