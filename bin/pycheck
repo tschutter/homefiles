@@ -16,6 +16,7 @@ import pathlib
 import re
 import subprocess
 import sys
+import tempfile
 
 
 def which(checker):
@@ -117,14 +118,31 @@ def run_pydocstyle(pycheck_args, program, filename):
 def run_pytype(pycheck_args, program, filename):
     """Run the pytype checker."""
 
+    # pytype cannot be run on a file without .py extension.
     if not filename.endswith(".py"):
-        print("pytype cannot be run on a file without .py extension")
+        # copy contents to temporary file
+        tfile_handle, tfile_name = tempfile.mkstemp(
+            suffix=".py",
+            prefix=f"{filename}_",
+            dir=".",
+            text=False
+        )
+        try:
+            with open(filename, "rb") as pyfile:
+                contents = pyfile.read()
+                os.write(tfile_handle, contents)
+            os.close(tfile_handle)
+
+            run_pytype(pycheck_args, program, tfile_name)
+
+        finally:
+            os.remove(tfile_name)
         return
 
     args = [program, "--no-cache", filename]
     ignore = (
         r"^Computing dependencies$|"
-        r"^ninja: Entering directory |"
+        r"^(ninja: Entering|Leaving) directory |"
         r"^\[1/1\] check |"
         r"^Analyzing 1 sources with [0-9]+ local dependencies$|"
         r"^Success: no errors found$"
