@@ -77,8 +77,8 @@ def run_pylint(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args, ignore)
 
 
-def run_pyflakes3(pycheck_args, program, filename):
-    """Run the pyflakes3 checker."""
+def run_pyflakes(pycheck_args, program, filename):
+    """Run the pyflakes checker."""
 
     args = [program, filename]
     run_and_filter(pycheck_args, args)
@@ -147,7 +147,7 @@ def check_file(pycheck_args, filename):
 KNOWN_CHECKERS = {
     "flake8": run_flake8,
     "pylint": run_pylint,
-    "pyflakes3": run_pyflakes3,
+    "pyflakes": run_pyflakes,
     "pycodestyle": run_pycodestyle,
     "pydocstyle": run_pydocstyle,
     "pytype": run_pytype
