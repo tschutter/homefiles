@@ -17,6 +17,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import textwrap
 
 
 def which(checker):
@@ -118,27 +119,6 @@ def run_pydocstyle(pycheck_args, program, filename):
 def run_pytype(pycheck_args, program, filename):
     """Run the pytype checker."""
 
-    # pytype cannot be run on a file without .py extension.
-    if not filename.endswith(".py"):
-        # copy contents to temporary file
-        tfile_handle, tfile_name = tempfile.mkstemp(
-            suffix=".py",
-            prefix=f"{filename}_",
-            dir=".",
-            text=False
-        )
-        try:
-            with open(filename, "rb") as pyfile:
-                contents = pyfile.read()
-                os.write(tfile_handle, contents)
-            os.close(tfile_handle)
-
-            run_pytype(pycheck_args, program, tfile_name)
-
-        finally:
-            os.remove(tfile_name)
-        return
-
     args = [program, "--no-cache", filename]
     ignore = (
         r"^Computing dependencies$|"
@@ -150,6 +130,51 @@ def run_pytype(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args, ignore)
 
 
+def run_pyright(pycheck_args, program, filename):
+    """Run the pyright checker."""
+
+    # Create a temporary config file (documented at
+    # https://github.com/microsoft/pyright/blob/main/docs/configuration.md).
+    #
+    # This does not seem to work as changes in the config file have no effect.
+    config = textwrap.dedent("""
+    {
+        pythonVersion = "1.3"
+        typeCheckingMode = "strictx"  # should be "strict", testing
+    }
+    """)
+    cfile_handle, cfile_name = tempfile.mkstemp(
+        suffix=".json",
+        prefix="pyrightconfig_"
+    )
+    try:
+        try:
+            os.write(cfile_handle, config.encode("utf-8"))
+        finally:
+            os.close(cfile_handle)
+
+        args = [program, "--project", cfile_name, filename]
+        ignore = (
+            r"^No configuration file found.$|"
+            r"^No pyproject.toml file found.$|"
+            r"^stubPath [^\ ]+ is not a valid directory.$|"
+            r"^Assuming Python platform [^\ ]+$|"
+            r"^Searching for source files$|"
+            r"^Found [1-9][0-9]* source file$|"
+            r"^0 errors, 0 warnings, 0 informations $|"
+            r"^Completed in [0-9]+\.[0-9]+sec$|"
+            rf"Loading configuration file at {cfile_name}$|"
+            r"Assuming Python version 3.[0-9]+$|"
+            r"Auto-excluding \*\*/node_modules$|"
+            r"Auto-excluding \*\*/__pycache__$|"
+            r"Auto-excluding \*\*/\.\*$"
+        )
+        run_and_filter(pycheck_args, args, ignore)
+
+    finally:
+        os.remove(cfile_name)
+
+
 def check_file(pycheck_args, filename):
     """Check a single file."""
 
@@ -157,8 +182,30 @@ def check_file(pycheck_args, filename):
         program = which(checker)
         if program is None:
             print(f"## {checker} not installed")
+            continue
+
+        print(f"## {checker}")
+        if checker in ["pyright", "pytype"] and not filename.endswith(".py"):
+            # copy contents to temporary file
+            tfile_handle, tfile_name = tempfile.mkstemp(
+                suffix=".py",
+                prefix=f"{filename}_",
+                dir="."
+            )
+            try:
+                try:
+                    with open(filename, "rb") as pyfile:
+                        contents = pyfile.read()
+                        os.write(tfile_handle, contents)
+                finally:
+                    os.close(tfile_handle)
+
+                KNOWN_CHECKERS[checker](pycheck_args, program, tfile_name)
+
+            finally:
+                os.remove(tfile_name)
+
         else:
-            print(f"## {checker}")
             KNOWN_CHECKERS[checker](pycheck_args, program, filename)
 
 
@@ -168,6 +215,7 @@ KNOWN_CHECKERS = {
     "pyflakes": run_pyflakes,
     "pycodestyle": run_pycodestyle,
     "pydocstyle": run_pydocstyle,
+    "pyright": run_pyright,
     "pytype": run_pytype
 }
 
@@ -177,7 +225,10 @@ def main():
 
     # Build default list of checkers.
     # [2021-06-25] pytype has gotten extremely slow
-    default_checkers = ",".join(c for c in KNOWN_CHECKERS if c != "pytype")
+    # [2022-03-21] pyright does not see config changes
+    default_checkers = ",".join(
+        c for c in KNOWN_CHECKERS if c not in ["pytype", "pyright"]
+    )
 
     # Define arguments.
     arg_parser = argparse.ArgumentParser(
