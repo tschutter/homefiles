@@ -135,12 +135,15 @@ def run_pyright(pycheck_args, program, filename):
 
     # Create a temporary config file (documented at
     # https://github.com/microsoft/pyright/blob/main/docs/configuration.md).
-    #
-    # This does not seem to work as changes in the config file have no effect.
     config = textwrap.dedent("""
     {
-        pythonVersion = "1.3"
-        typeCheckingMode = "strictx"  # should be "strict", testing
+        "pythonVersion": "3.9",
+        "reportMissingParameterType": false,
+        "reportUnknownArgumentType": false,
+        "reportUnknownMemberType": false,
+        "reportUnknownParameterType": false,
+        "reportUnknownVariableType": false,
+        "typeCheckingMode": "strict"
     }
     """)
     cfile_handle, cfile_name = tempfile.mkstemp(
@@ -155,6 +158,8 @@ def run_pyright(pycheck_args, program, filename):
 
         args = [program, "--project", cfile_name, filename]
         ignore = (
+            # comment out first line to debug config
+            rf"Loading configuration file at {cfile_name}$|"
             r"^No configuration file found.$|"
             r"^No pyproject.toml file found.$|"
             r"^stubPath [^\ ]+ is not a valid directory.$|"
@@ -163,7 +168,6 @@ def run_pyright(pycheck_args, program, filename):
             r"^Found [1-9][0-9]* source file$|"
             r"^0 errors, 0 warnings, 0 informations $|"
             r"^Completed in [0-9]+\.[0-9]+sec$|"
-            rf"Loading configuration file at {cfile_name}$|"
             r"Assuming Python version 3.[0-9]+$|"
             r"Auto-excluding \*\*/node_modules$|"
             r"Auto-excluding \*\*/__pycache__$|"
@@ -225,9 +229,8 @@ def main():
 
     # Build default list of checkers.
     # [2021-06-25] pytype has gotten extremely slow
-    # [2022-03-21] pyright does not see config changes
     default_checkers = ",".join(
-        c for c in KNOWN_CHECKERS if c not in ["pytype", "pyright"]
+        c for c in KNOWN_CHECKERS if c not in ["pytype"]
     )
 
     # Define arguments.
