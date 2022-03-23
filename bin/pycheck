@@ -6,6 +6,7 @@ Run multiple Python static checkers.
 Reads ~/.pycheck if it exists, which looks like:
 
 [DEFAULT]
+checkers = flake8,pylint
 max-line-length = 120
 """
 
