@@ -233,20 +233,28 @@ def main():
         c for c in KNOWN_CHECKERS if c not in ["pytype"]
     )
 
+    class ListCheckersAction(argparse.Action):
+        """Action for --list-checkers."""
+
+        def __call__(self, parser, namespace, values, option_string=None):
+            print(",".join(KNOWN_CHECKERS))
+            parser.exit()
+
     # Define arguments.
     arg_parser = argparse.ArgumentParser(
         description="Run multiple Python static checkers.",
         epilog="Reads ~/.pycheck if it exists for option defaults."
     )
     arg_parser.add_argument(
+        "--list-checkers",
+        nargs=0,
+        action=ListCheckersAction,
+        help="list known checkers and exit"
+    )
+    arg_parser.add_argument(
         "--checkers",
         default=default_checkers,
         help="checkers to run (default=%(default)s)"
-    )
-    arg_parser.add_argument(
-        "--list-checkers",
-        action="store_true",
-        help="list known checkers and exit"
     )
     arg_parser.add_argument(
         "--max-line-length",
