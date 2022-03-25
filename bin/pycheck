@@ -8,6 +8,11 @@ Reads ~/.pycheck if it exists, which looks like:
 [DEFAULT]
 checkers = flake8,pylint
 max-line-length = 120
+
+I investigated the wemake-python-stylegui plugin for flake8, but found
+it too obnoxious.  Too many bad checks to suppress like no calls to
+`print`, no double-quoted strings, no usage of `in` with a non-set
+container, etc.
 """
 
 import argparse
