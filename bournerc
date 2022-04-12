@@ -170,6 +170,11 @@ __git_ps1() {
 #             ;;
 #     esac
 
+# Disable git prompt helper function.  Useful speedup when on sshfs mounts.
+disable-git-prompt() {
+    __git_ps1() { printf ""; }
+}
+
 # Define some prompt strings.
 # \[ begin a sequence of non-printing characters
 # \] end a sequence of non-printing characters
