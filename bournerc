@@ -156,6 +156,10 @@ esac
 # version in /etc/bash_completion.  The question marks in this prompt
 # indicate that we don't know the modified/push state.
 __git_ps1() {
+    # git is extremely slow on sshfs mounts.
+    if [ "$(findmnt --noheadings --output=FSTYPE --target .)" = "fuse.sshfs" ]; then
+        return 0
+    fi
     local b="`git symbolic-ref HEAD 2>/dev/null`"
     if [ -n "$b" ]; then
         printf " (%s ??)" "${b##refs/heads/}";
