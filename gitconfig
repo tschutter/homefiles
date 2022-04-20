@@ -1,4 +1,5 @@
 # git config file
+# config also read from ~/.config/git/config
 
 [github]
     user = tschutter
