@@ -151,11 +151,9 @@ case " `id -G` " in
         ;;
 esac
 
-# Define fallback git prompt helper function.  Note that when running
-# a modern bash, it will be overridden by a much more feature-laden
-# version in /etc/bash_completion.  The question marks in this prompt
-# indicate that we don't know the modified/push state.
-__git_ps1() {
+# Define fallback git prompt helper function.  The question marks in
+# this prompt indicate that we don't know the modified/push state.
+__git_fallback_ps1() {
     # git is extremely slow on sshfs mounts.
     if [ "$(findmnt --noheadings --output=FSTYPE --target .)" = "fuse.sshfs" ]; then
         return 0
@@ -164,6 +162,15 @@ __git_ps1() {
     if [ -n "$b" ]; then
         printf " (%s ??)" "${b##refs/heads/}";
     fi
+}
+
+# Now set the fallback as the default.  Note that when running a
+# modern bash, this will be overridden by a much more feature-laden
+# version in /etc/bash_completion.  If you want to always use the
+# fallback (i.e when frequently exposed to git repos on sshfs mounts)
+# then repeat this in ~/.bashrc-local
+__git_ps1() {
+    __git_fallback_ps1
 }
 
 # _PS1_PREFIX can be optionally set in .bashrc-local or .kshrc-local
