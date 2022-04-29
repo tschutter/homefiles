@@ -112,10 +112,10 @@ def run_pydocstyle(pycheck_args, program, filename):
 
     # Use --match to allow for files without .py extension.
     args = [program, f"--match={filename}", filename]
-    # Allow for "Main" function comment in main().
+    # Allow for "Main" function comment in main() or _main().
     # Not good.  Need to do multi-line ignores.
     ignore = (
-        r"^.+:[0-9]+ in public function `main`:$|"
+        r"^.+:[0-9]+ in (private function `_main`|public function `main`):$|"
         r"^\s+D401: First line should be in imperative mood;"
         r" try rephrasing \(found 'Main'\)$"
     )
