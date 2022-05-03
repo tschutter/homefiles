@@ -122,6 +122,20 @@ def run_pydocstyle(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args, ignore)
 
 
+def run_mypy(pycheck_args, program, filename):
+    """Run the mypy checker."""
+
+    args = [
+        program,
+        "--warn-redundant-casts",
+        "--warn-unused-ignores",
+        "--warn-return-any",
+        "--no-error-summary",
+        filename
+    ]
+    run_and_filter(pycheck_args, args)
+
+
 def run_pytype(pycheck_args, program, filename):
     """Run the pytype checker."""
 
@@ -226,6 +240,7 @@ KNOWN_CHECKERS = {
     "pycodestyle": run_pycodestyle,
     "pydocstyle": run_pydocstyle,
     "pyright": run_pyright,
+    "mypy": run_mypy,
     "pytype": run_pytype
 }
 
