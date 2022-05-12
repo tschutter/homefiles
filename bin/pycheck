@@ -74,8 +74,10 @@ def run_flake8(pycheck_args, program, filename):
 def run_pylint(pycheck_args, program, filename):
     """Run the pylint checker."""
 
+    # W1203(logging-fstring-interpolation)
     args = [
         program,
+        "--disable=W1203",
         "--reports=no",
         "--score=no",
         f"--max-line-length={pycheck_args.max_line_length}",
