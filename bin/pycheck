@@ -115,6 +115,9 @@ def run_pydocstyle(pycheck_args, program, filename):
 
     # Use --match to allow for files without .py extension.
     args = [program, f"--match={filename}", filename]
+    if pycheck_args.pydocstyle_ignore:
+        args.append(f"--ignore={pycheck_args.pydocstyle_ignore}")
+
     # Allow for "Main" function comment in main() or _main().
     # Not good.  Need to do multi-line ignores.
     ignore = (
@@ -299,6 +302,11 @@ def main():
         help="do not filter noise; use for debugging pycheck"
     )
     arg_parser.add_argument(
+        "--pydocstyle-ignore",
+        metavar="<codes>",
+        help="pydocstyle codes to ignore"
+    )
+    arg_parser.add_argument(
         "-v", "--verbose",
         action="store_true",
         help="show command line for each checker"
@@ -316,6 +324,14 @@ def main():
         config = configparser.ConfigParser()
         config.read(config_file)
         items = {k.replace("-", "_"): v for k, v in config.items("DEFAULT")}
+        for checker in KNOWN_CHECKERS:
+            if checker in config:
+                items.update(
+                    {
+                        f"{checker}_{k.replace('-', '_')}": v
+                        for k, v in config.items(checker)
+                    }
+                )
         arg_parser.set_defaults(**items)
 
     # Parse and validate command line arguments.
