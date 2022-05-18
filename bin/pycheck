@@ -146,7 +146,7 @@ def run_pytype(pycheck_args, program, filename):
     ignore = (
         r"^Computing dependencies$|"
         r"^(ninja: Entering|Leaving) directory |"
-        r"^\[1/1\] check |"
+        r"^\[\d+/\d+\] |"
         r"^Analyzing 1 sources with [0-9]+ local dependencies$|"
         r"^Success: no errors found$"
     )
