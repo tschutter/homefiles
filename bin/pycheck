@@ -128,8 +128,12 @@ def run_pydocstyle(pycheck_args, program, filename):
 def run_mypy(pycheck_args, program, filename):
     """Run the mypy checker."""
 
+    # See https://blog.wolt.com/engineering/2021/09/30/professional-grade-mypy-configuration/
     args = [
         program,
+        "--disallow-untyped-defs",
+        "--no-implicit-optional",
+        "--check-untyped-defs",
         "--warn-redundant-casts",
         "--warn-unused-ignores",
         "--warn-return-any",
