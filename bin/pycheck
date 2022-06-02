@@ -24,9 +24,25 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import toml
 
 
-def which(checker):
+def find_config_file(config_file: str, start_file: str) -> pathlib.Path:
+    """
+    Look for config_file in the directory that contains start_file and
+    all of its parents.
+    """
+
+    config_path = pathlib.Path(start_file).resolve()
+    for dir_name in config_path.parents:
+        attempt = dir_name / config_file
+        if attempt.exists():
+            return attempt
+
+    return None
+
+
+def find_checker(checker: str) -> str:
     """Determine if a checker is installed."""
 
     for path in os.environ["PATH"].split(os.pathsep):
@@ -107,6 +123,33 @@ def run_pycodestyle(pycheck_args, program, filename):
         f"--max-line-length={pycheck_args.max_line_length}",  # ignored?
         filename,
     ]
+    run_and_filter(pycheck_args, args)
+
+
+def run_black(pycheck_args, program, filename):
+    """Run the black code formatter."""
+
+    args = [
+        program,
+        "--diff",
+        "--color",
+        "--quiet",
+        filename,
+    ]
+
+    # Specify the line length unless it is specified in a pyproject.toml.
+    line_length_configured = False
+    config_file = find_config_file("pyproject.toml", filename)
+    if config_file:
+        config = toml.load(config_file)
+        try:
+            config["tool"]["black"]["line-length"]  # pylint: disable=W0104
+            line_length_configured = True
+        except KeyError:
+            pass
+    if not line_length_configured:
+        args.append(f"--line-length={pycheck_args.max_line_length}")
+
     run_and_filter(pycheck_args, args)
 
 
@@ -213,7 +256,7 @@ def check_file(pycheck_args, filename):
     """Check a single file."""
 
     for checker in pycheck_args.checkers:
-        program = which(checker)
+        program = find_checker(checker)
         if program is None:
             print(f"## {checker} not installed")
             continue
@@ -248,6 +291,7 @@ KNOWN_CHECKERS = {
     "pylint": run_pylint,
     "pyflakes": run_pyflakes,
     "pycodestyle": run_pycodestyle,
+    "black": run_black,
     "pydocstyle": run_pydocstyle,
     "pyright": run_pyright,
     "mypy": run_mypy,
