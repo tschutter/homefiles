@@ -186,6 +186,9 @@ def run_mypy(pycheck_args, program, filename):
         "--no-error-summary",
         filename
     ]
+    if pycheck_args.mypy_python_executable:
+        args.append(f"--python-executable={pycheck_args.mypy_python_executable}")
+
     run_and_filter(pycheck_args, args)
 
 
@@ -193,6 +196,9 @@ def run_pytype(pycheck_args, program, filename):
     """Run the pytype checker."""
 
     args = [program, "--no-cache", filename]
+    if pycheck_args.pytype_pythonpath:
+        args.append(f"--pythonpath={pycheck_args.pytype_pythonpath}")
+
     ignore = (
         r"^Computing dependencies$|"
         r"^(ninja: Entering|Leaving) directory |"
@@ -200,6 +206,7 @@ def run_pytype(pycheck_args, program, filename):
         r"^Analyzing 1 sources with [0-9]+ local dependencies$|"
         r"^Success: no errors found$"
     )
+
     run_and_filter(pycheck_args, args, ignore)
 
 
