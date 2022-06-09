@@ -263,6 +263,10 @@ def check_file(pycheck_args, filename):
     """Check a single file."""
 
     for checker in pycheck_args.checkers:
+        if checker in pycheck_args.disable_checkers:
+            print(f"## {checker} disabled")
+            continue
+
         program = find_checker(checker)
         if program is None:
             print(f"## {checker} not installed")
@@ -336,8 +340,14 @@ def main():
     )
     arg_parser.add_argument(
         "--checkers",
+        metavar="CHECKER[,CHECKER...]",
         default=default_checkers,
         help="checkers to run (default=%(default)s)"
+    )
+    arg_parser.add_argument(
+        "--disable-checkers",
+        metavar="CHECKER[,CHECKER...]",
+        help="checkers to disable"
     )
     arg_parser.add_argument(
         "--max-line-length",
@@ -395,6 +405,10 @@ def main():
         if checker not in KNOWN_CHECKERS:
             print(f"error: unknown checker '{checker}'")
             return 1
+    if args.disable_checkers:
+        args.disable_checkers = args.disable_checkers.split(",")
+    else:
+        args.disable_checkers = []
 
     # Check if specified files exist.
     file_not_found = False
