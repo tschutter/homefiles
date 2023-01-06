@@ -23,7 +23,7 @@ usage() {
 }
 
 ARGS=""
-PRINT_FORMAT="%p"
+PRINT_FORMAT="%P"
 FIND_NAME_OPTION="-iname"
 for ARG in "$@"; do
     case ${ARG} in
@@ -32,7 +32,7 @@ for ARG in "$@"; do
             exit 1
             ;;
         -l)
-            PRINT_FORMAT="%M %9u %9g %10s %TY-%Tm-%Td %TH:%TM:%.2TS %p"
+            PRINT_FORMAT="%M %9u %9g %10s %TY-%Tm-%Td %TH:%TM:%.2TS %P"
             ;;
         -s)
             FIND_NAME_OPTION="-name"
