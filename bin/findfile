@@ -23,7 +23,7 @@ usage() {
 }
 
 ARGS=""
-PRINT_OPTION="-print"
+PRINT_FORMAT="%p"
 FIND_NAME_OPTION="-iname"
 for ARG in "$@"; do
     case ${ARG} in
@@ -32,7 +32,7 @@ for ARG in "$@"; do
             exit 1
             ;;
         -l)
-            PRINT_OPTION="-ls"
+            PRINT_FORMAT="%M %9u %9g %10s %TY-%Tm-%Td %TH:%TM:%.2TS %p"
             ;;
         -s)
             FIND_NAME_OPTION="-name"
@@ -55,5 +55,5 @@ for ARG in ${ARGS}; do
         -name CVS -prune -o\
         ${FIND_NAME_OPTION}\
         "${ARG}"\
-        ${PRINT_OPTION}
+        -printf "${PRINT_FORMAT}\n"
 done
