@@ -11,5 +11,5 @@ ignore = [
     "D203",    # one-blank-line-before-class: incompatible with no-blank-line-before-class
     "D212",    # multi-line-summary-first-line: fails for multi-line comments
     "ERA001",  # commented-out-code; false positives
-    "T20"
+    "T20",     # (p-)?print-found; print is an ok function to use
 ]
