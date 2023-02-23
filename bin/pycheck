@@ -24,11 +24,14 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+
 import toml
 
 
-def find_config_file(config_file: str, start_file: str) -> pathlib.Path:
+def find_config_file(config_file: str, start_file: str) -> pathlib.Path | None:
     """
+    Find a configuration file.
+
     Look for config_file in the directory that contains start_file and
     all of its parents.
     """
@@ -42,18 +45,22 @@ def find_config_file(config_file: str, start_file: str) -> pathlib.Path:
     return None
 
 
-def find_checker(checker: str) -> str:
+def find_checker(checker: str) -> pathlib.Path | None:
     """Determine if a checker is installed."""
 
-    for path in os.environ["PATH"].split(os.pathsep):
-        exe_file = os.path.join(path, checker)
-        if os.path.isfile(exe_file) and os.access(exe_file, os.X_OK):
+    for path in map(pathlib.Path, os.environ["PATH"].split(os.pathsep)):
+        exe_file = path / checker
+        if exe_file.is_file() and os.access(exe_file, os.X_OK):
             return exe_file
 
     return None
 
 
-def run_and_filter(pycheck_args, args, ignore=None):
+def run_and_filter(
+    pycheck_args: argparse.Namespace,
+    args: list[str],
+    ignore: str | None = None,
+) -> None:
     """Run a program and filter the output."""
 
     if pycheck_args.verbose:
@@ -64,7 +71,7 @@ def run_and_filter(pycheck_args, args, ignore=None):
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=False,
-        text=True
+        text=True,
     ).stdout
 
     if ignore and pycheck_args.filter_output:
@@ -76,18 +83,18 @@ def run_and_filter(pycheck_args, args, ignore=None):
         sys.stdout.write(stdout)
 
 
-def run_flake8(pycheck_args, program, filename):
+def run_flake8(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
     """Run the flake8 checker."""
 
     args = [
         program,
         f"--max-line-length={pycheck_args.max_line_length}",
-        filename
+        filename,
     ]
     run_and_filter(pycheck_args, args)
 
 
-def run_pylint(pycheck_args, program, filename):
+def run_pylint(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
     """Run the pylint checker."""
 
     # W1203(logging-fstring-interpolation)
@@ -97,20 +104,24 @@ def run_pylint(pycheck_args, program, filename):
         "--reports=no",
         "--score=no",
         f"--max-line-length={pycheck_args.max_line_length}",
-        filename
+        filename,
     ]
     ignore = r"^\*\*\*\*\*\*"  # "|--msg-template"
     run_and_filter(pycheck_args, args, ignore)
 
 
-def run_pyflakes(pycheck_args, program, filename):
+def run_pyflakes(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
     """Run the pyflakes checker."""
 
     args = [program, filename]
     run_and_filter(pycheck_args, args)
 
 
-def run_pycodestyle(pycheck_args, program, filename):
+def run_pycodestyle(
+    pycheck_args: argparse.Namespace,
+    program: str,
+    filename: str,
+) -> None:
     """Run the pycodestyle checker."""
 
     # E202 whitespace before ')'
@@ -126,7 +137,7 @@ def run_pycodestyle(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args)
 
 
-def run_black(pycheck_args, program, filename):
+def run_black(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
     """Run the black code formatter."""
 
     args = [
@@ -153,7 +164,11 @@ def run_black(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args)
 
 
-def run_pydocstyle(pycheck_args, program, filename):
+def run_pydocstyle(
+    pycheck_args: argparse.Namespace,
+    program: str,
+    filename: str,
+) -> None:
     """Run the pydocstyle checker."""
 
     # Use --match to allow for files without .py extension.
@@ -171,10 +186,10 @@ def run_pydocstyle(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args, ignore)
 
 
-def run_mypy(pycheck_args, program, filename):
+def run_mypy(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
     """Run the mypy checker."""
 
-    # See https://blog.wolt.com/engineering/2021/09/30/professional-grade-mypy-configuration/
+    # See blog.wolt.com/engineering/2021/09/30/professional-grade-mypy-configuration/
     args = [
         program,
         "--disallow-untyped-defs",
@@ -185,7 +200,7 @@ def run_mypy(pycheck_args, program, filename):
         "--warn-return-any",
         "--show-error-codes",
         "--no-error-summary",
-        filename
+        filename,
     ]
     if pycheck_args.mypy_python_executable:
         args.append(f"--python-executable={pycheck_args.mypy_python_executable}")
@@ -193,12 +208,12 @@ def run_mypy(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args)
 
 
-def run_pytype(pycheck_args, program, filename):
+def run_pytype(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
     """Run the pytype checker."""
 
     args = [program, "--no-cache", filename]
-    if pycheck_args.pytype_pythonpath:
-        args.append(f"--pythonpath={pycheck_args.pytype_pythonpath}")
+    # if pycheck_args.pytype_pythonpath:
+    #     args.append(f"--pythonpath={pycheck_args.pytype_pythonpath}")
 
     ignore = (
         r"^Computing dependencies$|"
@@ -211,25 +226,41 @@ def run_pytype(pycheck_args, program, filename):
     run_and_filter(pycheck_args, args, ignore)
 
 
-def run_pyright(pycheck_args, program, filename):
+def run_ruff(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
+    """Run the ruff checker."""
+
+    args = [
+        program,
+        "check",
+        f"--line-length={pycheck_args.max_line_length}",
+        "--show-source",
+        filename,
+    ]
+
+    run_and_filter(pycheck_args, args)
+
+
+def run_pyright(pycheck_args: argparse.Namespace, program: str, filename: str) -> None:
     """Run the pyright checker."""
 
     # Create a temporary config file (documented at
     # https://github.com/microsoft/pyright/blob/main/docs/configuration.md).
-    config = textwrap.dedent("""
-    {
-        "pythonVersion": "3.9",
-        "reportMissingParameterType": false,
-        "reportUnknownArgumentType": false,
-        "reportUnknownMemberType": false,
-        "reportUnknownParameterType": false,
-        "reportUnknownVariableType": false,
-        "typeCheckingMode": "strict"
-    }
-    """)
+    config = textwrap.dedent(
+        """
+        {
+            "pythonVersion": "3.9",
+            "reportMissingParameterType": false,
+            "reportUnknownArgumentType": false,
+            "reportUnknownMemberType": false,
+            "reportUnknownParameterType": false,
+            "reportUnknownVariableType": false,
+            "typeCheckingMode": "strict"
+        }
+        """,
+    )
     cfile_handle, cfile_name = tempfile.mkstemp(
         suffix=".json",
-        prefix="pyrightconfig_"
+        prefix="pyrightconfig_",
     )
     try:
         try:
@@ -257,10 +288,10 @@ def run_pyright(pycheck_args, program, filename):
         run_and_filter(pycheck_args, args, ignore)
 
     finally:
-        os.remove(cfile_name)
+        pathlib.Path(cfile_name).unlink()
 
 
-def check_file(pycheck_args, filename):
+def check_file(pycheck_args: argparse.Namespace, filename: pathlib.Path) -> None:
     """Check a single file."""
 
     for checker in pycheck_args.checkers:
@@ -274,28 +305,30 @@ def check_file(pycheck_args, filename):
             continue
 
         print(f"## {checker}")
-        if checker in ["pyright", "pytype"] and not filename.endswith(".py"):
+        if checker in ["pyright", "pytype"] and not str(filename).endswith(".py"):
             # copy contents to temporary file
-            tfile_handle, tfile_name = tempfile.mkstemp(
+            with tempfile.NamedTemporaryFile(
                 suffix=".py",
                 prefix=f"{filename}_",
-                dir="."
-            )
-            try:
+                dir=".",
+                delete=False,
+            ) as tfile:
                 try:
-                    with open(filename, "rb") as pyfile:
+                    with filename.open("rb") as pyfile:
                         contents = pyfile.read()
-                        os.write(tfile_handle, contents)
+                        tfile.write(contents)
+                    tfile.close()
+
+                    KNOWN_CHECKERS[checker](
+                        pycheck_args,
+                        str(program),
+                        tfile.name,
+                    )
                 finally:
-                    os.close(tfile_handle)
-
-                KNOWN_CHECKERS[checker](pycheck_args, program, tfile_name)
-
-            finally:
-                os.remove(tfile_name)
+                    pathlib.Path(tfile.name).unlink()
 
         else:
-            KNOWN_CHECKERS[checker](pycheck_args, program, filename)
+            KNOWN_CHECKERS[checker](pycheck_args, str(program), str(filename))
 
 
 KNOWN_CHECKERS = {
@@ -307,12 +340,13 @@ KNOWN_CHECKERS = {
     "pydocstyle": run_pydocstyle,
     "pyright": run_pyright,
     "mypy": run_mypy,
-    "pytype": run_pytype
+    "pytype": run_pytype,
+    "ruff": run_ruff,
 }
 
 
-def main():
-    """Main."""
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
 
     # Build default list of checkers.
     # [2021-06-25] pytype has gotten extremely slow
@@ -324,65 +358,73 @@ def main():
     class ListCheckersAction(argparse.Action):
         """Action for --list-checkers."""
 
-        def __call__(self, parser, namespace, values, option_string=None):
+        def __call__(
+            self,
+            parser: argparse.ArgumentParser,
+            _namespace: None,
+            _values: None,
+            _option_string: str | None = None,
+        ) -> None:
             print(",".join(KNOWN_CHECKERS))
             parser.exit()
 
     # Define arguments.
     arg_parser = argparse.ArgumentParser(
         description="Run multiple Python static checkers.",
-        epilog="Reads ~/.pycheck if it exists for option defaults."
+        epilog="Reads ~/.pycheck if it exists for option defaults.",
     )
     arg_parser.add_argument(
         "--list-checkers",
         nargs=0,
         action=ListCheckersAction,
-        help="list known checkers and exit"
+        help="list known checkers and exit",
     )
     arg_parser.add_argument(
         "--checkers",
         metavar="CHECKER[,CHECKER...]",
         default=default_checkers,
-        help="checkers to run (default=%(default)s)"
+        help="checkers to run (default=%(default)s)",
     )
     arg_parser.add_argument(
         "--disable-checkers",
         metavar="CHECKER[,CHECKER...]",
-        help="checkers to disable"
+        help="checkers to disable",
     )
     arg_parser.add_argument(
         "--max-line-length",
         metavar="N",
         default=80,
-        help="maximum length of any line"
+        help="maximum length of any line",
     )
     arg_parser.add_argument(
         "--no-filter",
         dest="filter_output",
         action="store_false",
         default=True,
-        help="do not filter noise; use for debugging pycheck"
+        help="do not filter noise; use for debugging pycheck",
     )
     arg_parser.add_argument(
         "--pydocstyle-ignore",
         metavar="<codes>",
-        help="pydocstyle codes to ignore"
+        help="pydocstyle codes to ignore",
     )
     arg_parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
-        help="show command line for each checker"
+        help="show command line for each checker",
     )
     arg_parser.add_argument(
         "files",
         metavar="file",
+        type=pathlib.Path,
         nargs="+",
-        help="file to check"
+        help="file to check",
     )
 
     # Override defaults from config file.
-    config_file = os.path.join(pathlib.Path.home(), ".pycheck")
-    if os.path.isfile(config_file):
+    config_file = pathlib.Path.home() / ".pycheck"
+    if config_file.is_file():
         config = configparser.ConfigParser()
         config.read(config_file)
         items = {k.replace("-", "_"): v for k, v in config.items("DEFAULT")}
@@ -392,12 +434,18 @@ def main():
                     {
                         f"{checker}_{k.replace('-', '_')}": v
                         for k, v in config.items(checker)
-                    }
+                    },
                 )
         arg_parser.set_defaults(**items)
 
+    return arg_parser.parse_args()
+
+
+def main() -> int:
+    """Main."""  # noqa: D401
+
     # Parse and validate command line arguments.
-    args = arg_parser.parse_args()
+    args = parse_args()
     if args.list_checkers:
         print(",".join(KNOWN_CHECKERS))
         return 0
@@ -414,7 +462,7 @@ def main():
     # Check if specified files exist.
     file_not_found = False
     for filename in args.files:
-        if not os.path.isfile(filename):
+        if not filename.is_file():
             print(f"error: {filename} not found")
             file_not_found = True
     if file_not_found:
