@@ -219,6 +219,7 @@ PYPI3_PACKAGES="\
     pyprof2calltree\
     pytype\
     rst2pdf\
+    ruff\
 "
 PYTHON3=python${NEWEST_PYTHON3_VERSION}
 PIP3=""
