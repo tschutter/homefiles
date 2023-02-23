@@ -437,6 +437,13 @@ def link_dotfiles(args, explicit_cache_dir):
     if sys.platform.startswith("openbsd"):
         process_terminfo(args)
 
+    make_link(
+        args,
+        exe_in_path("ruff"),
+        "config/ruff-pyproject.toml",
+        os.path.join(args.config_dir, "ruff", "pyproject.toml")
+    )
+
     make_dot_link(args, exe_in_path("tmux"), "tmux.conf")
 
     make_link(
