@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# From https://stackoverflow.com/a/16879922
+
+USAGE="usage: git-branch-info
+
+List git branches in a way that shows which local branch is tracking which
+remote branch."
+
+if [[ $# > 0 ]]; then
+  echo "${USAGE}"
+  exit 0
+fi
+
+while read branch; do
+  upstream=$(git rev-parse --abbrev-ref $branch@{upstream} 2>/dev/null)
+  if [[ $? == 0 ]]; then
+    echo $branch tracks $upstream
+  else
+    echo $branch has no upstream configured
+  fi
+done < <(git for-each-ref --format='%(refname:short)' refs/heads/*)

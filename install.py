@@ -525,6 +525,7 @@ def link_binfiles(args):
     make_link(args, True, "bin/cmake-clean")
     make_link(args, True, "bin/find-non-ascii")
     make_link(args, True, "bin/findfile")
+    make_link(args, True, "bin/git-branch-info")
     make_link(args, True, "bin/git-pull")
     make_link(args, True, "bin/hed")
     make_link(args, True, "bin/install-essentials")
