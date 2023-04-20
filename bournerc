@@ -23,7 +23,7 @@ fi
 alias pgrep="pgrep -f -l"
 
 # More secure defaults for pwgen(1).
-alias pwgen="pwgen --capitalize --numerals --symbols 12"
+alias pwgen="pwgen --capitalize --numerals --symbols 14 --secure"
 
 # Clear the screen and the scrollback buffer.
 if [ -x /usr/bin/tput ]; then
