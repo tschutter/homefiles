@@ -11,7 +11,7 @@ alias lynx="lynx -accept_all_cookies"
 
 # We don't set the LESS environment variable, because that applies to
 # PAGER usage (think man).
-if [ -x "/usr/bin/less" -o -x "/usr/local/bin/less" ]; then
+if command -v less >/dev/null 2>&1; then
     # --RAW-CONTROL-CHARS = cause raw ANSI color escape sequences to
     # be displayed.  This fixes output of "pass | more" and which
     # displays colors.
@@ -26,9 +26,9 @@ alias pgrep="pgrep -f -l"
 alias pwgen="pwgen --capitalize --numerals --symbols 14 --secure"
 
 # Clear the screen and the scrollback buffer.
-if [ -x /usr/bin/tput ]; then
-    _CLS="/usr/bin/tput reset"
-elif [ -x /usr/bin/setterm ]; then
+if command -v tput >/dev/null 2>&1; then
+    _CLS="tput reset"
+elif command -v setterm >/dev/null 2>&1; then
     _CLS="setterm -reset"
 else
     _CLS="clear"
@@ -61,7 +61,7 @@ case "${_UNAME}" in
 esac
 
 # Enable color support in various programs.
-if [ -x /usr/bin/dircolors ]; then
+if command -v dircolors >/dev/null 2>&1; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls="ls --color=auto"
     alias dir="dir --color=auto --escape --time-style=long-iso -l"
@@ -82,23 +82,23 @@ fi
 export LC_COLLATE="en_US.UTF-8"
 
 # Setup sensible-browser.
-for F in /usr/bin/chromium-browser; do
-    if [ -x "${F}" ]; then
+for F in chromium-browser firefox; do
+    if command -v ${F} >/dev/null 2>&1; then
         export BROWSER=${F}
         break
     fi
 done
 
 # Setup sensible-editor.
-if [ -x "/usr/bin/emacsclient" ]; then
+if command -v emacsclient >/dev/null 2>&1; then
     # -a='': if the Emacs server is not running, run `emacs --daemon' to
     #        start Emacs in daemon mode, and try to connect to it
     # -t: open a new Emacs frame on the current terminal
-    export EDITOR="/usr/bin/emacsclient -a='' -t"
-    export VISUAL="/usr/bin/emacsclient -a=''"
+    export EDITOR="emacsclient -a='' -t"
+    export VISUAL="emacsclient -a=''"
 else
-    for F in /usr/bin/mg /usr/bin/vi; do
-        if [ -x "${F}" ]; then
+    for F in mg vi; do
+        if command -v ${F} >/dev/null 2>&1; then
             export VISUAL=${F}
             break
         fi
@@ -135,7 +135,7 @@ uuuu() {
 
 # Prompt and window title.
 # Determine the hostname.
-_HOSTNAME=`hostname | /usr/bin/tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
+_HOSTNAME=`hostname | tr '[A-Z]' '[a-z]'`  # Convert to lowercase.
 _HOSTNAME=${_HOSTNAME%%.*}  # Strip any domain suffix.
 export _HOSTNAME
 
