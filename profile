@@ -69,7 +69,9 @@ fi
 
 # Use less(1) for a pager.
 # Do not set the LESS environment variable, because that also applies to PAGER.
-[ -x "/usr/bin/less" ] && PAGER="/usr/bin/less"; export PAGER
+if command -v less >/dev/null 2>&1; then
+    export PAGER="less"
+fi
 
 # Make less more friendly for non-text input files, see lesspipe(1).
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
