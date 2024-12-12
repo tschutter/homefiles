@@ -99,6 +99,11 @@ export FZF_DEFAULT_OPTS='--multi'
 # https://mail.gnome.org/archives/gnome-accessibility-devel/2011-June/msg00006.html
 export NO_AT_BRIDGE=1
 
+# Include rust package manager environment if it exists.
+if [ -r "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
+
 # Include .profile-local if it exists.
 if [ -r "$HOME/.profile-local" ]; then
     . "$HOME/.profile-local"

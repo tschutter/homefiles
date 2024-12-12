@@ -132,6 +132,11 @@ GIT_PS1_SHOWUNTRACKEDFILES=t
 # Show the difference between HEAD and its upstream.
 GIT_PS1_SHOWUPSTREAM="auto"
 
+# Include rust package manager environment if it exists.
+if [ -r "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
+
 # Source local bashrc.
 if [ -f ~/.bashrc-local ]; then
     . ~/.bashrc-local
